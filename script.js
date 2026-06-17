@@ -1,7 +1,8 @@
+  const tiles = document.querySelectorAll('.tile');
   const views = document.querySelectorAll('.view');
   const visited = new Set();
   let celebrated = false;
-  let onLeaveSpel = null;
+  var onLeaveSpel = null;
 
   /* ---- Confetti ---- */
   const CONFETTI_COLORS = ['#FFCC33','#003399','#479554','#FF99CC','#FF3333','#ffffff','#FFB347'];
@@ -30,21 +31,29 @@
   function showCelebration(){
     celebrated = true;
     launchConfetti();
-    const banner = document.getElementById('celebration-banner');
-    banner.classList.add('active');
-    banner.querySelector('.cel-close').addEventListener('click', () => {
-      banner.classList.remove('active');
-    }, {once:true});
+    const trophy = document.getElementById('trophy-banner');
+    if(trophy){
+      trophy.classList.add('active');
+      document.getElementById('trophy-close').addEventListener('click', () => {
+        trophy.classList.remove('active');
+      }, {once:true});
+      trophy.addEventListener('click', e => {
+        if(e.target === trophy) trophy.classList.remove('active');
+      });
+    }
   }
 
-  /* ---- Logo: altijd confetti, en terug naar start vanaf een onderdeel ---- */
+  /* ---- Logo: confetti + bounce animatie bij elke klik ---- */
   const logoBtn = document.getElementById('logo-confetti');
   function logoActivate(){
     launchConfetti();
-    const active = document.querySelector('.view.active');
-    if(active && active.id !== 'hub'){
-      showView('hub');
+    if(logoBtn){
+      logoBtn.style.transition = 'transform .15s ease';
+      logoBtn.style.transform = 'scale(1.18) rotate(-6deg)';
+      setTimeout(() => { logoBtn.style.transform = 'scale(1) rotate(0deg)'; }, 200);
     }
+    const active = document.querySelector('.view.active');
+    if(active && active.id !== 'hub') showView('hub');
   }
   if(logoBtn){
     logoBtn.addEventListener('click', logoActivate);
@@ -57,7 +66,7 @@
   (function(){
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Multitalige begroeting op de zwaaiende hand
+    // Multitalige begroeting op de zwaaiende hand — ook automatisch wisselen
     const wave = document.getElementById('wave-emoji');
     const greetWord = document.getElementById('greet-word');
     const greetings = ['Welkom','Hallo','Salut','Hola','Ciao','Merhaba','Bonjour','Hoi','Hey','Habari'];
@@ -82,6 +91,8 @@
         if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); doWave(); }
       });
       wave.addEventListener('animationend', () => wave.classList.remove('waving'));
+      // Auto-wissel elke 7 seconden
+      if(!reduce) setInterval(doWave, 7000);
     }
 
     // Sparkles op een gegeven schermpositie
@@ -181,16 +192,22 @@
       'De zon vindt jou alvast top ⭐'
     ];
     let bubbleTimer = null;
-    sun.addEventListener('click', () => {
+    let sunMsgIndex = 0;
+    function showSunMessage(){
       sun.classList.remove('spin');
       requestAnimationFrame(() => sun.classList.add('spin'));
-      const msg = sunMessages[Math.floor(Math.random() * sunMessages.length)];
-      bubble.textContent = msg;
+      bubble.textContent = sunMessages[sunMsgIndex % sunMessages.length];
+      sunMsgIndex++;
       bubble.classList.add('show');
       clearTimeout(bubbleTimer);
-      bubbleTimer = setTimeout(() => bubble.classList.remove('show'), 2200);
-    });
+      bubbleTimer = setTimeout(() => bubble.classList.remove('show'), 2800);
+    }
+    sun.addEventListener('click', showSunMessage);
     sun.addEventListener('animationend', () => sun.classList.remove('spin'));
+    // Auto-toon een berichtje elke 20 seconden, subtiel
+    setInterval(() => {
+      if(!bubble.classList.contains('show')) showSunMessage();
+    }, 20000);
   })();
 
   function showView(id){
@@ -204,13 +221,13 @@
     if(id === 'module-regio' && typeof window.__applyRegioState === 'function'){
       window.__applyRegioState();
     }
-    if(id === 'hub' && !celebrated && visited.size === 10){
+    if(id === 'hub' && !celebrated && visited.size === 9){
       setTimeout(showCelebration, 400);
     }
   }
 
   function updateProgress(){
-    document.getElementById('progress').textContent = visited.size + ' van 10 ontdekt';
+    document.getElementById('progress').textContent = visited.size + ' van 9 ontdekt';
   }
 
   tiles.forEach(tile => {
