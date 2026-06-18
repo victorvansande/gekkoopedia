@@ -595,7 +595,8 @@
     transition:transform .15s ease, box-shadow .15s ease;
   }
   .skill-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,51,153,.12);}
-  .skill-card .ic{font-size:1.8rem;}
+  .skill-card .ic{font-size:1.8rem;transition:transform .25s cubic-bezier(.34,1.56,.64,1);}
+  .skill-card:hover .ic{transform:scale(1.15) rotate(-5deg);}
   .skill-card h3{font-size:1rem;}
   .skill-card p{font-size:.9rem;color:#3d4f6e;margin:0;}
 
@@ -720,7 +721,8 @@
     transition:transform .15s ease, box-shadow .15s ease;
   }
   .contact-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,51,153,.12);}
-  .contact-card .ic{font-size:1.8rem;}
+  .contact-card .ic{font-size:1.8rem;transition:transform .25s cubic-bezier(.34,1.56,.64,1);}
+  .contact-card:hover .ic{transform:scale(1.15) rotate(-5deg);}
   .contact-card h3{font-size:1rem;margin-bottom:.2rem;}
   .contact-card p{font-size:.9rem;margin:0;color:#3d4f6e;}
   .contact-card a{color:var(--navy);}
@@ -777,11 +779,22 @@
   #tik-canvas{background:#cdeccd;}
   .game-overlay{
     position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:1rem;
+    background:rgba(8,24,56,.16);
+    backdrop-filter:blur(3px);
+    -webkit-backdrop-filter:blur(3px);
+    border-radius:18px;
   }
   .game-overlay[hidden]{display:none;}
   .go-card{
-    background:rgba(255,255,255,.96);border-radius:18px;padding:1.4rem 1.2rem;
-    text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.18);max-width:300px;
+    background:rgba(255,255,255,.82);
+    backdrop-filter:blur(16px) saturate(170%);
+    -webkit-backdrop-filter:blur(16px) saturate(170%);
+    border:1px solid rgba(255,255,255,.6);
+    border-radius:18px;padding:1.4rem 1.2rem;
+    text-align:center;box-shadow:0 10px 30px rgba(0,40,90,.28);max-width:300px;
+  }
+  body[data-theme="dark"] .go-card{
+    background:rgba(20,30,55,.78);border-color:rgba(168,191,232,.18);
   }
   .go-emoji{font-size:2.6rem;line-height:1;margin-bottom:.3rem;}
   .go-card h3{font-size:1.3rem;margin-bottom:.4rem;}
@@ -973,7 +986,7 @@
   #trophy-banner{
     position:fixed;inset:0;z-index:10000;
     display:none;align-items:center;justify-content:center;
-    background:rgba(0,0,0,.45);backdrop-filter:blur(4px);
+    background:rgba(0,0,0,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   }
   #trophy-banner.active{display:flex;}
   .trophy-card{
@@ -1040,9 +1053,10 @@
     display:flex;flex-direction:column;align-items:center;gap:.1rem;
     cursor:default;
     filter:grayscale(1);opacity:.22;
-    transition:filter .35s ease,opacity .35s ease;
+    transition:filter .35s ease,opacity .35s ease,transform .2s cubic-bezier(.34,1.56,.64,1);
   }
   .badge-slot.earned{filter:none;opacity:1;}
+  .badge-slot.earned:hover{transform:translateY(-4px) scale(1.12);}
   .badge-slot.earned .badge-ic{animation:badge-pop .5s cubic-bezier(.34,1.56,.64,1);}
   .badge-ic{font-size:1.3rem;line-height:1;display:block;}
   .badge-slot small{font-size:.44rem;font-family:'Fredoka',sans-serif;color:var(--navy);text-align:center;line-height:1.1;opacity:.8;}
@@ -1059,24 +1073,30 @@
     z-index:80;
     display:flex;justify-content:center;flex-wrap:wrap;gap:.25rem;
     padding:.45rem .6rem;
-    background:rgba(255,255,255,.9);
-    backdrop-filter:blur(10px);
-    -webkit-backdrop-filter:blur(10px);
-    border-top:1px solid rgba(0,51,153,.08);
+    background:rgba(255,255,255,.6);
+    backdrop-filter:blur(20px) saturate(180%);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    border-top:1px solid rgba(255,255,255,.55);
+    box-shadow:0 -6px 24px rgba(0,51,153,.08);
     transform:translateY(0);
     transition:transform .4s cubic-bezier(.4,0,.2,1);
   }
   .mini-badge-shelf.shelf-hidden{ transform:translateY(100%); }
   body[data-theme="dark"] .mini-badge-shelf{
-    background:rgba(10,22,50,.9);
-    border-top-color:rgba(168,191,232,.1);
+    background:rgba(13,22,42,.52);
+    backdrop-filter:blur(20px) saturate(160%);
+    -webkit-backdrop-filter:blur(20px) saturate(160%);
+    border-top-color:rgba(168,191,232,.16);
+    box-shadow:0 -6px 24px rgba(0,0,0,.3);
   }
 
   /* Trophy-knop (verschijnt als alle badges behaald zijn) */
   .trophy-btn{
     position:fixed;bottom:1rem;right:1rem;
     z-index:81;
-    background:#fff9ec;
+    background:rgba(255,249,236,.7);
+    backdrop-filter:blur(12px) saturate(160%);
+    -webkit-backdrop-filter:blur(12px) saturate(160%);
     border:1.5px solid rgba(255,204,51,.5);
     border-radius:999px;
     font-size:1.3rem;line-height:1;
@@ -1085,11 +1105,15 @@
     box-shadow:0 2px 10px rgba(0,0,0,.1);
     opacity:0;pointer-events:none;
     transform:scale(.7) translateY(8px);
-    transition:opacity .3s ease, transform .3s cubic-bezier(.34,1.56,.64,1);
+    transition:opacity .3s ease, transform .3s cubic-bezier(.34,1.56,.64,1), background .2s, box-shadow .2s;
   }
   .trophy-btn.visible{
     opacity:1;pointer-events:auto;
     transform:scale(1) translateY(0);
+  }
+  .trophy-btn.visible:hover{
+    transform:scale(1.08) translateY(-2px);
+    box-shadow:0 7px 20px rgba(0,51,153,.22);
   }
   .trophy-btn.shelf-open{
     background:var(--navy);
@@ -1141,7 +1165,10 @@
     font-family:'Fredoka',sans-serif;font-weight:600;font-size:.92rem;
     color:var(--navy);list-style:none;
     user-select:none;
+    transition:background .15s ease;
   }
+  .faq-q:hover{background:rgba(0,51,153,.05);}
+  body[data-theme="dark"] .faq-q:hover{background:rgba(168,191,232,.08);}
   .faq-q::-webkit-details-marker{display:none;}
   .faq-q::after{
     content:'＋';font-size:1rem;font-weight:400;
@@ -1197,7 +1224,10 @@
   /* ---- Kopieer-toast ---- */
   .copy-toast{
     position:fixed;bottom:5.5rem;left:50%;transform:translateX(-50%);
-    background:var(--navy);color:#fff;
+    background:rgba(0,51,153,.82);
+    backdrop-filter:blur(10px) saturate(160%);
+    -webkit-backdrop-filter:blur(10px) saturate(160%);
+    color:#fff;
     font-family:'Fredoka',sans-serif;font-size:.9rem;font-weight:600;
     padding:.42rem 1.1rem;border-radius:999px;
     opacity:0;pointer-events:none;
