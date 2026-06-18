@@ -766,11 +766,15 @@
 
   /* ---- Gekkoo-game ---- */
   .game-wrap{position:relative;width:100%;max-width:360px;margin:0 auto;}
-  #game-canvas{
+  #game-canvas, #vang-canvas, #tik-canvas{
     display:block;width:100%;height:auto;
-    background:#dff1f7;border-radius:18px;box-shadow:var(--shadow);
+    border-radius:18px;box-shadow:var(--shadow);
     touch-action:none;cursor:pointer;
+    overflow:hidden;
   }
+  #game-canvas{background:#dff1f7;}
+  #vang-canvas{background:#bfe8fb;}
+  #tik-canvas{background:#cdeccd;}
   .game-overlay{
     position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:1rem;
   }
