@@ -18,7 +18,7 @@
   <text x="600" y="430" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="40" letter-spacing="14" fill="#FFCC33">PEDIA</text>
   <!-- tagline -->
   <text x="600" y="492" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="34" fill="#ffffff">De vrijwilligersgids van Gekkoo</text>
-  <text x="600" y="536" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="400" font-size="25" fill="#aabbdd">Alles wat je moet weten als animator — in klare taal</text>
+  <text x="600" y="536" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="400" font-size="25" fill="#aabbdd">Alles wat je moet weten als animator, in klare taal</text>
   <!-- accent: huisstijl-stippen -->
   <g>
     <circle cx="546" cy="586" r="9" fill="#003399" stroke="#5a78c8" stroke-width="2"/>

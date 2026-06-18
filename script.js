@@ -197,7 +197,7 @@
   (function(){
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Multitalige begroeting op de zwaaiende hand — ook automatisch wisselen
+    // Multitalige begroeting op de zwaaiende hand, ook automatisch wisselen
     const wave = document.getElementById('wave-emoji');
     const greetWord = document.getElementById('greet-word');
     const greetings = [
@@ -484,7 +484,7 @@
     },
     {
       icon: '🤔',
-      text: 'Je ziet dat een collega-vrijwilliger iets doet waarmee jij het niet eens bent — niet iets gevaarlijks, maar toch. Wat doe jij?',
+      text: 'Je ziet dat een collega-vrijwilliger iets doet waarmee jij het niet eens bent. Niet iets gevaarlijks, maar toch. Wat doe jij?',
       options: [
         {label: 'Ik zeg niets. Het is zijn of haar verantwoordelijkheid.', correct:false, feedback:'Zwijgen lost niets op. Een open gesprek achteraf is altijd beter dan je ergenis ophouden.'},
         {label: 'Ik val hem of haar meteen publiekelijk terecht voor de kinderen.', correct:false, feedback:'Dat kan beschamend zijn. Spreek elkaar altijd aan buiten het zicht van de kinderen.'},
