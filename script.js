@@ -448,7 +448,7 @@
     },
     {
       icon: '🚫',
-      text: 'Een kind wordt gepest of buitengesloten door andere kinderen. Wat doe jij?',
+      text: 'Andere kinderen pesten een kind of sluiten het buiten. Wat doe jij?',
       options: [
         {label: 'Ik grijp in: ik stop het pesten en praat erover met de groep.', correct:true, feedback:'Goed gedaan! Ingrijpen, het pesten stoppen, en er samen over praten is belangrijk.'},
         {label: 'Ik doe alsof ik het niet zie. Kinderen lossen dit vaak zelf op.', correct:false, feedback:'Pesten lost zichzelf bijna nooit op. Jij moet ingrijpen.'},
@@ -468,7 +468,7 @@
       icon: '🤢',
       text: 'Tijdens een activiteit zegt een kind dat het buikpijn heeft en zich niet goed voelt. Wat doe jij?',
       options: [
-        {label: 'Ik zeg dat het vast wel meevalt en dat het gewoon meedoet.', correct:false, feedback:'Een ziek kind negeren is nooit oké. Neem elk klachten serieus, ook als je twijfelt.'},
+        {label: 'Ik zeg dat het vast wel meevalt en dat het gewoon meedoet.', correct:false, feedback:'Een ziek kind negeren is nooit oké. Neem elke klacht serieus, ook als je twijfelt.'},
         {label: 'Ik laat het kind rustig zitten, verwittig een andere vrijwilliger en contacteer de ouders.', correct:true, feedback:'Goed gedaan! Rustig houden, iemand informeren en de ouders contacteren is de juiste aanpak.'},
         {label: 'Ik stuur het kind meteen alleen naar huis.', correct:false, feedback:'Een kind alleen wegsturen is gevaarlijk. Zorg altijd dat een ouder of vertrouwde volwassene het ophaalt.'}
       ]
@@ -477,7 +477,7 @@
       icon: '⏰',
       text: 'De activiteit is gedaan, maar de ouders van één kind zijn nog steeds niet komen opdagen. Wat doe jij?',
       options: [
-        {label: 'Ik wacht een kwartiertje en vertrek daarna. Het kind kent de weg.', correct:false, feedback:'Een kind nooit alleen achterlaten. Jij blijft verantwoordelijk totdat het kind veilig is overgedragen.'},
+        {label: 'Ik wacht een kwartiertje en vertrek daarna. Het kind kent de weg.', correct:false, feedback:'Laat een kind nooit alleen achter. Jij blijft verantwoordelijk tot je het veilig overdraagt aan een ouder.'},
         {label: 'Ik probeer de ouders te bereiken. Als dat niet lukt, verwittig ik de hoofdverantwoordelijke.', correct:true, feedback:'Goed gedaan! Altijd contact opnemen en de verantwoordelijke verwittigen als je geen gehoor krijgt.'},
         {label: 'Ik geef het kind mee met een andere ouder die er toevallig ook nog is.', correct:false, feedback:'Zonder expliciete toestemming van de ouders geef je een kind niet mee met iemand anders.'}
       ]
@@ -486,7 +486,7 @@
       icon: '🤔',
       text: 'Je ziet dat een collega-vrijwilliger iets doet waarmee jij het niet eens bent. Niet iets gevaarlijks, maar toch. Wat doe jij?',
       options: [
-        {label: 'Ik zeg niets. Het is zijn of haar verantwoordelijkheid.', correct:false, feedback:'Zwijgen lost niets op. Een open gesprek achteraf is altijd beter dan je ergenis ophouden.'},
+        {label: 'Ik zeg niets. Het is zijn of haar verantwoordelijkheid.', correct:false, feedback:'Zwijgen lost niets op. Een open gesprek achteraf is altijd beter dan je ergernis inhouden.'},
         {label: 'Ik val hem of haar meteen publiekelijk terecht voor de kinderen.', correct:false, feedback:'Dat kan beschamend zijn. Spreek elkaar altijd aan buiten het zicht van de kinderen.'},
         {label: 'Ik spreek hem of haar achteraf rustig aan en bespreek het samen.', correct:true, feedback:'Goed gedaan! Rustig en onder vier ogen feedback geven is de professionele aanpak.'}
       ]
@@ -497,7 +497,7 @@
       options: [
         {label: 'Ik grijp meteen in, stop het gedrag en leg rustig uit waarom het niet veilig is.', correct:true, feedback:'Goed gedaan! Direct ingrijpen en uitleggen waarom het gevaarlijk is, is de juiste reactie.'},
         {label: 'Ik wacht af. Kinderen moeten ook een beetje risico leren inschatten.', correct:false, feedback:'Bij gevaarlijke situaties moet je altijd meteen ingrijpen. Wachten is hier geen optie.'},
-        {label: 'Ik zeg niets maar kijk wel toe zodat ik kan helpen als het misloopt.', correct:false, feedback:'Voorkomen is altijd beter dan genezen. Grijp in voor het misloopt.'}
+        {label: 'Ik zeg niets maar kijk wel toe zodat ik kan helpen als het misloopt.', correct:false, feedback:'Grijp in voordat het misloopt. Dat is altijd beter dan achteraf herstellen.'}
       ]
     }
   ];
