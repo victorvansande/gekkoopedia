@@ -2,26 +2,156 @@
   const views = document.querySelectorAll('.view');
   const visited = new Set();
   let celebrated = false;
+
+  /* ---- Geluid engine (Web Audio API) ---- */
+  const SFX = (function(){
+    let ctx = null, muted = localStorage.getItem('sfx-muted') === '1';
+    function ac(){
+      if(!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if(ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    }
+    function tone(freq, dur, vol, type, freqEnd, when){
+      if(muted || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      try{
+        const c = ac();
+        const t = c.currentTime + (when || 0) + 0.01;
+        const o = c.createOscillator(), g = c.createGain();
+        o.connect(g); g.connect(c.destination);
+        o.type = type || 'sine';
+        o.frequency.setValueAtTime(freq, t);
+        if(freqEnd) o.frequency.exponentialRampToValueAtTime(freqEnd, t + dur);
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.linearRampToValueAtTime(vol, t + 0.008);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        o.start(t); o.stop(t + dur + 0.02);
+      }catch(e){}
+    }
+    return {
+      tap:       ()=>{ tone(520, .08, .06); },
+      back:      ()=>{ tone(400, .08, .05, 'sine', 300); },
+      badge:     ()=>{ tone(523,.1,.08,null,null,0); tone(659,.1,.08,null,null,.1); tone(784,.22,.1,null,null,.2); },
+      toggle:    ()=>{ tone(muted?220:440,.12,.05,'sine',muted?300:520); },
+      correct:   ()=>{ tone(659,.09,.08,null,null,0); tone(880,.18,.08,null,null,.1); },
+      wrong:     ()=>{ tone(280,.2,.05,'sine',220); },
+      celebrate: ()=>{ [523,659,784,1047].forEach((f,i)=>tone(f,.25,.08,null,null,i*.09)); },
+      sun:       ()=>{ tone(880,.07,.05,null,null,0); tone(1108,.14,.04,null,null,.07); },
+      greet:     ()=>{ tone(600,.05,.03,'sine',660); },
+      isMuted:   ()=>muted,
+      setMuted:  (v)=>{ muted=v; localStorage.setItem('sfx-muted', v?'1':'0'); },
+    };
+  })();
+
+  // Mute-knop
+  (function(){
+    const btn = document.getElementById('mute-toggle');
+    if(!btn) return;
+    function update(){ btn.textContent = SFX.isMuted()?'🔇':'🔊'; btn.classList.toggle('muted', SFX.isMuted()); btn.setAttribute('aria-label', SFX.isMuted()?'Geluid inschakelen':'Geluid uitschakelen'); }
+    update();
+    btn.addEventListener('click', ()=>{ SFX.setMuted(!SFX.isMuted()); SFX.toggle(); update(); });
+  })();
+
+  // Herstel eerder bezochte modules uit localStorage
+  (function(){
+    const saved = JSON.parse(localStorage.getItem('gekkoo-visited') || '[]');
+    saved.forEach(mod => {
+      visited.add(mod);
+      const tile = document.querySelector('.tile[data-module="'+mod+'"]');
+      if(tile) tile.classList.add('visited');
+    });
+    if(visited.size > 0) updateProgress();
+    if(visited.size === 10) celebrated = true; // Geen herhaalde trophy bij terugkeer
+  })();
   var onLeaveSpel = null;
+
+  /* ---- Dark mode ---- */
+  const darkToggle = document.getElementById('dark-toggle');
+  function setToggleLabel(isDark){
+    darkToggle.setAttribute('aria-label', isDark ? 'Schakel licht thema in' : 'Schakel donker thema in');
+  }
+  (function(){
+    const saved = localStorage.getItem('theme');
+    if(saved === 'dark'){ document.body.setAttribute('data-theme','dark'); setToggleLabel(true); }
+  })();
+  darkToggle.addEventListener('click', () => {
+    const isDark = document.body.getAttribute('data-theme') === 'dark';
+    SFX.toggle();
+    launchThemeTransition(!isDark);
+    document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    setToggleLabel(!isDark);
+  });
 
   /* ---- Confetti ---- */
   const CONFETTI_COLORS = ['#FFCC33','#003399','#479554','#FF99CC','#FF3333','#ffffff','#FFB347'];
+  const CONFETTI_DARK   = ['#ffffff','#d0dcff','#e8f0ff','#c8d8f0','#fffde0','#aabbdd','#dde8ff'];
 
   function launchConfetti(){
     if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const count = 72;
+    const isDark = document.body.getAttribute('data-theme') === 'dark';
+    const colors = isDark ? CONFETTI_DARK : CONFETTI_COLORS;
+    const count = isDark ? 46 : 72;
     for(let i=0;i<count;i++){
       const el = document.createElement('div');
-      el.className = 'confetti-piece';
+      el.className = isDark ? 'confetti-piece confetti-star' : 'confetti-piece';
+      const sz = isDark ? 8+Math.random()*7 : 6+Math.random()*6;
       el.style.cssText = [
         `left:${Math.random()*100}vw`,
-        `background:${CONFETTI_COLORS[Math.floor(Math.random()*CONFETTI_COLORS.length)]}`,
-        `width:${6+Math.random()*6}px`,
-        `height:${10+Math.random()*8}px`,
-        `border-radius:${Math.random()>0.5?'50%':'2px'}`,
+        `background:${colors[Math.floor(Math.random()*colors.length)]}`,
+        `width:${sz}px`,
+        `height:${isDark ? sz : 10+Math.random()*8}px`,
+        isDark ? '' : `border-radius:${Math.random()>0.5?'50%':'2px'}`,
         `animation-duration:${2.4+Math.random()*2}s`,
         `animation-delay:${Math.random()*0.9}s`,
-        `opacity:${0.75+Math.random()*0.25}`,
+        `opacity:${0.8+Math.random()*0.2}`,
+      ].filter(Boolean).join(';');
+      document.body.appendChild(el);
+      el.addEventListener('animationend', () => el.remove());
+    }
+  }
+
+  function launchThemeTransition(toDark){
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    // Screen overlay: darkness falls / light rises
+    const overlay = document.createElement('div');
+    overlay.className = 'theme-overlay';
+    overlay.style.cssText = [
+      `background:${toDark ? 'rgba(4,8,22,.88)' : 'rgba(255,240,160,.82)'}`,
+      'transition:opacity .35s ease',
+    ].join(';');
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => {
+      overlay.style.opacity = '1';
+      setTimeout(() => {
+        overlay.style.transition = 'opacity .55s ease';
+        overlay.style.opacity = '0';
+        setTimeout(() => overlay.remove(), 600);
+      }, 280);
+    });
+
+    // Central moon / sun emoji
+    const center = document.createElement('div');
+    center.className = 'theme-main';
+    center.textContent = toDark ? '🌙' : '☀️';
+    document.body.appendChild(center);
+    center.addEventListener('animationend', () => center.remove());
+
+    // Falling stars (dark) or rising suns (light)
+    const DARK_COLORS  = ['#ffffff','#d0dcff','#e8f0ff','#c8d8f0','#fffde0'];
+    const LIGHT_COLORS = ['#FFCC33','#FFB347','#FFE566','#fff0a0','#ffffff'];
+    const colors = toDark ? DARK_COLORS : LIGHT_COLORS;
+    for(let i = 0; i < 32; i++){
+      const el = document.createElement('div');
+      el.className = toDark ? 'theme-piece theme-piece--star' : 'theme-piece theme-piece--sun';
+      const sz = 5 + Math.random() * 9;
+      el.style.cssText = [
+        `left:${Math.random()*100}vw`,
+        `background:${colors[Math.floor(Math.random()*colors.length)]}`,
+        `width:${sz}px`,
+        `height:${sz}px`,
+        `animation-duration:${1.1+Math.random()*1.1}s`,
+        `animation-delay:${Math.random()*0.45}s`,
       ].join(';');
       document.body.appendChild(el);
       el.addEventListener('animationend', () => el.remove());
@@ -30,6 +160,7 @@
 
   function showCelebration(){
     celebrated = true;
+    SFX.celebrate();
     launchConfetti();
     const trophy = document.getElementById('trophy-banner');
     if(trophy){
@@ -69,30 +200,39 @@
     // Multitalige begroeting op de zwaaiende hand — ook automatisch wisselen
     const wave = document.getElementById('wave-emoji');
     const greetWord = document.getElementById('greet-word');
-    const greetings = ['Welkom','Hallo','Salut','Hola','Ciao','Merhaba','Bonjour','Hoi','Hey','Habari'];
+    const greetings = [
+      'Welkom','Hallo','Hoi','Hey',
+      'Salut','Bonjour',
+      'Hello','Hi',
+      'Hola','Ciao',
+      'Merhaba',
+      'مرحبا',
+      'こんにちは',
+    ];
     let gi = 0;
     if(wave && greetWord){
-      const doWave = () => {
-        if(!reduce){
-          wave.classList.remove('waving');
-          requestAnimationFrame(() => wave.classList.add('waving'));
-          const r = wave.getBoundingClientRect();
-          sparkle(r.left + r.width/2, r.top + r.height/2);
-        }
+      const cycleGreeting = (withFlair) => {
         gi = (gi + 1) % greetings.length;
         greetWord.classList.add('swap');
         setTimeout(() => {
           greetWord.textContent = greetings[gi];
           greetWord.classList.remove('swap');
         }, 150);
+        if(withFlair && !reduce){
+          wave.classList.remove('waving');
+          requestAnimationFrame(() => wave.classList.add('waving'));
+          const r = wave.getBoundingClientRect();
+          sparkle(r.left + r.width/2, r.top + r.height/2);
+        }
       };
+      const doWave   = () => { SFX.greet(); cycleGreeting(true); };
+      const autoCycle = () => cycleGreeting(false);
       wave.addEventListener('click', doWave);
       wave.addEventListener('keydown', e => {
         if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); doWave(); }
       });
       wave.addEventListener('animationend', () => wave.classList.remove('waving'));
-      // Auto-wissel elke 7 seconden
-      if(!reduce) setInterval(doWave, 7000);
+      if(!reduce) setInterval(autoCycle, 3200);
     }
 
     // Sparkles op een gegeven schermpositie
@@ -171,7 +311,7 @@
       const mins = Math.floor((sec % 3600) / 60);
       const secs = sec % 60;
 
-      elDays.textContent = days;
+      elDays.textContent = pad(days);
       elHours.textContent = pad(hours);
       elMins.textContent = pad(mins);
       elSecs.textContent = pad(secs);
@@ -194,6 +334,7 @@
     let bubbleTimer = null;
     let sunMsgIndex = 0;
     function showSunMessage(){
+      SFX.sun();
       sun.classList.remove('spin');
       requestAnimationFrame(() => sun.classList.add('spin'));
       bubble.textContent = sunMessages[sunMsgIndex % sunMessages.length];
@@ -204,46 +345,56 @@
     }
     sun.addEventListener('click', showSunMessage);
     sun.addEventListener('animationend', () => sun.classList.remove('spin'));
-    // Auto-toon een berichtje elke 20 seconden, subtiel
-    setInterval(() => {
-      if(!bubble.classList.contains('show')) showSunMessage();
-    }, 20000);
   })();
 
-  function showView(id){
+  function showView(id, push){
     const prev = document.querySelector('.view.active');
     if(prev && prev.id === 'module-spel' && id !== 'module-spel' && typeof onLeaveSpel === 'function'){
       onLeaveSpel();
     }
     views.forEach(v => v.classList.remove('active'));
     document.getElementById(id).classList.add('active');
+    document.body.classList.toggle('in-module', id !== 'hub');
     window.scrollTo({top:0, behavior:'smooth'});
+    if(push !== false) history.pushState({view: id}, '');
     if(id === 'module-regio' && typeof window.__applyRegioState === 'function'){
       window.__applyRegioState();
     }
-    if(id === 'hub' && !celebrated && visited.size === 9){
+    if(id === 'hub' && !celebrated && visited.size === 10){
       setTimeout(showCelebration, 400);
     }
   }
 
+  history.replaceState({view: 'hub'}, '');
+  window.addEventListener('popstate', function(e){
+    const id = (e.state && e.state.view) || 'hub';
+    if(document.getElementById(id)) showView(id, false);
+  });
+
   function updateProgress(){
-    document.getElementById('progress').textContent = visited.size + ' van 9 ontdekt';
+    document.getElementById('progress').textContent = visited.size + " van 10 pagina's ontdekt";
+    const fill = document.getElementById('progress-fill');
+    if(fill) fill.style.width = (visited.size / 10 * 100) + '%';
   }
 
   tiles.forEach(tile => {
     tile.addEventListener('click', () => {
+      SFX.tap();
       const mod = tile.dataset.module;
+      let isNew = false;
       if(tile.dataset.progress !== 'false'){
+        isNew = !visited.has(mod);
         visited.add(mod);
         tile.classList.add('visited');
         updateProgress();
       }
       showView('module-' + mod);
+      if(isNew) document.dispatchEvent(new CustomEvent('moduleVisited', {detail: mod}));
     });
   });
 
   document.querySelectorAll('[data-back]').forEach(btn => {
-    btn.addEventListener('click', () => showView('hub'));
+    btn.addEventListener('click', () => { SFX.back(); history.back(); });
   });
 
   /* ---- Huisreglement: hoofdstuk-navigatie ---- */
@@ -312,20 +463,64 @@
         {label: 'Ik zorg voor een leuke activiteit binnen, zodat iedereen toch plezier heeft.', correct:true, feedback:'Goed gedaan! Een leuke binnenactiviteit voorzien houdt iedereen blij en bezig.'},
         {label: 'Ik zeg dat ze zelf maar iets moeten verzinnen.', correct:false, feedback:'Kinderen hebben vaak wat sturing nodig, vooral als ze zich vervelen.'}
       ]
+    },
+    {
+      icon: '🤢',
+      text: 'Tijdens een activiteit zegt een kind dat het buikpijn heeft en zich niet goed voelt. Wat doe jij?',
+      options: [
+        {label: 'Ik zeg dat het vast wel meevalt en dat het gewoon meedoet.', correct:false, feedback:'Een ziek kind negeren is nooit oké. Neem elk klachten serieus, ook als je twijfelt.'},
+        {label: 'Ik laat het kind rustig zitten, verwittig een andere vrijwilliger en contacteer de ouders.', correct:true, feedback:'Goed gedaan! Rustig houden, iemand informeren en de ouders contacteren is de juiste aanpak.'},
+        {label: 'Ik stuur het kind meteen alleen naar huis.', correct:false, feedback:'Een kind alleen wegsturen is gevaarlijk. Zorg altijd dat een ouder of vertrouwde volwassene het ophaalt.'}
+      ]
+    },
+    {
+      icon: '⏰',
+      text: 'De activiteit is gedaan, maar de ouders van één kind zijn nog steeds niet komen opdagen. Wat doe jij?',
+      options: [
+        {label: 'Ik wacht een kwartiertje en vertrek daarna. Het kind kent de weg.', correct:false, feedback:'Een kind nooit alleen achterlaten. Jij blijft verantwoordelijk totdat het kind veilig is overgedragen.'},
+        {label: 'Ik probeer de ouders te bereiken. Als dat niet lukt, verwittig ik de hoofdverantwoordelijke.', correct:true, feedback:'Goed gedaan! Altijd contact opnemen en de verantwoordelijke verwittigen als je geen gehoor krijgt.'},
+        {label: 'Ik geef het kind mee met een andere ouder die er toevallig ook nog is.', correct:false, feedback:'Zonder expliciete toestemming van de ouders geef je een kind niet mee met iemand anders.'}
+      ]
+    },
+    {
+      icon: '🤔',
+      text: 'Je ziet dat een collega-vrijwilliger iets doet waarmee jij het niet eens bent — niet iets gevaarlijks, maar toch. Wat doe jij?',
+      options: [
+        {label: 'Ik zeg niets. Het is zijn of haar verantwoordelijkheid.', correct:false, feedback:'Zwijgen lost niets op. Een open gesprek achteraf is altijd beter dan je ergenis ophouden.'},
+        {label: 'Ik val hem of haar meteen publiekelijk terecht voor de kinderen.', correct:false, feedback:'Dat kan beschamend zijn. Spreek elkaar altijd aan buiten het zicht van de kinderen.'},
+        {label: 'Ik spreek hem of haar achteraf rustig aan en bespreek het samen.', correct:true, feedback:'Goed gedaan! Rustig en onder vier ogen feedback geven is de professionele aanpak.'}
+      ]
+    },
+    {
+      icon: '🏃',
+      text: 'Tijdens een spel daagt een kind de andere kinderen uit om iets gevaarlijks te proberen. De anderen willen het doen. Wat doe jij?',
+      options: [
+        {label: 'Ik grijp meteen in, stop het gedrag en leg rustig uit waarom het niet veilig is.', correct:true, feedback:'Goed gedaan! Direct ingrijpen en uitleggen waarom het gevaarlijk is, is de juiste reactie.'},
+        {label: 'Ik wacht af. Kinderen moeten ook een beetje risico leren inschatten.', correct:false, feedback:'Bij gevaarlijke situaties moet je altijd meteen ingrijpen. Wachten is hier geen optie.'},
+        {label: 'Ik zeg niets maar kijk wel toe zodat ik kan helpen als het misloopt.', correct:false, feedback:'Voorkomen is altijd beter dan genezen. Grijp in voor het misloopt.'}
+      ]
     }
   ];
 
   let current = 0;
+  let quizScore = 0;
   const quizCard = document.getElementById('quiz-card');
 
   function renderScenario(){
     if(current >= scenarios.length){
+      const pct = Math.round(quizScore / scenarios.length * 100);
+      const emoji = pct === 100 ? '🏆' : pct >= 60 ? '🎉' : '💪';
       quizCard.innerHTML = `
         <div class="quiz-done">
-          <div class="ic" aria-hidden="true">🎉</div>
-          <h3>Goed gedaan!</h3>
-          <p>Je hebt alle situaties bekeken.</p>
+          <div class="ic" aria-hidden="true">${emoji}</div>
+          <h3>${pct === 100 ? 'Perfect!' : 'Goed gedaan!'}</h3>
+          <p>Je had <strong>${quizScore} van ${scenarios.length}</strong> situaties correct.</p>
+          <button class="next-btn" id="quiz-restart" style="display:inline-flex;margin-top:1rem">Opnieuw spelen →</button>
         </div>`;
+      document.getElementById('quiz-restart').addEventListener('click', () => {
+        current = 0; quizScore = 0; renderScenario();
+      });
+      if(pct === 100) setTimeout(launchConfetti, 200);
       return;
     }
     const s = scenarios[current];
@@ -354,8 +549,8 @@
         const opt = s.options[btn.dataset.i];
         quizCard.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
         btn.classList.add('selected');
-        if(opt.correct){ btn.classList.add('is-correct'); }
-        else {
+        if(opt.correct){ btn.classList.add('is-correct'); quizScore++; SFX.correct(); }
+        else { SFX.wrong();
           const correctBtn = quizCard.querySelector(`.option-btn[data-i="${s.options.findIndex(o=>o.correct)}"]`);
           if(correctBtn) correctBtn.classList.add('is-correct');
         }
@@ -363,7 +558,9 @@
         fb.textContent = (opt.correct ? '✅ ' : '💡 ') + opt.feedback;
         fb.classList.add('show');
         if(opt.correct) fb.classList.add('correct');
-        document.getElementById('next-btn').classList.add('show');
+        const nextBtn = document.getElementById('next-btn');
+        nextBtn.classList.add('show');
+        setTimeout(() => nextBtn.scrollIntoView({behavior:'smooth', block:'nearest'}), 80);
       });
     });
 
@@ -374,6 +571,20 @@
   }
 
   renderScenario();
+
+  /* ---- Game tabs ---- */
+  document.querySelectorAll('.game-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      if(tab.dataset.game !== 'hop' && typeof onLeaveSpel === 'function') onLeaveSpel();
+      document.querySelectorAll('.game-tab').forEach(t => {
+        t.classList.toggle('active', t === tab);
+        t.setAttribute('aria-selected', String(t === tab));
+      });
+      document.querySelectorAll('.game-panel').forEach(p => {
+        p.hidden = p.id !== 'gpanel-' + tab.dataset.game;
+      });
+    });
+  });
 
   /* ---- Huisreglement mini-quiz (4-ogen-principe) ---- */
   const hrQuestion = {
@@ -417,4 +628,154 @@
     });
   }
 
-  /* ---- Gekkoo Fladder (game) ---- */
+  /* ---- Klik-om-te-kopiëren (tel: en mailto:) ---- */
+  (function(){
+    const toast = document.createElement('div');
+    toast.className = 'copy-toast';
+    document.body.appendChild(toast);
+    let timer;
+    function showToast(msg){
+      clearTimeout(timer);
+      toast.textContent = msg;
+      toast.classList.add('show');
+      timer = setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+    document.addEventListener('click', e => {
+      const link = e.target.closest('a[href^="tel:"], a[href^="mailto:"]');
+      if(!link || !navigator.clipboard) return;
+      const raw = link.getAttribute('href');
+      const text = raw.replace(/^tel:\+32/, '0').replace(/^tel:/, '').replace(/^mailto:/, '');
+      navigator.clipboard.writeText(text).then(() => showToast('📋 ' + text + ' gekopieerd!')).catch(() => {});
+    });
+  })();
+
+  /* ---- Badge systeem ---- */
+  (function(){
+    const miniShelf  = document.getElementById('mini-badge-shelf');
+    const trophyBtn  = document.getElementById('trophy-btn');
+    const TOTAL      = 10;
+
+    function checkComplete(){
+      const earned = miniShelf ? miniShelf.querySelectorAll('.badge-slot.earned').length : 0;
+      if(earned >= TOTAL){
+        document.body.classList.add('badges-complete');
+        if(miniShelf)  miniShelf.classList.add('shelf-hidden');
+        if(trophyBtn)  trophyBtn.classList.add('visible');
+      }
+    }
+
+    function markSlot(mod){
+      if(!miniShelf) return;
+      miniShelf.querySelectorAll('.badge-slot[data-badge="'+mod+'"]')
+        .forEach(function(s){ s.classList.add('earned'); });
+    }
+
+    function earnBadge(mod, instant){
+      const slot = miniShelf && miniShelf.querySelector('.badge-slot[data-badge="'+mod+'"]');
+      if(!slot || slot.classList.contains('earned')) return;
+
+      if(instant){ markSlot(mod); return; }
+
+      SFX.badge();
+      const icon   = slot.querySelector('.badge-ic').textContent;
+      const sRect  = slot.getBoundingClientRect();
+      const endX   = sRect.left + sRect.width  / 2;
+      const endY   = sRect.top  + sRect.height / 2;
+      const startX = window.innerWidth  / 2;
+      const startY = window.innerHeight * 0.42;
+
+      const fly = document.createElement('div');
+      fly.className = 'badge-fly';
+      fly.innerHTML = '<span class="badge-fly-ic">'+icon+'</span><span class="badge-fly-lbl">Badge behaald!</span>';
+      document.body.appendChild(fly);
+
+      if(fly.animate){
+        fly.animate([
+          { transform:'translate('+startX+'px,'+startY+'px) translate(-50%,-50%) scale(0)',   opacity:0 },
+          { transform:'translate('+startX+'px,'+startY+'px) translate(-50%,-50%) scale(1)',   opacity:1, offset:.28 },
+          { transform:'translate('+startX+'px,'+startY+'px) translate(-50%,-50%) scale(1)',   opacity:1, offset:.65 },
+          { transform:'translate('+endX  +'px,'+endY  +'px) translate(-50%,-50%) scale(.22)', opacity:0 },
+        ],{ duration:1100, easing:'cubic-bezier(.4,0,.2,1)', fill:'forwards' });
+      }
+
+      setTimeout(function(){
+        fly.remove();
+        markSlot(mod);
+        checkComplete();
+      }, 1050);
+    }
+
+    // Herstel eerder behaalde badges
+    visited.forEach(function(mod){ earnBadge(mod, true); });
+    checkComplete();
+
+    // Nieuwe bezoeken
+    document.addEventListener('moduleVisited', e => {
+      earnBadge(e.detail, false);
+      localStorage.setItem('gekkoo-visited', JSON.stringify(Array.from(visited)));
+    });
+
+    // Trophy-knop: shelf aan/uit
+    if(trophyBtn){
+      trophyBtn.addEventListener('click', function(){
+        if(!miniShelf) return;
+        const nowHidden = miniShelf.classList.toggle('shelf-hidden');
+        trophyBtn.classList.toggle('shelf-open', !nowHidden);
+      });
+    }
+  })();
+
+  /* ---- Designer tools (console only) ---- */
+  window.gekkoo = {
+    reset: function(){
+      ['gekkoo-visited','sfx-muted','theme'].forEach(function(k){ localStorage.removeItem(k); });
+      location.reload();
+    },
+    status: function(){
+      console.table({
+        visited:  localStorage.getItem('gekkoo-visited'),
+        muted:    localStorage.getItem('sfx-muted'),
+        theme:    localStorage.getItem('theme'),
+      });
+    },
+  };
+
+
+  /* ---- Easter egg: 10x logo klikken ---- */
+  (function(){
+    let clicks = 0, eggTimer;
+    const logo = document.getElementById('logo-confetti');
+    if(!logo) return;
+    logo.addEventListener('click', () => {
+      clicks++;
+      clearTimeout(eggTimer);
+      eggTimer = setTimeout(() => { clicks = 0; }, 4000);
+      if(clicks < 10) return;
+      clicks = 0;
+
+      // Confetti x3
+      launchConfetti();
+      setTimeout(launchConfetti, 350);
+      setTimeout(launchConfetti, 700);
+
+      // Regenboog-flash
+      const overlay = document.createElement('div');
+      overlay.className = 'easter-overlay';
+      document.body.appendChild(overlay);
+      overlay.addEventListener('animationend', () => overlay.remove());
+
+      // Toast
+      const toast = document.createElement('div');
+      toast.className = 'easter-toast';
+      toast.innerHTML = '🎉 Easter egg gevonden! 🦎<br><span style="font-size:.85rem;font-weight:500;opacity:.85">Jij bent écht een Gekkoo-expert!</span>';
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3500);
+
+    });
+  })();
+
+  /* ---- Service Worker (PWA offline) ---- */
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+  }
+

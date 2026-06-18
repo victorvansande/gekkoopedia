@@ -3,12 +3,12 @@
      De code en de inhoud zitten in de paginabron en zijn dus zichtbaar voor wie wil.
      Gebruik dit als lichte drempel/UX, niet voor echt vertrouwelijke documenten. */
 
-  function openRegioPdf(){
-    window.open('regio.pdf', '_blank');
-  }
-
   (function(){
-    const TEST_CODE = '1234'; // TODO: vervang door je eigen code
+    const TEST_CODE = '1234'; // Verander dit naar jouw eigen code
+
+    function openRegioPdf(){
+      window.open('regio.pdf', '_blank');
+    }
     let unlocked = false;
     const lock = document.getElementById('regio-lock');
     const content = document.getElementById('regio-content');

@@ -6,7 +6,7 @@
     const GROUND = 44, GAP = 152, PW = 58, SPACING = 210;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Veilige opslag: localStorage (op Netlify), valt terug op geheugen (in preview)
+    // Veilige opslag: localStorage (in productie), valt terug op geheugen (in preview)
     const store = (() => {
       let mem = {}, ok = false;
       try { localStorage.setItem('__gk__','1'); localStorage.removeItem('__gk__'); ok = true; } catch(e){}
@@ -376,7 +376,8 @@
     canvas.addEventListener('mousedown', e => { e.preventDefault(); flap(); });
     canvas.addEventListener('touchstart', e => { e.preventDefault(); flap(); }, {passive:false});
     document.addEventListener('keydown', e => {
-      if(e.code === 'Space' && document.getElementById('module-spel').classList.contains('active')){
+      const hopPanel = document.getElementById('gpanel-hop');
+      if(e.code === 'Space' && document.getElementById('module-spel').classList.contains('active') && hopPanel && !hopPanel.hidden){
         e.preventDefault(); flap();
       }
     });
@@ -393,5 +394,3 @@
     draw();
     renderLeaderboard();
   })();
-
-  /* ---- Regio-ondersteuners: codeslot + bestanden ----

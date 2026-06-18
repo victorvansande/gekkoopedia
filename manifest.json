@@ -1,0 +1,13 @@
+{
+  "name": "GekkooPedia",
+  "short_name": "GekkooPedia",
+  "description": "De vrijwilligersgids van Gekkoo — voor vrijwilligers, door vrijwilligers.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#F2F5FA",
+  "theme_color": "#003399",
+  "lang": "nl-BE",
+  "icons": [
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
