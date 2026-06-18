@@ -144,10 +144,10 @@
     border-radius:999px;
     padding:.28rem .65rem;
     text-decoration:none;
-    transition:background .15s ease, color .15s ease;
+    transition:background .15s ease, color .15s ease, transform .15s ease, box-shadow .15s ease;
     white-space:nowrap;
   }
-  .quicklinks a:hover{background:rgba(0,51,153,0.12);color:var(--navy);}
+  .quicklinks a:hover{background:rgba(0,51,153,0.12);color:var(--navy);transform:translateY(-1px);box-shadow:0 3px 9px rgba(0,51,153,.12);}
   .quicklinks .ql-ic{font-size:.85rem;line-height:1;}
   .brand-logo{height:3rem;width:auto;transition:height .25s ease;}
   .brand-logo path{fill:var(--navy);}
