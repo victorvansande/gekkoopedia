@@ -1578,14 +1578,12 @@
   /* ====== SITE-GECKO ====== */
   #site-gecko{
     position:fixed;z-index:200;pointer-events:auto;cursor:pointer;
-    transform-origin:center center;user-select:none;will-change:transform,left,top;
-  }
-  #site-gecko svg{
-    width:60px;height:auto;display:block;
-    filter:drop-shadow(0 2px 6px rgba(0,0,0,.22));
+    font-size:2.2rem;line-height:1;
+    user-select:none;will-change:left,top,transform;
+    filter:drop-shadow(1px 3px 5px rgba(0,0,0,.28));
     transition:filter .15s;
   }
-  #site-gecko:hover svg{filter:drop-shadow(0 0 12px rgba(71,149,84,.75)) drop-shadow(0 2px 6px rgba(0,0,0,.2));}
+  #site-gecko:hover{filter:drop-shadow(0 0 16px rgba(71,149,84,.9));}
   #gecko-bubble{
     position:fixed;z-index:201;pointer-events:none;
     background:rgba(20,30,55,.93);backdrop-filter:blur(10px) saturate(160%);
@@ -1739,7 +1737,8 @@
   }
   .stad-chip:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,51,153,.12);}
   .stad-chip.selected{background:var(--navy);color:#fff;border-color:var(--navy);transform:scale(1.03);}
-  .stad-chip.placed{opacity:.22;pointer-events:none;}
+  .stad-chip.placed{opacity:.22;pointer-events:none;cursor:default;}
+  .stad-chip.dragging{opacity:.38;transform:scale(.93);box-shadow:none;}
   body[data-theme="dark"] .stad-chip{background:rgba(26,42,80,.8);border-color:rgba(168,191,232,.18);color:#a8bfe8;}
   body[data-theme="dark"] .stad-chip.selected{background:#2a4a9a;color:#fff;}
   .stad-rows{display:flex;flex-direction:column;gap:.5rem;}
@@ -1776,11 +1775,13 @@
     background:transparent;text-align:left;width:100%;
     font-family:'Atkinson Hyperlegible',sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   }
-  .stad-slot:hover{background:rgba(0,51,153,.05);border-color:rgba(0,51,153,.3);}
-  .stad-slot.filled{border-style:solid;border-color:rgba(0,51,153,.2);color:var(--navy);background:rgba(0,51,153,.05);}
+  .stad-slot:hover,.stad-slot.drag-over{background:rgba(0,51,153,.08);border-style:solid;border-color:rgba(0,51,153,.4);}
+  .stad-slot.filled{border-style:solid;border-color:rgba(71,149,84,.4);color:var(--navy);background:rgba(71,149,84,.07);}
+  .stad-slot.stad-wrong{border-style:solid;border-color:var(--red);color:var(--red);background:rgba(220,50,50,.08);animation:kv-shake .4s ease;}
   .stad-slot-title.filled{font-weight:700;font-size:.82rem;}
   body[data-theme="dark"] .stad-slot{border-color:rgba(168,191,232,.18);color:rgba(168,191,232,.38);}
-  body[data-theme="dark"] .stad-slot.filled{color:#a8bfe8;background:rgba(168,191,232,.07);border-color:rgba(168,191,232,.25);}
+  body[data-theme="dark"] .stad-slot.filled{color:#a8bfe8;background:rgba(71,149,84,.12);border-color:rgba(71,149,84,.3);}
+  body[data-theme="dark"] .stad-slot.stad-wrong{border-color:#e05050;color:#e05050;background:rgba(220,50,50,.1);}
   .stad-reveal{
     padding:.55rem .75rem .65rem;border-top:1px solid rgba(0,51,153,.08);
     font-size:.87rem;line-height:1.55;color:var(--navy);
@@ -1835,25 +1836,42 @@
   }
   body[data-theme="dark"] .act-y-labels,.act-x-labels{color:rgba(168,191,232,.45);}
   .act-zone{
-    border-radius:10px;border:1.5px dashed rgba(0,51,153,.18);
-    padding:.4rem;min-height:60px;
+    border-radius:10px;border:2px dashed rgba(0,51,153,.18);
+    padding:.4rem;min-height:72px;
     display:flex;flex-direction:column;gap:.28rem;
     cursor:pointer;transition:all .2s;
     background:rgba(255,255,255,.4);backdrop-filter:blur(6px);
   }
-  .act-zone:hover,.act-zone.target{background:rgba(0,51,153,.07);border-style:solid;border-color:rgba(0,51,153,.3);}
+  /* Per-kwadrant kleuren */
+  .act-zone[data-zone="long-low"]  {background:rgba(0,51,153,.07); border-color:rgba(0,51,153,.25);}
+  .act-zone[data-zone="long-high"] {background:rgba(71,149,84,.08); border-color:rgba(71,149,84,.3);}
+  .act-zone[data-zone="short-low"] {background:rgba(255,180,0,.08); border-color:rgba(200,145,0,.28);}
+  .act-zone[data-zone="short-high"]{background:rgba(220,50,50,.07); border-color:rgba(220,50,50,.25);}
+  .act-zone:hover,.act-zone.drag-over{border-style:solid;filter:brightness(1.05);box-shadow:0 4px 18px rgba(0,0,0,.1);}
+  .act-zone[data-zone="long-low"]:hover,.act-zone[data-zone="long-low"].drag-over  {border-color:rgba(0,51,153,.55);}
+  .act-zone[data-zone="long-high"]:hover,.act-zone[data-zone="long-high"].drag-over{border-color:rgba(71,149,84,.6);}
+  .act-zone[data-zone="short-low"]:hover,.act-zone[data-zone="short-low"].drag-over{border-color:rgba(200,145,0,.6);}
+  .act-zone[data-zone="short-high"]:hover,.act-zone[data-zone="short-high"].drag-over{border-color:rgba(220,50,50,.55);}
   body[data-theme="dark"] .act-zone{background:rgba(168,191,232,.05);border-color:rgba(168,191,232,.14);}
   .act-zone-label{
     font-size:.62rem;font-weight:700;font-family:'Fredoka',sans-serif;
-    color:rgba(0,51,153,.38);text-transform:uppercase;letter-spacing:.04em;
+    color:rgba(0,51,153,.45);text-transform:uppercase;letter-spacing:.04em;
   }
+  .act-zone[data-zone="long-high"] .act-zone-label{color:rgba(71,149,84,.7);}
+  .act-zone[data-zone="short-low"] .act-zone-label{color:rgba(160,115,0,.7);}
+  .act-zone[data-zone="short-high"] .act-zone-label{color:rgba(200,40,40,.7);}
   body[data-theme="dark"] .act-zone-label{color:rgba(168,191,232,.38);}
   .act-zone-items{display:flex;flex-wrap:wrap;gap:.25rem;}
   .act-placed{
     padding:.18rem .55rem;border-radius:999px;
-    background:var(--green);color:#fff;font-size:.7rem;font-weight:600;
-    box-shadow:0 2px 6px rgba(71,149,84,.3);animation:kv-in .3s ease;
+    color:#fff;font-size:.7rem;font-weight:600;
+    animation:kv-in .3s ease;
   }
+  .act-placed[data-zone="long-low"] {background:var(--navy);box-shadow:0 2px 6px rgba(0,51,153,.35);}
+  .act-placed[data-zone="long-high"]{background:var(--green);box-shadow:0 2px 6px rgba(71,149,84,.35);}
+  .act-placed[data-zone="short-low"]{background:#C89000;box-shadow:0 2px 6px rgba(200,145,0,.35);}
+  .act-placed[data-zone="short-high"]{background:var(--red);box-shadow:0 2px 6px rgba(220,50,50,.35);}
+  .act-placed.wrong{background:var(--red);animation:kv-in .2s ease,kv-shake .4s ease .15s;}
   .act-zone.shake{animation:kv-shake .4s ease;}
 
   /* ---- Deel 4: De 4 W's ---- */

@@ -974,14 +974,11 @@
     });
   })();
 
-  /* ---- Site-gecko ---- */
+  /* ---- Site-gecko (emoji, vrij zwevend) ---- */
   (function(){
     const gecko = document.getElementById('site-gecko');
     const bubble = document.getElementById('gecko-bubble');
     if(!gecko || !bubble) return;
-    const W = 42, H = 19; // half-dimensions for centering
-    const MARGIN = 22;
-    const FLEE_R = 150;
     const MSGS = [
       'Gevangen! Goed gedaan! 🎉',
       'Gekkoo! Zo snel! 🦎',
@@ -992,62 +989,52 @@
       'Nu ga ik me écht verstoppen! 👀',
       'Gekkoo heeft ook vrijwilligers nodig!',
     ];
-    let msgIdx = 0, bubTimer = null, posT = 0.08;
-    let mouseX = -999, mouseY = -999, lastFrame = 0, prevX = 0, prevY = 0;
+    let msgIdx=0, bubTimer=null;
+    const GW=36, GH=36; // benadering grootte emoji
+    const FLEE_R=140, SPEED=70, FLEE_MULT=4;
+    let x=200, y=200, vx=0.7, vy=0.4;
+    let mouseX=-999, mouseY=-999, lastTs=0;
 
     function showMsg(m){
-      bubble.textContent = m;
-      bubble.classList.add('show');
+      bubble.textContent=m; bubble.classList.add('show');
       clearTimeout(bubTimer);
-      bubTimer = setTimeout(() => bubble.classList.remove('show'), 2600);
+      bubTimer=setTimeout(()=>bubble.classList.remove('show'),2600);
     }
-    gecko.addEventListener('click', () => { SFX.greet(); showMsg(MSGS[msgIdx++ % MSGS.length]); });
-    gecko.addEventListener('keydown', e => { if(e.key === 'Enter'||e.key===' '){ e.preventDefault(); gecko.click(); } });
-    document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
-    document.addEventListener('touchmove', e => {
-      if(e.touches.length){ mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; }
-    }, {passive:true});
-
-    function edgeXY(t){
-      const vw = window.innerWidth, vh = window.innerHeight;
-      const p = 2*(vw+vh), d = ((t%1)+1)%1 * p;
-      if(d < vw)         return [d, MARGIN];
-      if(d < vw+vh)      return [vw-MARGIN, d-vw];
-      if(d < 2*vw+vh)    return [vw-(d-vw-vh), vh-MARGIN];
-      return [MARGIN, vh-(d-2*vw-vh)];
-    }
-    function dist(ax,ay,bx,by){ return Math.sqrt((bx-ax)**2+(by-ay)**2); }
+    gecko.addEventListener('click',()=>{ SFX.greet(); showMsg(MSGS[msgIdx++%MSGS.length]); });
+    gecko.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); gecko.click(); }});
+    document.addEventListener('mousemove',e=>{mouseX=e.clientX;mouseY=e.clientY;});
+    document.addEventListener('touchmove',e=>{ if(e.touches.length){mouseX=e.touches[0].clientX;mouseY=e.touches[0].clientY;} },{passive:true});
 
     function frame(ts){
-      const dt = Math.min((ts-lastFrame)/1000, 0.08);
-      lastFrame = ts;
-      const [cx,cy] = edgeXY(posT);
-      const d = dist(cx,cy,mouseX,mouseY);
-      let dir=1, speed=0.012*dt;
-      if(d < FLEE_R){
-        speed = 0.09*dt*(1-d/FLEE_R);
-        const [fx,fy] = edgeXY(posT+0.005);
-        const [bkx,bky] = edgeXY(posT-0.005);
-        dir = dist(bkx,bky,mouseX,mouseY) > dist(fx,fy,mouseX,mouseY) ? -1 : 1;
+      const dt=Math.min((ts-lastTs)/1000,0.05); lastTs=ts;
+      const vw=window.innerWidth, vh=window.innerHeight;
+      const M=16;
+      // Flee
+      const dx=x-mouseX, dy=y-mouseY;
+      const d=Math.sqrt(dx*dx+dy*dy);
+      let speed=SPEED;
+      if(d<FLEE_R){
+        speed=SPEED*FLEE_MULT*(1-d/FLEE_R);
+        const ang=Math.atan2(dy,dx);
+        vx=Math.cos(ang); vy=Math.sin(ang);
       }
-      posT = ((posT + speed*dir)%1+1)%1;
-      const [nx,ny] = edgeXY(posT);
-      gecko.style.left = (nx-W)+'px';
-      gecko.style.top  = (ny-H)+'px';
-      bubble.style.left = nx+'px';
-      bubble.style.top  = (ny-H-28)+'px';
-      bubble.style.transform = 'translateX(-50%)';
-      const dx=nx-prevX, dy=ny-prevY;
-      if(Math.abs(dx)>.05||Math.abs(dy)>.05){
-        gecko.style.transform = 'rotate('+Math.atan2(dy,dx)*180/Math.PI+'deg)';
-      }
-      prevX=nx; prevY=ny;
+      // Random drift
+      vx+=(Math.random()-.5)*.06; vy+=(Math.random()-.5)*.06;
+      const vl=Math.sqrt(vx*vx+vy*vy)||1; vx/=vl; vy/=vl;
+      x+=vx*speed*dt; y+=vy*speed*dt;
+      // Bounce
+      if(x<M){x=M;vx=Math.abs(vx);} if(x>vw-M-GW){x=vw-M-GW;vx=-Math.abs(vx);}
+      if(y<M){y=M;vy=Math.abs(vy);} if(y>vh-M-GH){y=vh-M-GH;vy=-Math.abs(vy);}
+      // Render
+      const ang=Math.atan2(vy,vx)*180/Math.PI;
+      gecko.style.left=x+'px'; gecko.style.top=y+'px';
+      gecko.style.transform='rotate('+ang+'deg)';
+      bubble.style.left=(x+GW/2)+'px'; bubble.style.top=(y-34)+'px';
+      bubble.style.transform='translateX(-50%)';
       requestAnimationFrame(frame);
     }
-    const [ix,iy] = edgeXY(posT);
-    prevX=ix; prevY=iy;
-    gecko.style.left=(ix-W)+'px'; gecko.style.top=(iy-H)+'px';
-    requestAnimationFrame(ts => { lastFrame=ts; frame(ts); });
+    x=window.innerWidth*.35; y=window.innerHeight*.4;
+    requestAnimationFrame(ts=>{lastTs=ts;frame(ts);});
   })();
 
   /* ---- Klaar voor de start ---- */
@@ -1097,7 +1084,7 @@
         emoGrid.querySelectorAll('.emotion-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         const d = EMOTIONS[btn.dataset.emo];
-        if(d && emoTip){ emoIcon.textContent = btn.textContent[0]; emoText.textContent = d.tip; emoTip.hidden = false; }
+        if(d && emoTip){ emoIcon.textContent = [...btn.textContent][0]; emoText.textContent = d.tip; emoTip.hidden = false; }
       });
     });
 
@@ -1149,33 +1136,76 @@
         stadRows.appendChild(row);
       });
 
-      /* Interactie: klik chip → selecteer, klik slot → probeer te plaatsen */
-      let selChip = null;
-      function selectChip(el){ if(selChip) selChip.classList.remove('selected'); selChip=el; if(el) el.classList.add('selected'); }
-      stadPool.addEventListener('click', e => {
-        const chip = e.target.closest('.stad-chip');
-        if(!chip||chip.classList.contains('placed')) return;
-        SFX.tap(); selectChip(selChip===chip ? null : chip);
-      });
-      stadRows.addEventListener('click', e => {
-        const slot = e.target.closest('.stad-slot');
-        if(!slot) return;
-        if(!selChip){ SFX.wrong(); return; }
-        if(slot.classList.contains('filled')) return;
-        SFX.tap();
-        if(slot.dataset.slot === selChip.dataset.key){
+      /* Interactie: drag-and-drop (met fallback klik-selecteer voor touch) */
+      let dragKey = null, selChip = null;
+
+      function placeChip(slot, chip){
+        if(slot.dataset.slot === chip.dataset.key){
           SFX.correct();
-          slot.textContent = selChip.textContent; slot.classList.add('filled');
-          selChip.classList.add('placed'); selectChip(null);
-          const letter = slot.dataset.slot.charAt(0);
+          slot.textContent = chip.textContent; slot.classList.add('filled');
+          chip.classList.add('placed'); chip.classList.remove('selected'); selChip=null;
+          const letter = chip.dataset.key.charAt(0);
           const row = stadRows.querySelector('.stad-row[data-letter="'+letter+'"]');
           if(row && [...row.querySelectorAll('.stad-slot')].every(s=>s.classList.contains('filled'))){
             row.classList.add('complete'); row.querySelector('.stad-reveal').hidden=false; SFX.celebrate();
           }
         } else {
-          SFX.wrong(); slot.classList.add('stad-shake');
-          slot.addEventListener('animationend', () => slot.classList.remove('stad-shake'), {once:true});
+          SFX.wrong();
+          const prev=slot.textContent;
+          slot.classList.add('stad-wrong'); slot.textContent='✗ Fout! Probeer opnieuw';
+          setTimeout(()=>{ slot.classList.remove('stad-wrong'); slot.textContent=prev; },1300);
+          chip.classList.remove('selected'); selChip=null;
         }
+      }
+
+      /* Drag events */
+      stadPool.addEventListener('dragstart', e => {
+        const chip=e.target.closest('.stad-chip');
+        if(!chip||chip.classList.contains('placed')){ e.preventDefault(); return; }
+        dragKey=chip.dataset.key; chip.classList.add('dragging');
+        e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',chip.dataset.key);
+        selChip=chip; selChip.classList.add('selected');
+      });
+      stadPool.addEventListener('dragend', e => {
+        stadPool.querySelectorAll('.stad-chip').forEach(c=>c.classList.remove('dragging'));
+        dragKey=null;
+      });
+      stadRows.addEventListener('dragover', e => {
+        if(e.target.closest('.stad-slot:not(.filled)')||e.target.closest('.stad-row')) e.preventDefault();
+      });
+      stadRows.addEventListener('dragenter', e => {
+        const slot=e.target.closest('.stad-slot:not(.filled)');
+        if(slot) slot.classList.add('drag-over');
+      });
+      stadRows.addEventListener('dragleave', e => {
+        const slot=e.target.closest('.stad-slot');
+        if(slot&&!slot.contains(e.relatedTarget)) slot.classList.remove('drag-over');
+      });
+      stadRows.addEventListener('drop', e => {
+        e.preventDefault();
+        const slot=e.target.closest('.stad-slot');
+        if(!slot||slot.classList.contains('filled')) return;
+        slot.classList.remove('drag-over');
+        const key=e.dataTransfer.getData('text/plain')||dragKey;
+        const chip=stadPool.querySelector('.stad-chip[data-key="'+key+'"]');
+        if(!chip) return;
+        placeChip(slot, chip);
+      });
+
+      /* Klik-fallback voor touch/mobiel */
+      stadPool.addEventListener('click', e => {
+        const chip=e.target.closest('.stad-chip');
+        if(!chip||chip.classList.contains('placed')) return;
+        SFX.tap();
+        if(selChip) selChip.classList.remove('selected');
+        selChip=(selChip===chip)?null:chip;
+        if(selChip) selChip.classList.add('selected');
+      });
+      stadRows.addEventListener('click', e => {
+        const slot=e.target.closest('.stad-slot');
+        if(!slot||slot.classList.contains('filled')) return;
+        if(!selChip){ SFX.wrong(); return; }
+        placeChip(slot, selChip);
       });
     }
 
@@ -1190,32 +1220,67 @@
     const actPool = sec.querySelector('#act-pool');
     const actMap  = sec.querySelector('#act-map');
     if(actPool && actMap){
-      let selAct = null;
+      let selAct=null, actDragKey=null;
+
       ACTS.forEach(a => {
         const el=document.createElement('button'); el.className='act-chip';
-        el.dataset.zone=a.z; el.textContent=a.n; actPool.appendChild(el);
+        el.dataset.zone=a.z; el.textContent=a.n; el.draggable=true; actPool.appendChild(el);
       });
+
+      function placeAct(zone, chip){
+        const items=zone.querySelector('.act-zone-items');
+        const tag=document.createElement('span');
+        tag.className='act-placed'; tag.textContent=chip.textContent;
+        tag.dataset.zone=zone.dataset.zone;
+        if(zone.dataset.zone===chip.dataset.zone){
+          SFX.correct();
+          items.appendChild(tag);
+          chip.classList.add('placed'); chip.classList.remove('selected'); selAct=null;
+          if(actPool.querySelectorAll('.act-chip:not(.placed)').length===0) SFX.celebrate();
+        } else {
+          SFX.wrong();
+          tag.classList.add('wrong');
+          tag.title='Fout kwadrant!'; tag.textContent='✗ '+chip.textContent;
+          items.appendChild(tag);
+          chip.classList.remove('selected'); selAct=null;
+          setTimeout(()=>{ tag.remove(); },1500);
+        }
+      }
+
+      /* Drag */
+      actPool.addEventListener('dragstart', e => {
+        const chip=e.target.closest('.act-chip');
+        if(!chip||chip.classList.contains('placed')){ e.preventDefault(); return; }
+        actDragKey=chip.dataset.zone+'|'+chip.textContent; chip.classList.add('dragging');
+        e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',actDragKey);
+        selAct=chip; selAct.classList.add('selected');
+      });
+      actPool.addEventListener('dragend',()=>{ actPool.querySelectorAll('.act-chip').forEach(c=>c.classList.remove('dragging')); actDragKey=null; });
+      actMap.querySelectorAll('.act-zone').forEach(zone=>{
+        zone.addEventListener('dragover',e=>e.preventDefault());
+        zone.addEventListener('dragenter',()=>zone.classList.add('drag-over'));
+        zone.addEventListener('dragleave',e=>{ if(!zone.contains(e.relatedTarget)) zone.classList.remove('drag-over'); });
+        zone.addEventListener('drop',e=>{
+          e.preventDefault(); zone.classList.remove('drag-over');
+          const raw=e.dataTransfer.getData('text/plain')||actDragKey;
+          if(!raw) return;
+          const chip=[...actPool.querySelectorAll('.act-chip:not(.placed)')].find(c=>raw.includes(c.textContent));
+          if(!chip) return;
+          placeAct(zone,chip);
+        });
+        /* Klik-fallback */
+        zone.addEventListener('click',()=>{
+          if(!selAct) return;
+          placeAct(zone,selAct);
+        });
+      });
+
+      /* Klik-selecteer fallback */
       actPool.addEventListener('click', e => {
         const chip=e.target.closest('.act-chip');
         if(!chip||chip.classList.contains('placed')) return;
         SFX.tap(); if(selAct) selAct.classList.remove('selected');
-        selAct = selAct===chip ? null : chip; if(selAct) selAct.classList.add('selected');
-      });
-      actMap.querySelectorAll('.act-zone').forEach(zone => {
-        zone.addEventListener('click', () => {
-          if(!selAct) return; SFX.tap();
-          if(zone.dataset.zone === selAct.dataset.zone){
-            SFX.correct();
-            const tag=document.createElement('span'); tag.className='act-placed';
-            tag.textContent=selAct.textContent;
-            zone.querySelector('.act-zone-items').appendChild(tag);
-            selAct.classList.add('placed'); selAct.classList.remove('selected'); selAct=null;
-            if(actPool.querySelectorAll('.act-chip:not(.placed)').length===0) SFX.celebrate();
-          } else {
-            SFX.wrong(); zone.classList.add('shake');
-            zone.addEventListener('animationend',()=>zone.classList.remove('shake'),{once:true});
-          }
-        });
+        selAct=(selAct===chip)?null:chip; if(selAct) selAct.classList.add('selected');
       });
     }
 
