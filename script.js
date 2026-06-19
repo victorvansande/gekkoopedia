@@ -984,6 +984,7 @@
       'Gekkoo! Zo snel! 🦎',
       'Je bent vlugger dan ik dacht!',
       'Goed gevangen, vrijwilliger! ⭐',
+      'Ik ben terug dankzij Sara! 💚',
       'Probeer me nog eens... 😏',
       'Psst, ik ben de mascotte! 🦎',
       'Nu ga ik me écht verstoppen! 👀',
