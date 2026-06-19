@@ -1,4 +1,4 @@
-const CACHE = 'gekkoo-v30';
+const CACHE = 'gekkoo-v31';
 const ASSETS = [
   './',
   './index.html',
@@ -32,11 +32,36 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if(e.request.method !== 'GET') return;
+
+  const url = new URL(e.request.url);
+  const sameOrigin = url.origin === self.location.origin;
+  // Code (HTML/CSS/JS) altijd vers ophalen indien online, anders uit cache.
+  const isCode = e.request.mode === 'navigate' || /\.(html|css|js)$/.test(url.pathname);
+
+  if(sameOrigin && isCode){
+    e.respondWith(
+      fetch(e.request).then(resp => {
+        if(resp && resp.status === 200){
+          const clone = resp.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
+        }
+        return resp;
+      }).catch(() =>
+        caches.match(e.request).then(cached =>
+          cached || (e.request.mode === 'navigate' ? caches.match('./index.html') : null) || new Response('Offline', {status: 503})
+        )
+      )
+    );
+    return;
+  }
+
+  // Statische assets (afbeeldingen, fonts, pdf's): cache-first met stille achtergrond-update.
   e.respondWith(
     caches.match(e.request).then(cached => {
       const net = fetch(e.request).then(resp => {
         if(resp && resp.status === 200 && resp.type !== 'opaque'){
-          caches.open(CACHE).then(c => c.put(e.request, resp.clone()));
+          const clone = resp.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
         }
         return resp;
       }).catch(() => cached || new Response('Offline', {status: 503}));
