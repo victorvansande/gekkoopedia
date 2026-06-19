@@ -1,4 +1,4 @@
-const CACHE = 'gekkoo-v31';
+const CACHE = 'gekkoo-v32';
 const ASSETS = [
   './',
   './index.html',
@@ -10,6 +10,8 @@ const ASSETS = [
   './regio.js',
   './ProvidenceSansPro.otf',
   './favicon.svg',
+  './icon-512.png',
+  './icon-maskable-512.png',
   './manifest.json',
   './annelies.jpg',
   './loes.jpg',
