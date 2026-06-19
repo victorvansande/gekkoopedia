@@ -320,7 +320,7 @@
     tick();
     setInterval(tick, 1000);
 
-    /* Interactief zonnetje: tik en krijg een speels berichtje */
+    /* Interactief zonnetje: eerste klik → speelplein-modus, daarna speelse berichtjes */
     const sunMessages = [
       'Tik! De zon groet je terug ☀️',
       'Bijna tijd voor ijsjes 🍦',
@@ -333,12 +333,20 @@
     ];
     let bubbleTimer = null;
     let sunMsgIndex = 0;
+    let pleinActivated = false;
     function showSunMessage(){
       SFX.sun();
       sun.classList.remove('spin');
       requestAnimationFrame(() => sun.classList.add('spin'));
-      bubble.textContent = sunMessages[sunMsgIndex % sunMessages.length];
-      sunMsgIndex++;
+      if(!pleinActivated){
+        pleinActivated = true;
+        document.body.classList.add('plein-mode');
+        SFX.celebrate && SFX.celebrate();
+        bubble.textContent = '🌿 Welkom op het speelplein!';
+      } else {
+        bubble.textContent = sunMessages[sunMsgIndex % sunMessages.length];
+        sunMsgIndex++;
+      }
       bubble.classList.add('show');
       clearTimeout(bubbleTimer);
       bubbleTimer = setTimeout(() => bubble.classList.remove('show'), 2800);
@@ -430,7 +438,7 @@
     },
     {
       icon: '😟',
-      text: 'Een kind durft niet mee te doen met het spel. Het kind is verlegen of bang. Wat doe jij?',
+      text: 'Een kind durft niet mee te doen met de activiteit. Het kind is verlegen of bang. Wat doe jij?',
       options: [
         {label: 'Ik laat het kind gewoon. Het komt wel goed.', correct:false, feedback:'Het kind heeft misschien net een beetje extra steun nodig om te durven.'},
         {label: 'Ik moedig het kind rustig aan en help het een eerste stapje te zetten.', correct:true, feedback:'Goed gedaan! Rustig aanmoedigen en samen een eerste stap zetten, helpt veel kinderen over de drempel.'},
@@ -478,13 +486,13 @@
       text: 'De activiteit is gedaan, maar de ouders van één kind zijn nog steeds niet komen opdagen. Wat doe jij?',
       options: [
         {label: 'Ik wacht een kwartiertje en vertrek daarna. Het kind kent de weg.', correct:false, feedback:'Laat een kind nooit alleen achter. Jij blijft verantwoordelijk tot je het veilig overdraagt aan een ouder.'},
-        {label: 'Ik probeer de ouders te bereiken. Als dat niet lukt, verwittig ik de hoofdverantwoordelijke.', correct:true, feedback:'Goed gedaan! Altijd contact opnemen en de verantwoordelijke verwittigen als je geen gehoor krijgt.'},
+        {label: 'Ik probeer de ouders te bereiken. Als dat niet lukt, verwittig ik de permanentie.', correct:true, feedback:'Goed gedaan! Altijd contact opnemen en de permanentie verwittigen als je geen gehoor krijgt.'},
         {label: 'Ik geef het kind mee met een andere ouder die er toevallig ook nog is.', correct:false, feedback:'Zonder expliciete toestemming van de ouders geef je een kind niet mee met iemand anders.'}
       ]
     },
     {
       icon: '🤔',
-      text: 'Je ziet dat een collega-vrijwilliger iets doet waarmee jij het niet eens bent. Niet iets gevaarlijks, maar toch. Wat doe jij?',
+      text: 'Je ziet dat een andere vrijwilliger iets doet waarmee jij het niet eens bent. Niet iets gevaarlijks, maar toch. Wat doe jij?',
       options: [
         {label: 'Ik zeg niets. Het is zijn of haar verantwoordelijkheid.', correct:false, feedback:'Zwijgen lost niets op. Een open gesprek achteraf is altijd beter dan je ergernis inhouden.'},
         {label: 'Ik val hem of haar meteen publiekelijk terecht voor de kinderen.', correct:false, feedback:'Dat kan beschamend zijn. Spreek elkaar altijd aan buiten het zicht van de kinderen.'},
@@ -493,7 +501,7 @@
     },
     {
       icon: '🏃',
-      text: 'Tijdens een spel daagt een kind de andere kinderen uit om iets gevaarlijks te proberen. De anderen willen het doen. Wat doe jij?',
+      text: 'Tijdens een activiteit daagt een kind de andere kinderen uit om iets gevaarlijks te proberen. De anderen willen het doen. Wat doe jij?',
       options: [
         {label: 'Ik grijp meteen in, stop het gedrag en leg rustig uit waarom het niet veilig is.', correct:true, feedback:'Goed gedaan! Direct ingrijpen en uitleggen waarom het gevaarlijk is, is de juiste reactie.'},
         {label: 'Ik wacht af. Kinderen moeten ook een beetje risico leren inschatten.', correct:false, feedback:'Bij gevaarlijke situaties moet je altijd meteen ingrijpen. Wachten is hier geen optie.'},
@@ -589,7 +597,7 @@
   /* ---- Huisreglement mini-quiz (4-ogen-principe) ---- */
   const hrQuestion = {
     icon: '👀',
-    text: 'Je merkt dat een collega-vrijwilliger alleen binnen is met 1 kind. Wat doe jij?',
+    text: 'Je merkt dat een andere vrijwilliger alleen binnen is met 1 kind. Wat doe jij?',
     options: [
       {label: 'Niks, dat is hun zaak.', correct:false, feedback:'Bij Gekkoo doen we dit nooit alleen. Ga er gewoon even bij, of vraag een andere collega mee, geen verwijt, gewoon de afspraak.'},
       {label: 'Ik ga er even bij, of vraag een andere collega om mee te gaan.', correct:true, feedback:'Goed gedaan! Dit is het 4-ogen-principe: er zijn altijd minstens 2 begeleiders bij kinderen.'},
