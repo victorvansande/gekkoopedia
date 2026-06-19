@@ -974,6 +974,286 @@
     });
   })();
 
+  /* ---- Site-gecko ---- */
+  (function(){
+    const gecko = document.getElementById('site-gecko');
+    const bubble = document.getElementById('gecko-bubble');
+    if(!gecko || !bubble) return;
+    const W = 42, H = 19; // half-dimensions for centering
+    const MARGIN = 22;
+    const FLEE_R = 150;
+    const MSGS = [
+      'Gevangen! Goed gedaan! 🎉',
+      'Gekkoo! Zo snel! 🦎',
+      'Je bent vlugger dan ik dacht!',
+      'Goed gevangen, vrijwilliger! ⭐',
+      'Probeer me nog eens... 😏',
+      'Psst, ik ben de mascotte! 🦎',
+      'Nu ga ik me écht verstoppen! 👀',
+      'Gekkoo heeft ook vrijwilligers nodig!',
+    ];
+    let msgIdx = 0, bubTimer = null, posT = 0.08;
+    let mouseX = -999, mouseY = -999, lastFrame = 0, prevX = 0, prevY = 0;
+
+    function showMsg(m){
+      bubble.textContent = m;
+      bubble.classList.add('show');
+      clearTimeout(bubTimer);
+      bubTimer = setTimeout(() => bubble.classList.remove('show'), 2600);
+    }
+    gecko.addEventListener('click', () => { SFX.greet(); showMsg(MSGS[msgIdx++ % MSGS.length]); });
+    gecko.addEventListener('keydown', e => { if(e.key === 'Enter'||e.key===' '){ e.preventDefault(); gecko.click(); } });
+    document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+    document.addEventListener('touchmove', e => {
+      if(e.touches.length){ mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; }
+    }, {passive:true});
+
+    function edgeXY(t){
+      const vw = window.innerWidth, vh = window.innerHeight;
+      const p = 2*(vw+vh), d = ((t%1)+1)%1 * p;
+      if(d < vw)         return [d, MARGIN];
+      if(d < vw+vh)      return [vw-MARGIN, d-vw];
+      if(d < 2*vw+vh)    return [vw-(d-vw-vh), vh-MARGIN];
+      return [MARGIN, vh-(d-2*vw-vh)];
+    }
+    function dist(ax,ay,bx,by){ return Math.sqrt((bx-ax)**2+(by-ay)**2); }
+
+    function frame(ts){
+      const dt = Math.min((ts-lastFrame)/1000, 0.08);
+      lastFrame = ts;
+      const [cx,cy] = edgeXY(posT);
+      const d = dist(cx,cy,mouseX,mouseY);
+      let dir=1, speed=0.012*dt;
+      if(d < FLEE_R){
+        speed = 0.09*dt*(1-d/FLEE_R);
+        const [fx,fy] = edgeXY(posT+0.005);
+        const [bkx,bky] = edgeXY(posT-0.005);
+        dir = dist(bkx,bky,mouseX,mouseY) > dist(fx,fy,mouseX,mouseY) ? -1 : 1;
+      }
+      posT = ((posT + speed*dir)%1+1)%1;
+      const [nx,ny] = edgeXY(posT);
+      gecko.style.left = (nx-W)+'px';
+      gecko.style.top  = (ny-H)+'px';
+      bubble.style.left = nx+'px';
+      bubble.style.top  = (ny-H-28)+'px';
+      bubble.style.transform = 'translateX(-50%)';
+      const dx=nx-prevX, dy=ny-prevY;
+      if(Math.abs(dx)>.05||Math.abs(dy)>.05){
+        gecko.style.transform = 'rotate('+Math.atan2(dy,dx)*180/Math.PI+'deg)';
+      }
+      prevX=nx; prevY=ny;
+      requestAnimationFrame(frame);
+    }
+    const [ix,iy] = edgeXY(posT);
+    prevX=ix; prevY=iy;
+    gecko.style.left=(ix-W)+'px'; gecko.style.top=(iy-H)+'px';
+    requestAnimationFrame(ts => { lastFrame=ts; frame(ts); });
+  })();
+
+  /* ---- Klaar voor de start ---- */
+  (function(){
+    const sec = document.getElementById('module-spelmaken');
+    if(!sec) return;
+
+    /* Sub-pagina navigatie */
+    const kvNums  = sec.querySelectorAll('.kv-num');
+    const kvPages = sec.querySelectorAll('.kv-page');
+    const KV_KEYS = ['checkin','stadium','kaart','vierwees'];
+    function showKV(key){
+      kvNums.forEach(b => { const on=b.dataset.kv===key; b.classList.toggle('active',on); b.setAttribute('aria-pressed',on?'true':'false'); });
+      kvPages.forEach(p => p.classList.toggle('active', p.dataset.kvpage===key));
+      sec.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+    kvNums.forEach(b => b.addEventListener('click', () => { SFX.tap(); showKV(b.dataset.kv); }));
+    sec.querySelectorAll('[data-kv-next]').forEach(b => b.addEventListener('click', () => {
+      const idx = KV_KEYS.indexOf(sec.querySelector('.kv-num.active').dataset.kv);
+      if(idx < KV_KEYS.length-1){ SFX.tap(); showKV(KV_KEYS[idx+1]); }
+    }));
+    sec.querySelectorAll('[data-kv-prev]').forEach(b => b.addEventListener('click', () => {
+      const idx = KV_KEYS.indexOf(sec.querySelector('.kv-num.active').dataset.kv);
+      if(idx > 0){ SFX.tap(); showKV(KV_KEYS[idx-1]); }
+    }));
+
+    /* ---- DEEL 1: Check-in ---- */
+    const EMOTIONS = {
+      blij:       {tip:'Wat geweldig dat je je blij voelt! Dat enthousiasme is besmettelijk. Neem het mee naar het speelplein — de kinderen voelen het als jij plezier hebt. Je maakt al een verschil voor je ook maar begonnen bent.'},
+      opgewonden: {tip:'Dat energie is fantastisch! Gebruik het om je team op te warmen en de kinderen meteen mee te nemen. Wees ook attent: niet iedereen start even \'aan\'. Stem soms je tempo af op wie wat meer tijd nodig heeft.'},
+      gemotiveerd:{tip:'Die motivatie is goud waard! Met die drive ga je vandaag iets moois creëren. Een gemotiveerde vrijwilliger tilt het hele team mee omhoog. Deel die energie met de mensen rondom jou.'},
+      enthousiast:{tip:'Yes! Jouw enthousiasme is aanstekelijk. Niet iedereen start de dag even heftig op — met jou erbij wordt het een top dag voor iedereen. Ga er maar in!'},
+      nerveus:    {tip:'Zenuwen betekenen dat het je iets uitmaakt — en dat is goed! Haal diep adem. Je bent goed voorbereid, je team staat naast je en de kinderen verwachten geen perfectie. Ze willen gewoon plezier maken met jou.'},
+      onzeker:    {tip:'Onzekerheid is normaal, zeker als je iets nieuws probeert. Iedereen in je team weet ook niet altijd alles. Vraag gerust hulp — dat is een teken van kracht, geen zwakte. Je staat er niet alleen voor.'},
+      moe:        {tip:'Moe zijn is menselijk, zeker als je veel combineert. Drink voldoende water, eet iets voor je start en gun jezelf een moment rust. Zelfs op trage dagen maak jij het verschil voor die kinderen op het speelplein.'},
+      verveeld:   {tip:'Verveeld? Dat kan een signaal zijn dat je klaar bent voor meer uitdaging. Vraag of je iets nieuws kan proberen vandaag. Of stel jezelf een persoonlijke doelstelling: hoe zorg ik dat de kinderen écht aan het lachen zijn?'},
+      verdrietig: {tip:'Verdriet mag er zijn, ook bij jou als vrijwilliger. Je hoeft niet te doen alsof alles goed is. Als het helpt, praat dan even met iemand van je team. Weet ook: jouw aanwezigheid maakt al een verschil voor de kinderen, ook op moeilijke dagen.'},
+      boos:       {tip:'Het is oké dat je boos bent — iedereen heeft soms een moeilijke dag. Probeer even te ademen en te benoemen waar het over gaat. Kan je het loslaten voor je shift? Als het te zwaar voelt, praat dan met je team — samen dragen is altijd lichter.'},
+    };
+    const emoGrid = sec.querySelector('#emotion-grid');
+    const emoTip  = sec.querySelector('#emotion-tip');
+    const emoIcon = sec.querySelector('#emotion-tip-icon');
+    const emoText = sec.querySelector('#emotion-tip-text');
+    if(emoGrid) emoGrid.querySelectorAll('.emotion-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        SFX.tap();
+        emoGrid.querySelectorAll('.emotion-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const d = EMOTIONS[btn.dataset.emo];
+        if(d && emoTip){ emoIcon.textContent = btn.textContent[0]; emoText.textContent = d.tip; emoTip.hidden = false; }
+      });
+    });
+
+    /* ---- DEEL 2: STADIUM spel ---- */
+    const STAD = [
+      {l:'S',c:'var(--navy)',t:'Spelregels',ex:['Schrijf ze duidelijk uit zodat er geen twijfel mogelijk is','Bespreek de regels vóór het spel begint, niet er midden in'],d:'Hou de regels duidelijk en simpel. Te veel regels en de kinderen haken af — beperk je tot wat echt nodig is.'},
+      {l:'T',c:'var(--green)',t:'Tijd & terrein',ex:['Zorg dat je het spel vlot kan inkorten als het uitloopt','Controleer het terrein op gevaarlijke plekken voor je begint'],d:'Hoe lang duurt je activiteit, en op welk terrein? Zorg dat je het vlot kan inkorten of verlengen als dat nodig is.'},
+      {l:'A',c:'var(--red)',t:'Aanpassen',ex:['Pas het spel aan op de leeftijd van de groep','Houd rekening met kinderen die minder mee kunnen doen'],d:'Stem je activiteit af op de groep: hun leeftijd, het terrein en wat ze leuk vinden. Met kleuters doe je dezelfde activiteit anders dan met tieners.'},
+      {l:'D',c:'var(--navy)',t:'Doel',ex:['Mijn activiteit moet verbindend zijn','Kies bewust: wil je energie lossen of net kalmeren?'],d:'Wat wil je bereiken? Elkaar leren kennen, samenwerken of gewoon energie kwijt? Kies bewust, dan past je activiteit bij het moment.'},
+      {l:'I',c:'var(--green)',t:'Inkleding',ex:['Geef je activiteit een verhaaltje zodat het leeft','Gebruik het terrein als decor van je verhaal'],d:'Geef je activiteit een sfeer of een verhaaltje. Gebruik het terrein en je mede-vrijwilligers om het echt tot leven te brengen.'},
+      {l:'U',c:'var(--gold)',t:'Uitleg',ex:['Leg kort en krachtig uit, met ieders aandacht','Geef een demo als woorden niet genoeg zijn'],d:'Leg rustig en duidelijk uit, met de aandacht van iedereen erbij. Hou het kort, zodat de activiteit snel kan beginnen.'},
+      {l:'M',c:'var(--red)',t:'Materiaal',ex:['Zorg dat alles klaarstaat voor je begint','Wees creatief: wat kan je hergebruiken?'],d:'Wees creatief met wat je hebt, en draag er zorg voor. Zo kunnen je collega\'s het later ook nog gebruiken.'},
+    ];
+    const stadPool = sec.querySelector('#stad-pool');
+    const stadRows = sec.querySelector('#stad-rows');
+    if(stadPool && stadRows){
+      /* Bouw pool: alle chips geshuffeld */
+      const chips = [];
+      STAD.forEach(d => {
+        chips.push({key:d.l+'-t', txt:d.t});
+        d.ex.forEach((e,i) => chips.push({key:d.l+'-e'+i, txt:e}));
+      });
+      for(let i=chips.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [chips[i],chips[j]]=[chips[j],chips[i]]; }
+      chips.forEach(ch => {
+        const el = document.createElement('button');
+        el.className='stad-chip'; el.dataset.key=ch.key; el.textContent=ch.txt;
+        stadPool.appendChild(el);
+      });
+
+      /* Bouw rijen */
+      STAD.forEach(d => {
+        const row = document.createElement('div');
+        row.className='stad-row'; row.dataset.letter=d.l;
+        const inner = document.createElement('div'); inner.className='stad-row-inner';
+        const badge = document.createElement('div');
+        badge.className='stad-letter-badge'; badge.textContent=d.l; badge.style.background=d.c;
+        const slots = document.createElement('div'); slots.className='stad-slots';
+        const mkSlot = (key,ph,cls) => {
+          const s=document.createElement('button'); s.className='stad-slot '+cls;
+          s.dataset.slot=key; s.textContent=ph; return s;
+        };
+        slots.appendChild(mkSlot(d.l+'-t','Naam van het begrip?','stad-slot-title'));
+        slots.appendChild(mkSlot(d.l+'-e0','Voorbeeld 1','stad-slot-ex'));
+        slots.appendChild(mkSlot(d.l+'-e1','Voorbeeld 2','stad-slot-ex'));
+        inner.appendChild(badge); inner.appendChild(slots);
+        const reveal=document.createElement('div'); reveal.className='stad-reveal'; reveal.hidden=true;
+        reveal.innerHTML='<p>'+d.d+'</p>';
+        row.appendChild(inner); row.appendChild(reveal);
+        stadRows.appendChild(row);
+      });
+
+      /* Interactie: klik chip → selecteer, klik slot → probeer te plaatsen */
+      let selChip = null;
+      function selectChip(el){ if(selChip) selChip.classList.remove('selected'); selChip=el; if(el) el.classList.add('selected'); }
+      stadPool.addEventListener('click', e => {
+        const chip = e.target.closest('.stad-chip');
+        if(!chip||chip.classList.contains('placed')) return;
+        SFX.tap(); selectChip(selChip===chip ? null : chip);
+      });
+      stadRows.addEventListener('click', e => {
+        const slot = e.target.closest('.stad-slot');
+        if(!slot) return;
+        if(!selChip){ SFX.wrong(); return; }
+        if(slot.classList.contains('filled')) return;
+        SFX.tap();
+        if(slot.dataset.slot === selChip.dataset.key){
+          SFX.correct();
+          slot.textContent = selChip.textContent; slot.classList.add('filled');
+          selChip.classList.add('placed'); selectChip(null);
+          const letter = slot.dataset.slot.charAt(0);
+          const row = stadRows.querySelector('.stad-row[data-letter="'+letter+'"]');
+          if(row && [...row.querySelectorAll('.stad-slot')].every(s=>s.classList.contains('filled'))){
+            row.classList.add('complete'); row.querySelector('.stad-reveal').hidden=false; SFX.celebrate();
+          }
+        } else {
+          SFX.wrong(); slot.classList.add('stad-shake');
+          slot.addEventListener('animationend', () => slot.classList.remove('stad-shake'), {once:true});
+        }
+      });
+    }
+
+    /* ---- DEEL 3: Activiteitenkaart ---- */
+    const ACTS = [
+      {n:'🏃 Vangen',z:'short-low'}, {n:'🏅 Estafette',z:'long-low'},
+      {n:'🍳 Kookcompetitie',z:'long-high'}, {n:'🃏 Memory',z:'short-low'},
+      {n:'🗺️ Schatkaarttocht',z:'long-high'}, {n:'🎵 Muzikale stoelen',z:'short-low'},
+      {n:'🎭 Theatershow',z:'long-high'}, {n:'⚽ Balspel',z:'short-low'},
+      {n:'✂️ Knutselactiviteit',z:'short-high'}, {n:'💌 Flessenpost',z:'long-low'},
+    ];
+    const actPool = sec.querySelector('#act-pool');
+    const actMap  = sec.querySelector('#act-map');
+    if(actPool && actMap){
+      let selAct = null;
+      ACTS.forEach(a => {
+        const el=document.createElement('button'); el.className='act-chip';
+        el.dataset.zone=a.z; el.textContent=a.n; actPool.appendChild(el);
+      });
+      actPool.addEventListener('click', e => {
+        const chip=e.target.closest('.act-chip');
+        if(!chip||chip.classList.contains('placed')) return;
+        SFX.tap(); if(selAct) selAct.classList.remove('selected');
+        selAct = selAct===chip ? null : chip; if(selAct) selAct.classList.add('selected');
+      });
+      actMap.querySelectorAll('.act-zone').forEach(zone => {
+        zone.addEventListener('click', () => {
+          if(!selAct) return; SFX.tap();
+          if(zone.dataset.zone === selAct.dataset.zone){
+            SFX.correct();
+            const tag=document.createElement('span'); tag.className='act-placed';
+            tag.textContent=selAct.textContent;
+            zone.querySelector('.act-zone-items').appendChild(tag);
+            selAct.classList.add('placed'); selAct.classList.remove('selected'); selAct=null;
+            if(actPool.querySelectorAll('.act-chip:not(.placed)').length===0) SFX.celebrate();
+          } else {
+            SFX.wrong(); zone.classList.add('shake');
+            zone.addEventListener('animationend',()=>zone.classList.remove('shake'),{once:true});
+          }
+        });
+      });
+    }
+
+    /* ---- DEEL 4: De 4 W's ---- */
+    const WEES = {
+      WIE:    ['Een ridder','Een ruimtereiziger','Barbie','Justin Bieber','Een superheld','Een piraat','Een wetenschapper','Een tijdreiziger','Een pratend dier','Een chef-kok','Een pop-ster','Een detective','Een robot','Een tovenaar','Een prins of prinses'],
+      WAT:    ['moet een schat zoeken','bouwt een fort','redt de wereld','wint een wedstrijd','vindt een geheim ingrediënt','ontdekt een verborgen wereld','traint voor de Olympische Spelen','ontcijfert een geheime code','organiseert het grootste feest ooit','ontsnapt uit een kerker','vindt de weg naar huis','bouwt de grootste raket ter wereld'],
+      WAAR:   ['op Mars','in de ruimte','in de middeleeuwen','in een sprookjesbos','onder water','in een vulkaan','op een verlaten eiland','in een supermarkt','in een geheim lab','op de Zuidpool','in een droomwereld','in een reuzengrote bibliotheek'],
+      WANNEER:['middenin een gevecht','tijdens een onweersbui','terwijl alles slaapt','net voor het einde van de wereld','in het jaar 3000','op de eerste schooldag','met Kerstmis','tijdens een aardbeving','tijdens de Olympische Spelen','wanneer het licht uitvalt','op de langste dag van het jaar','als iedereen één wens mag doen'],
+    };
+    const weesCols = sec.querySelector('#wees-cols');
+    const weesGen  = sec.querySelector('#wees-generate');
+    const weesReset= sec.querySelector('#wees-reset');
+    const weesStory= sec.querySelector('#wees-story');
+    const sel = {WIE:null,WAT:null,WAAR:null,WANNEER:null};
+    if(weesCols){
+      Object.entries(WEES).forEach(([col,items]) => {
+        const colEl=document.createElement('div'); colEl.className='wees-col';
+        const title=document.createElement('div'); title.className='wees-col-title'; title.textContent=col;
+        const list=document.createElement('div'); list.className='wees-col-items';
+        items.forEach(item => {
+          const btn=document.createElement('button'); btn.className='wees-chip';
+          btn.dataset.col=col; btn.textContent=item;
+          btn.addEventListener('click',()=>{ SFX.tap(); list.querySelectorAll('.wees-chip').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); sel[col]=item; });
+          list.appendChild(btn);
+        });
+        colEl.appendChild(title); colEl.appendChild(list); weesCols.appendChild(colEl);
+      });
+    }
+    if(weesGen) weesGen.addEventListener('click',()=>{
+      const miss=Object.entries(sel).filter(([,v])=>!v).map(([k])=>k);
+      if(miss.length){ SFX.wrong(); if(weesStory){ weesStory.hidden=false; weesStory.innerHTML='<p style="color:var(--red)">⚠️ Kies nog een kaartje bij: <strong>'+miss.join(', ')+'</strong></p>'; } return; }
+      SFX.celebrate(); launchConfetti && launchConfetti();
+      if(weesStory){ weesStory.hidden=false; weesStory.innerHTML='<div class="wees-story-label">Jouw activiteitsthema</div><p class="wees-story-main"><strong>'+sel.WIE+'</strong> '+sel.WAT+' <strong>'+sel.WAAR+'</strong> '+sel.WANNEER+'.</p><p class="wees-story-hint">Hoe bouw je dit uit tot een echte activiteit? Gebruik STADIUM als gids en geef er jouw eigen twist aan. De kinderen zullen het geweldig vinden! 🎉</p>'; }
+    });
+    if(weesReset) weesReset.addEventListener('click',()=>{ SFX.tap(); Object.keys(sel).forEach(k=>sel[k]=null); sec.querySelectorAll('.wees-chip').forEach(b=>b.classList.remove('active')); if(weesStory) weesStory.hidden=true; });
+  })();
+
   /* ---- Service Worker (PWA offline) ---- */
   if('serviceWorker' in navigator){
     navigator.serviceWorker.register('./service-worker.js').catch(() => {});

@@ -137,7 +137,7 @@
         <span class="tile-check" aria-hidden="true"></span>
         <span class="tile-icon" aria-hidden="true">🎲</span>
         <span class="tile-title">Een geslaagde activiteit</span>
-        <span class="tile-desc">Bouw het op met STADIUM</span>
+        <span class="tile-desc">4 interactieve oefeningen</span>
       </button>
       <button class="tile tile-red" data-module="huisreglement">
         <span class="tile-check" aria-hidden="true"></span>
@@ -345,80 +345,125 @@
     </div>
   </section>
 
-  <!-- EEN GESLAAGD SPEL (STADIUM) -->
+  <!-- KLAAR VOOR DE START (STADIUM interactief) -->
   <section id="module-spelmaken" class="view module">
     <button class="back" data-back>← Terug naar overzicht</button>
 
-    <div class="page-band page-gold">
-      <svg class="deco deco-star deco--tr" aria-hidden="true"><use href="#shape-star"/></svg>
-      <svg class="deco deco-blob deco--bl" aria-hidden="true"><use href="#shape-blob"/></svg>
-      <h2 class="band-title">Hoe maak ik een geslaagde activiteit?</h2>
-      <p class="band-intro">Wil je een goede activiteit maken? Met het ezelsbruggetje STADIUM denk je in een paar stappen aan alles wat telt.</p>
+    <div class="kv-numbers" aria-label="Kies een deel">
+      <button class="kv-num active" data-kv="checkin"  aria-pressed="true"  aria-label="Deel 1: Check-in">1</button>
+      <button class="kv-num"        data-kv="stadium"  aria-pressed="false" aria-label="Deel 2: STADIUM">2</button>
+      <button class="kv-num"        data-kv="kaart"    aria-pressed="false" aria-label="Deel 3: Activiteitenkaart">3</button>
+      <button class="kv-num"        data-kv="vierwees" aria-pressed="false" aria-label="Deel 4: De 4 W's">4</button>
     </div>
 
-    <div class="mod-body">
-      <p>
-        Een goede activiteit verzin je niet altijd zomaar. Maar moeilijk is het niet.
-        Loop in je hoofd de letters van <strong class="has-tip" data-tip="Ezelsbruggetje: Spelregels, Tijd & terrein, Aanpassen, Doel, Inkleding, Uitleg, Materiaal.">STADIUM</strong> af.
-        Zo denk je aan alles en maak je betere activiteiten.
-      </p>
+    <!-- DEEL 1: Check-in -->
+    <div class="kv-page active" data-kvpage="checkin">
+      <div class="page-band page-gold">
+        <span class="hr-chapnum">01</span>
+        <svg class="deco deco-star deco--tr" aria-hidden="true"><use href="#shape-star"/></svg>
+        <svg class="deco deco-blob deco--bl" aria-hidden="true"><use href="#shape-blob"/></svg>
+        <h2 class="band-title">Klaar voor de start</h2>
+        <p class="band-intro">Eerst even inchecken. Hoe voel jij je op dit moment?</p>
+      </div>
+      <div class="mod-body">
+        <p>Tik op de emotie die nu het best bij jou past. Je krijgt een persoonlijke tip mee voor vandaag.</p>
+        <div class="emotion-grid" id="emotion-grid">
+          <button class="emotion-btn" data-emo="blij">😊<span>Blij</span></button>
+          <button class="emotion-btn" data-emo="opgewonden">🤩<span>Opgewonden</span></button>
+          <button class="emotion-btn" data-emo="gemotiveerd">💪<span>Gemotiveerd</span></button>
+          <button class="emotion-btn" data-emo="enthousiast">🥳<span>Enthousiast</span></button>
+          <button class="emotion-btn" data-emo="nerveus">😰<span>Nerveus</span></button>
+          <button class="emotion-btn" data-emo="onzeker">😕<span>Onzeker</span></button>
+          <button class="emotion-btn" data-emo="moe">😴<span>Moe</span></button>
+          <button class="emotion-btn" data-emo="verveeld">😐<span>Verveeld</span></button>
+          <button class="emotion-btn" data-emo="verdrietig">😢<span>Verdrietig</span></button>
+          <button class="emotion-btn" data-emo="boos">😤<span>Boos</span></button>
+        </div>
+        <div class="emotion-tip glass-card" id="emotion-tip" hidden>
+          <span class="emotion-tip-icon" id="emotion-tip-icon"></span>
+          <p class="emotion-tip-text" id="emotion-tip-text"></p>
+        </div>
+        <div class="hr-pagenav">
+          <span></span>
+          <button class="kv-btn-next" data-kv-next>STADIUM →</button>
+        </div>
+      </div>
+    </div>
 
-      <h3 class="handwritten">STADIUM, letter voor letter</h3>
-      <ol class="stadium-list">
-        <li class="stadium-item" style="--sl:var(--navy)">
-          <span class="stadium-letter" aria-hidden="true">S</span>
-          <div class="stadium-body">
-            <h3>Spelregels</h3>
-            <p>Hou de regels duidelijk en simpel. Te veel regels en de kinderen haken af, dus beperk je tot wat echt nodig is.</p>
-          </div>
-        </li>
-        <li class="stadium-item" style="--sl:var(--green)">
-          <span class="stadium-letter" aria-hidden="true">T</span>
-          <div class="stadium-body">
-            <h3>Tijd &amp; terrein</h3>
-            <p>Hoe lang duurt je activiteit, en op welk terrein? Zorg dat je het vlot kan inkorten of verlengen als dat nodig is.</p>
-          </div>
-        </li>
-        <li class="stadium-item" style="--sl:var(--red)">
-          <span class="stadium-letter" aria-hidden="true">A</span>
-          <div class="stadium-body">
-            <h3>Aanpassen</h3>
-            <p>Stem je activiteit af op de groep: hun leeftijd, het terrein en wat ze leuk vinden. Met kleuters doe je dezelfde activiteit anders dan met tieners.</p>
-          </div>
-        </li>
-        <li class="stadium-item" style="--sl:var(--navy)">
-          <span class="stadium-letter" aria-hidden="true">D</span>
-          <div class="stadium-body">
-            <h3>Doel</h3>
-            <p>Wat wil je bereiken? Elkaar leren kennen, samenwerken of gewoon energie kwijt? Kies bewust, dan past je activiteit bij het moment.</p>
-          </div>
-        </li>
-        <li class="stadium-item" style="--sl:var(--green)">
-          <span class="stadium-letter" aria-hidden="true">I</span>
-          <div class="stadium-body">
-            <h3>Inkleding</h3>
-            <p>Geef je activiteit een sfeer of een verhaaltje. Gebruik het terrein en je mede-vrijwilligers om het echt tot leven te brengen.</p>
-          </div>
-        </li>
-        <li class="stadium-item" style="--sl:var(--gold);--slt:var(--navy)">
-          <span class="stadium-letter" aria-hidden="true">U</span>
-          <div class="stadium-body">
-            <h3>Uitleg</h3>
-            <p>Leg rustig en duidelijk uit, met de aandacht van iedereen erbij. Hou het kort, zodat de activiteit snel kan beginnen.</p>
-          </div>
-        </li>
-        <li class="stadium-item" style="--sl:var(--red)">
-          <span class="stadium-letter" aria-hidden="true">M</span>
-          <div class="stadium-body">
-            <h3>Materiaal</h3>
-            <p>Wees creatief met wat je hebt, en draag er zorg voor. Zo kunnen je collega's het later ook nog gebruiken.</p>
-          </div>
-        </li>
-      </ol>
+    <!-- DEEL 2: STADIUM -->
+    <div class="kv-page" data-kvpage="stadium">
+      <div class="page-band page-navy">
+        <span class="hr-chapnum">02</span>
+        <svg class="deco deco-star deco--tr" aria-hidden="true"><use href="#shape-star"/></svg>
+        <svg class="deco deco-blob deco--bl" aria-hidden="true"><use href="#shape-blob"/></svg>
+        <h2 class="band-title">STADIUM</h2>
+        <p class="band-intro">Verbind elke letter met de juiste term en twee voorbeelden. Volledig juist? Dan verschijnt de uitleg!</p>
+      </div>
+      <div class="mod-body">
+        <p>Tik een kaartje uit de pool aan, dan tik je op het vakje waar het thuishoort.</p>
+        <div class="stad-game" id="stad-game">
+          <div class="stad-pool" id="stad-pool"></div>
+          <div class="stad-rows" id="stad-rows"></div>
+        </div>
+        <div class="hr-pagenav">
+          <button class="kv-btn-prev" data-kv-prev>← Check-in</button>
+          <button class="kv-btn-next" data-kv-next>Activiteitenkaart →</button>
+        </div>
+      </div>
+    </div>
 
-      <div class="note" style="margin-top:1.2rem;">
-        💡 Geen idee waar te beginnen? Pak een bestaande activiteit en loop ze door met STADIUM.
-        Pas hier en daar iets aan en je hebt je eigen activiteit.
+    <!-- DEEL 3: Activiteitenkaart -->
+    <div class="kv-page" data-kvpage="kaart">
+      <div class="page-band page-green">
+        <span class="hr-chapnum">03</span>
+        <svg class="deco deco-star deco--tr" aria-hidden="true"><use href="#shape-star"/></svg>
+        <svg class="deco deco-blob deco--bl" aria-hidden="true"><use href="#shape-blob"/></svg>
+        <h2 class="band-title">Activiteitenkaart</h2>
+        <p class="band-intro">Tik een activiteit aan, dan kies je het kwadrant op de kaart waar die thuishoort.</p>
+      </div>
+      <div class="mod-body">
+        <div class="act-pool" id="act-pool"></div>
+        <div class="act-map-container">
+          <div class="act-y-labels"><span>Lang</span><span>Kort</span></div>
+          <div class="act-map" id="act-map">
+            <div class="act-zone" data-zone="long-low"><span class="act-zone-label">Lang · weinig prep</span><div class="act-zone-items"></div></div>
+            <div class="act-zone" data-zone="long-high"><span class="act-zone-label">Lang · veel prep</span><div class="act-zone-items"></div></div>
+            <div class="act-zone" data-zone="short-low"><span class="act-zone-label">Kort · weinig prep</span><div class="act-zone-items"></div></div>
+            <div class="act-zone" data-zone="short-high"><span class="act-zone-label">Kort · veel prep</span><div class="act-zone-items"></div></div>
+          </div>
+        </div>
+        <div class="act-x-labels"><span>Weinig voorbereiding</span><span>Veel voorbereiding</span></div>
+        <div class="hr-pagenav" style="margin-top:1rem">
+          <button class="kv-btn-prev" data-kv-prev>← STADIUM</button>
+          <button class="kv-btn-next" data-kv-next>De 4 W's →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEEL 4: De 4 W's -->
+    <div class="kv-page" data-kvpage="vierwees">
+      <div class="page-band page-pink">
+        <span class="hr-chapnum">04</span>
+        <svg class="deco deco-star deco--tr" aria-hidden="true"><use href="#shape-star"/></svg>
+        <svg class="deco deco-blob deco--bl" aria-hidden="true"><use href="#shape-blob"/></svg>
+        <h2 class="band-title">De 4 W's van een goede activiteit</h2>
+        <p class="band-intro">Kies één kaartje per kolom en ontdek hoe makkelijk je een origineel thema bedenkt.</p>
+      </div>
+      <div class="mod-body">
+        <p class="wees-intro">Soms is het moeilijk om een thema voor je activiteit te kiezen en grijpen we snel naar klassiekers zoals 'Olympische Spelen' of 'Avengers'. Met de 4 W's maak je in één minuut een origineel concept. Kies één kaartje per kolom en klik op 'Genereer!'.</p>
+        <div class="wees-cols" id="wees-cols"></div>
+        <div class="wees-btn-wrap">
+          <button class="game-btn" id="wees-generate">🎲 Genereer mijn activiteit!</button>
+          <button class="glass-btn" id="wees-reset" style="font-size:.82rem;padding:.38rem .9rem;">↺ Wis selectie</button>
+        </div>
+        <div class="wees-story glass-card" id="wees-story" hidden></div>
+        <div class="hr-pagenav">
+          <button class="kv-btn-prev" data-kv-prev>← Activiteitenkaart</button>
+          <span></span>
+        </div>
+        <div class="note" style="margin-top:2rem;">
+          🎉 Je bent nu helemaal klaar voor de start! Je weet hoe je een goede activiteit opbouwt met STADIUM, hoe je hem afstemt op je groep en hoe je een origineel thema kiest. Nu is het aan jou — ga er maar in!
+        </div>
       </div>
     </div>
   </section>
@@ -1126,6 +1171,41 @@
 </div>
 
 <div id="sun-rise" aria-hidden="true"></div>
+
+<!-- Site-gecko: loopt langs de randen, vlucht voor de cursor -->
+<div id="site-gecko" tabindex="0" role="button" aria-label="Vang de gecko!">
+  <svg viewBox="0 0 84 38" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <!-- Staart -->
+    <path d="M13 19 Q3 12 0 19 Q3 26 13 19Z" fill="#388E3C"/>
+    <!-- Lichaam -->
+    <ellipse cx="38" cy="19" rx="25" ry="12" fill="#4CAF50"/>
+    <!-- Kop -->
+    <ellipse cx="65" cy="18" rx="18" ry="13" fill="#66BB6A"/>
+    <!-- Oog wit -->
+    <circle cx="73" cy="13" r="4.5" fill="#fff"/>
+    <!-- Pupil -->
+    <circle cx="74" cy="13" r="2.6" fill="#1B2A1B"/>
+    <!-- Glinstering -->
+    <circle cx="75" cy="12" r="1" fill="#fff"/>
+    <!-- Neusgat -->
+    <circle cx="81" cy="18" r="1.4" fill="#2E7D32"/>
+    <!-- Pootjes (4) -->
+    <line x1="29" y1="25" x2="20" y2="33" stroke="#388E3C" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="29" y1="25" x2="15" y2="27" stroke="#388E3C" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="47" y1="26" x2="56" y2="33" stroke="#388E3C" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="47" y1="26" x2="62" y2="27" stroke="#388E3C" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="29" y1="12" x2="20" y2="4"  stroke="#388E3C" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="29" y1="12" x2="15" y2="10" stroke="#388E3C" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="47" y1="12" x2="56" y2="4"  stroke="#388E3C" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="47" y1="12" x2="62" y2="10" stroke="#388E3C" stroke-width="3.5" stroke-linecap="round"/>
+    <!-- Buikvlekken -->
+    <ellipse cx="34" cy="19" rx="4.5" ry="3.5" fill="#A5D6A7" opacity=".72"/>
+    <ellipse cx="44" cy="20" rx="3.5" ry="2.5" fill="#A5D6A7" opacity=".55"/>
+    <!-- Rugstreep -->
+    <line x1="16" y1="19" x2="55" y2="19" stroke="#2E7D32" stroke-width="2" opacity=".3" stroke-dasharray="4 3"/>
+  </svg>
+</div>
+<div id="gecko-bubble" aria-hidden="true"></div>
 
 <script src="script.js"></script>
 <script src="game.js"></script>
