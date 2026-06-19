@@ -320,7 +320,7 @@
     tick();
     setInterval(tick, 1000);
 
-    /* Interactief zonnetje: eerste klik → speelplein-modus, daarna speelse berichtjes */
+    /* Interactief zonnetje: klik voor bubbelberichtje + zon die opkomt en teruggaat */
     const sunMessages = [
       'Tik! De zon groet je terug ☀️',
       'Bijna tijd voor ijsjes 🍦',
@@ -333,20 +333,14 @@
     ];
     let bubbleTimer = null;
     let sunMsgIndex = 0;
-    let pleinActivated = false;
+    const sunRise = document.getElementById('sun-rise');
     function showSunMessage(){
       SFX.sun();
       sun.classList.remove('spin');
       requestAnimationFrame(() => sun.classList.add('spin'));
-      if(!pleinActivated){
-        pleinActivated = true;
-        document.body.classList.add('plein-mode');
-        SFX.celebrate && SFX.celebrate();
-        bubble.textContent = '🌿 Welkom op het speelplein!';
-      } else {
-        bubble.textContent = sunMessages[sunMsgIndex % sunMessages.length];
-        sunMsgIndex++;
-      }
+      if(sunRise){ sunRise.classList.remove('rising'); requestAnimationFrame(() => sunRise.classList.add('rising')); }
+      bubble.textContent = sunMessages[sunMsgIndex % sunMessages.length];
+      sunMsgIndex++;
       bubble.classList.add('show');
       clearTimeout(bubbleTimer);
       bubbleTimer = setTimeout(() => bubble.classList.remove('show'), 2800);
