@@ -774,6 +774,204 @@
     });
   })();
 
+  /* ---- Zoekfunctie ---- */
+  (function(){
+    const trigger = document.getElementById('search-trigger');
+    const overlay = document.getElementById('search-overlay');
+    const input   = document.getElementById('search-input');
+    const results = document.getElementById('search-results');
+    const hint    = document.getElementById('search-hint');
+    const closeBtn= document.getElementById('search-close');
+    if(!trigger || !overlay) return;
+
+    // Index opbouwen uit de DOM
+    const index = [];
+    document.querySelectorAll('#hub .tiles .tile').forEach(function(tile){
+      const mod = tile.dataset.module;
+      const sec = document.getElementById('module-'+mod);
+      index.push({
+        icon: (tile.querySelector('.tile-icon')||{}).textContent || '📄',
+        title: (tile.querySelector('.tile-title')||{}).textContent.trim(),
+        cat: 'Onderdeel',
+        snippet: (tile.querySelector('.tile-desc')||{}).textContent.trim(),
+        text: (sec ? sec.textContent : '').replace(/\s+/g,' ').trim(),
+        go: function(){ showView('module-'+mod); }
+      });
+    });
+    document.querySelectorAll('.faq-item').forEach(function(item){
+      const q = (item.querySelector('.faq-q')||{}).textContent.trim();
+      const a = (item.querySelector('.faq-a')||{}).textContent.trim();
+      index.push({
+        icon:'💬', title:q, cat:'Vraag', snippet:a, text:(q+' '+a),
+        go: function(){ showView('hub'); item.open = true; setTimeout(function(){ item.scrollIntoView({behavior:'smooth',block:'center'}); }, 360); }
+      });
+    });
+    document.querySelectorAll('#module-huisreglement .hr-page').forEach(function(page){
+      const key = page.dataset.hrpage;
+      const title = (page.querySelector('.band-title')||{}).textContent.trim();
+      index.push({
+        icon:'📋', title:'Huisreglement: '+title, cat:'Huisreglement',
+        snippet:(page.querySelector('.band-intro')||{}).textContent.trim(),
+        text: page.textContent.replace(/\s+/g,' ').trim(),
+        go: function(){ showView('module-huisreglement'); setTimeout(function(){ goToChapter(key); }, 60); }
+      });
+    });
+
+    let matches = [], active = -1;
+
+    function escapeHtml(s){ return s.replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+    function highlight(s, q){
+      const esc = escapeHtml(s);
+      if(!q) return esc;
+      try{
+        const re = new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig');
+        return esc.replace(re, '<span class="sr-mark">$1</span>');
+      }catch(e){ return esc; }
+    }
+
+    function run(){
+      const q = input.value.trim().toLowerCase();
+      results.innerHTML = '';
+      active = -1;
+      if(!q){ matches = []; hint.textContent = 'Typ om te zoeken in alle onderdelen, vragen en het huisreglement.'; hint.hidden = false; return; }
+      const words = q.split(/\s+/);
+      matches = [];
+      index.forEach(function(e){
+        const hay = (e.title+' '+e.text).toLowerCase();
+        if(words.every(function(w){ return hay.indexOf(w) !== -1; })){
+          let score = 0; const tl = e.title.toLowerCase();
+          words.forEach(function(w){ if(tl.indexOf(w) !== -1) score += 10; });
+          if(tl.indexOf(q) !== -1) score += 20;
+          matches.push({e:e, score:score});
+        }
+      });
+      matches.sort(function(a,b){ return b.score - a.score; });
+      matches = matches.slice(0,12).map(function(m){ return m.e; });
+
+      if(!matches.length){ hint.textContent = 'Niets gevonden voor "'+input.value.trim()+'". Probeer een ander woord.'; hint.hidden = false; return; }
+      hint.hidden = true;
+      matches.forEach(function(e, i){
+        const li = document.createElement('li');
+        li.setAttribute('role','option');
+        li.innerHTML = '<span class="sr-ic" aria-hidden="true">'+e.icon+'</span><span class="sr-text"><span class="sr-cat">'+escapeHtml(e.cat)+'</span><div class="sr-title">'+highlight(e.title,q)+'</div><div class="sr-snip">'+highlight(e.snippet||'', q)+'</div></span>';
+        li.addEventListener('click', function(){ choose(e); });
+        results.appendChild(li);
+      });
+    }
+
+    function choose(e){ close(); e.go(); }
+
+    function setActive(n){
+      const items = results.querySelectorAll('li');
+      if(!items.length) return;
+      active = (n + items.length) % items.length;
+      items.forEach(function(li,i){ li.classList.toggle('active', i===active); });
+      items[active].scrollIntoView({block:'nearest'});
+    }
+
+    function open(){
+      overlay.hidden = false;
+      requestAnimationFrame(function(){ overlay.classList.add('open'); });
+      input.value = ''; run(); input.focus();
+    }
+    function close(){
+      overlay.classList.remove('open');
+      setTimeout(function(){ overlay.hidden = true; }, 250);
+    }
+
+    trigger.addEventListener('click', open);
+    closeBtn.addEventListener('click', close);
+    overlay.addEventListener('click', function(e){ if(e.target === overlay) close(); });
+    input.addEventListener('input', run);
+    document.addEventListener('keydown', function(e){
+      if(e.key === '/' && !/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName) && overlay.hidden){
+        e.preventDefault(); open();
+      }
+      if(overlay.hidden) return;
+      if(e.key === 'Escape'){ close(); }
+      else if(e.key === 'ArrowDown'){ e.preventDefault(); setActive(active+1); }
+      else if(e.key === 'ArrowUp'){ e.preventDefault(); setActive(active-1); }
+      else if(e.key === 'Enter'){ if(active >= 0 && matches[active]) choose(matches[active]); else if(matches.length) choose(matches[0]); }
+    });
+  })();
+
+  /* ---- Back-to-top ---- */
+  (function(){
+    const btn = document.getElementById('back-to-top');
+    if(!btn) return;
+    function update(){ btn.classList.toggle('visible', window.scrollY > 400); }
+    window.addEventListener('scroll', update, {passive:true});
+    update();
+    btn.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+  })();
+
+  /* ---- Zen-modus ---- */
+  (function(){
+    const toggle = document.getElementById('zen-toggle');
+    const exit   = document.getElementById('zen-exit');
+    if(!toggle) return;
+    function setZen(on){ document.body.classList.toggle('zen', on); }
+    toggle.addEventListener('click', function(){ setZen(!document.body.classList.contains('zen')); });
+    if(exit) exit.addEventListener('click', function(){ setZen(false); });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && document.body.classList.contains('zen')) setZen(false);
+    });
+  })();
+
+  /* ---- Contextuele tooltips ---- */
+  (function(){
+    const tip = document.createElement('div');
+    tip.id = 'tooltip';
+    document.body.appendChild(tip);
+    let cur = null;
+    function show(el){
+      const txt = el.getAttribute('data-tip');
+      if(!txt) return;
+      tip.textContent = txt;
+      tip.classList.add('show');
+      const r = el.getBoundingClientRect();
+      const tr = tip.getBoundingClientRect();
+      let left = r.left + r.width/2 - tr.width/2;
+      left = Math.max(8, Math.min(left, window.innerWidth - tr.width - 8));
+      let top = r.top - tr.height - 10;
+      let below = false;
+      if(top < 8){ top = r.bottom + 10; below = true; }
+      tip.classList.toggle('below', below);
+      tip.style.left = left + 'px';
+      tip.style.top = top + 'px';
+      tip.style.setProperty('--arrow', (r.left + r.width/2 - left) + 'px');
+    }
+    function hide(){ tip.classList.remove('show'); cur = null; }
+    document.addEventListener('mouseover', function(e){
+      const el = e.target.closest('[data-tip]');
+      if(el && el !== cur){ cur = el; show(el); }
+    });
+    document.addEventListener('mouseout', function(e){
+      if(e.target.closest('[data-tip]')) hide();
+    });
+    document.addEventListener('focusin', function(e){
+      const el = e.target.closest('[data-tip]');
+      if(el){ cur = el; show(el); }
+    });
+    document.addEventListener('focusout', hide);
+    window.addEventListener('scroll', hide, {passive:true});
+  })();
+
+  /* ---- Magnetische knoppen (primaire CTA's) ---- */
+  (function(){
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if(window.matchMedia('(hover: none)').matches) return;
+    document.querySelectorAll('.game-btn, .review-btn, .lock-btn').forEach(function(el){
+      el.addEventListener('mousemove', function(e){
+        const r = el.getBoundingClientRect();
+        const mx = e.clientX - (r.left + r.width/2);
+        const my = e.clientY - (r.top + r.height/2);
+        el.style.transform = 'translate(' + (mx*0.22) + 'px,' + (my*0.32) + 'px)';
+      });
+      el.addEventListener('mouseleave', function(){ el.style.transform = ''; });
+    });
+  })();
+
   /* ---- Service Worker (PWA offline) ---- */
   if('serviceWorker' in navigator){
     navigator.serviceWorker.register('./service-worker.js').catch(() => {});

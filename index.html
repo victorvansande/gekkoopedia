@@ -49,9 +49,15 @@
 
 <svg class="bg-blob" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="m1431.52,496c-1.47-30.08-9.39-59.5-12.31-89.49-3.11-32.42-8.3-62.98-20.62-93.21-18.17-44.37-41.97-87.24-75.84-121.58-18.15-18.51-39.69-31.88-61.66-45.29-29.1-17.91-59.04-35.05-89.76-50.13-26.6-13.04-56.87-19.31-85.88-24.15-59.86-10.13-119.97-11.46-180.53-10.03-50.91,1.14-102.96,12.91-150.35,31.82-60.07,23.88-119.5,59.71-155.76,114.82-37.42,57.18-67.65,119.22-88,184.51-21.3,68.18-33.64,138.16-29.04,209.81,4.4,70.21,23.72,139.02,59.09,199.9,14.01,24.08,30.39,46.66,49.05,67.34,8.18,9.18,16.27,21.24,25.87,28.7,10.98,8.72,22,17.32,33.05,26.04,20.68,16.09,42.4,29.36,64.8,43.29,40.52,24.99,88.68,33.65,134.81,43.4,24.3,5.02,47.23,6.63,71.83,6.58,32.71-.06,65.54.4,98.3-1.18,11.4-.46,21.47-4.02,32.41-7.04,16.73-4.99,33.66-9.83,50.28-14.79,16.35-4.77,32.68-9.34,49.03-13.84,15.02-4.24,31.28-7.04,45.19-14.29,15.2-7.84,30.09-16.27,44.49-25.54,27.89-17.46,55.68-35.63,80.52-57.44,24.41-21.42,40.86-47.16,56.7-75.16,13.52-24.1,26.31-48.77,38.26-73.85,9.26-19.35,17.44-38.6,20.41-59.93,8.51-59.77-1.77-119.66-4.34-179.28-1.58-31.07,1.29,30.74,0,0"/></svg>
 <header class="top">
+  <div class="header-left">
+    <button class="glass-btn search-trigger" id="search-trigger" aria-label="Zoek op de site" data-tip="Zoek door de hele gids (of druk op /)">
+      <span class="st-ic" aria-hidden="true">🔍</span><span class="st-label">Zoeken</span>
+    </button>
+  </div>
   <div class="header-controls">
-    <button class="mute-toggle" id="mute-toggle" aria-label="Geluid uitschakelen">🔊</button>
-    <button class="theme-pill" id="dark-toggle" aria-label="Schakel donker thema in">
+    <button class="glass-btn ctrl-btn mute-toggle" id="mute-toggle" aria-label="Geluid uitschakelen" data-tip="Geluid aan of uit">🔊</button>
+    <button class="glass-btn ctrl-btn zen-toggle" id="zen-toggle" aria-label="Zen-modus: verberg afleiding" data-tip="Zen-modus: verberg alles behalve de inhoud">🧘</button>
+    <button class="theme-pill" id="dark-toggle" aria-label="Schakel donker thema in" data-tip="Licht of donker thema">
       <span class="theme-pill-moon" aria-hidden="true">🌙</span>
       <span class="theme-pill-knob"></span>
       <span class="theme-pill-sun" aria-hidden="true">☀️</span>
@@ -356,7 +362,7 @@
     <div class="mod-body">
       <p>
         Een goed spel verzin je niet altijd zomaar. Maar moeilijk is het niet.
-        Loop in je hoofd de letters van <strong>STADIUM</strong> af.
+        Loop in je hoofd de letters van <strong class="has-tip" data-tip="Ezelsbruggetje: Spelregels, Tijd & terrein, Aanpassen, Doel, Inkleding, Uitleg, Materiaal.">STADIUM</strong> af.
         Zo denk je aan alles en maak je betere spelen.
       </p>
 
@@ -472,7 +478,7 @@
       </div>
       <div class="mod-body">
         <div class="info-box">
-          <h3>👀 Het 4-ogen-principe</h3>
+          <h3>👀 Het <span class="has-tip" data-tip="Er zijn altijd minstens 2 begeleiders bij de kinderen.">4-ogen-principe</span></h3>
           <p>Heel simpel: je bent als vrijwilliger <strong>nooit alleen</strong> met 1 kind of een groepje kinderen. Zorg dat er altijd een collega in de buurt is.</p>
         </div>
 
@@ -556,7 +562,7 @@
       <div class="mod-body">
         <div class="skill-grid">
           <div class="skill-card"><span class="ic" aria-hidden="true">🚭</span><h3>Roken &amp; vapen</h3><p>Onder de 18? Dan rook of vape je niet. Ben je 18 of ouder? Dan mag roken alleen bij een activiteit van meer dan 5 uur. Vraag het eerst aan de verantwoordelijke. Blijf minstens 10 meter van de in- of uitgang en ver van de kinderen. Rook nooit bij niet-rokers. Snus en nicotinezakjes mogen nooit.</p></div>
-          <div class="skill-card"><span class="ic" aria-hidden="true">🍺</span><h3>Alcohol</h3><p>Tijdens de gewone werking drinken we geen alcohol. Bij overnachtingen of vrijwilligersactiviteiten gelden extra afspraken. Onder de 16 jaar drink je niet. Sterke drank mag pas vanaf 18 jaar. Je drinkt pas als de kinderen slapen. En er is altijd een nuchtere BOB met rijbewijs.</p></div>
+          <div class="skill-card"><span class="ic" aria-hidden="true">🍺</span><h3>Alcohol</h3><p>Tijdens de gewone werking drinken we geen alcohol. Bij overnachtingen of vrijwilligersactiviteiten gelden extra afspraken. Onder de 16 jaar drink je niet. Sterke drank mag pas vanaf 18 jaar. Je drinkt pas als de kinderen slapen. En er is altijd een nuchtere <span class="has-tip" data-tip="De afgesproken bestuurder die niet drinkt en iedereen veilig terugbrengt.">BOB</span> met rijbewijs.</p></div>
           <div class="skill-card"><span class="ic" aria-hidden="true">❌</span><h3>Drugs: resoluut nee</h3><p>Drugs gebruiken of bij je hebben mag nooit, voor niemand en in geen enkele vorm. Overtreed je dit? Dan schorsen we je meteen. Bij een wetsovertreding bellen we de politie.</p></div>
         </div>
         <div class="hr-pagenav">
@@ -864,7 +870,7 @@
       <svg class="deco deco-star deco--tr" aria-hidden="true"><use href="#shape-star"/></svg>
       <svg class="deco deco-blob deco--bl" aria-hidden="true"><use href="#shape-blob"/></svg>
       <h2 class="band-title">Inschrijven</h2>
-      <p class="band-intro">Wil je komen helpen? Dan schrijf je je in via Twizzit. Zo weet Gekkoo wanneer je er bent. Hier lees je hoe.</p>
+      <p class="band-intro">Wil je komen helpen? Dan schrijf je je in via <span class="has-tip" data-tip="Het online platform van Gekkoo voor je planning, vergoeding en verzekering.">Twizzit</span>. Zo weet Gekkoo wanneer je er bent. Hier lees je hoe.</p>
     </div>
 
     <div class="mod-body">
@@ -1069,7 +1075,22 @@
   <div class="badge-slot" data-badge="twizzit"       title="Inschrijven"><span class="badge-ic">📝</span><small>Inschrijven</small></div>
   <div class="badge-slot" data-badge="review"        title="Review Gekkoo"><span class="badge-ic">🌟</span><small>Review</small></div>
 </div>
-<button id="trophy-btn" class="trophy-btn" aria-label="Bekijk behaalde badges">🏆</button>
+<button id="trophy-btn" class="trophy-btn glass-btn" aria-label="Bekijk behaalde badges" data-tip="Bekijk je behaalde badges">🏆</button>
+<button id="back-to-top" class="glass-btn back-to-top" aria-label="Terug naar boven" data-tip="Terug naar boven">↑</button>
+<button id="zen-exit" class="glass-btn zen-exit" aria-label="Zen-modus sluiten">✕ Zen</button>
+
+<!-- Zoek-overlay -->
+<div id="search-overlay" class="search-overlay" hidden>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="Zoeken op de site">
+    <div class="search-box">
+      <span class="search-ic" aria-hidden="true">🔍</span>
+      <input id="search-input" type="search" placeholder="Zoek in de gids..." autocomplete="off" spellcheck="false" aria-label="Zoekterm">
+      <button id="search-close" class="search-close" aria-label="Zoeken sluiten">✕</button>
+    </div>
+    <ul id="search-results" class="search-results" role="listbox" aria-label="Zoekresultaten"></ul>
+    <p id="search-hint" class="search-hint">Typ om te zoeken in alle onderdelen, vragen en het huisreglement.</p>
+  </div>
+</div>
 
 <script src="script.js"></script>
 <script src="game.js"></script>
