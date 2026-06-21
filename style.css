@@ -1053,17 +1053,24 @@
   .trophy-close:hover{background:#00257a;}
 
   /* ---- Review pagina ---- */
-  .quote-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin-top:.8rem;}
+  .quote-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin-top:.8rem;align-items:start;}
   .quote-card{
+    --accent:var(--gold);
     background:var(--card);border-radius:16px;padding:1.1rem 1.2rem 1rem;
-    box-shadow:var(--shadow);border-left:4px solid var(--gold);position:relative;
+    box-shadow:var(--shadow);border-left:4px solid var(--accent);position:relative;
     transition:transform .15s ease,box-shadow .15s ease;
   }
+  /* Alterneer door de Gekkoo-kleuren (per grid herstart de telling) */
+  .quote-card:nth-child(5n+1){--accent:var(--navy);}
+  .quote-card:nth-child(5n+2){--accent:var(--gold);}
+  .quote-card:nth-child(5n+3){--accent:var(--green);}
+  .quote-card:nth-child(5n+4){--accent:var(--pink);}
+  .quote-card:nth-child(5n+5){--accent:var(--red);}
   .quote-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.1);}
   .quote-card::before{
     content:'\201C';position:absolute;top:.1rem;left:.7rem;
     font-size:3.5rem;font-family:'Fredoka',sans-serif;
-    color:var(--gold);opacity:.35;line-height:1;pointer-events:none;
+    color:var(--accent);opacity:.4;line-height:1;pointer-events:none;
   }
   .quote-text{font-size:.92rem;color:#3d4f6e;font-style:italic;margin:0 0 .55rem;padding-top:.7rem;}
   .quote-author{font-size:.82rem;font-weight:700;font-family:'Fredoka',sans-serif;color:var(--navy);}
@@ -1304,8 +1311,8 @@
   body[data-theme="dark"] .theme-pill-moon{opacity:1;}
   body[data-theme="dark"] .theme-pill-sun{opacity:.35;}
   body[data-theme="dark"] .theme-pill-knob{left:.15rem;background:rgba(255,255,255,.92);}
-  body[data-theme="dark"] .quote-card{border-left-color:#8a6a18;}
-  body[data-theme="dark"] .quote-card::before{color:#b08c30;}
+  /* Op donkere kaarten is navy te donker: lichter blauw voor die ene kleur */
+  body[data-theme="dark"] .quote-card:nth-child(5n+1){--accent:#7da0e8;}
   body[data-theme="dark"] .quote-text{color:#9aafcc;}
   body[data-theme="dark"] .quote-author{color:#cdd9f0;}
   body[data-theme="dark"] .photo-placeholder{border-color:rgba(168,191,232,.2);color:#5c7090;}
