@@ -657,12 +657,13 @@
     const trophyBtn  = document.getElementById('trophy-btn');
     const TOTAL      = 10;
 
+    // De trofee is altijd de toegangspoort tot de badge-pill
+    if(trophyBtn) trophyBtn.classList.add('visible');
+
     function checkComplete(){
       const earned = miniShelf ? miniShelf.querySelectorAll('.badge-slot.earned').length : 0;
       if(earned >= TOTAL){
         document.body.classList.add('badges-complete');
-        if(miniShelf)  miniShelf.classList.add('shelf-hidden');
-        if(trophyBtn)  trophyBtn.classList.add('visible');
       }
     }
 
@@ -680,9 +681,12 @@
 
       SFX.badge();
       const icon   = slot.querySelector('.badge-ic').textContent;
-      const sRect  = slot.getBoundingClientRect();
-      const endX   = sRect.left + sRect.width  / 2;
-      const endY   = sRect.top  + sRect.height / 2;
+      // Doel: het slot zelf als de pill open is, anders de trofee (stabiel zichtbaar punt)
+      const shelfOpen = miniShelf.classList.contains('shelf-open');
+      const target = (shelfOpen ? slot : trophyBtn) || slot;
+      const tRect  = target.getBoundingClientRect();
+      const endX   = tRect.left + tRect.width  / 2;
+      const endY   = tRect.top  + tRect.height / 2;
       const startX = window.innerWidth  / 2;
       const startY = window.innerHeight * 0.42;
 
@@ -704,6 +708,13 @@
         fly.remove();
         markSlot(mod);
         checkComplete();
+        // Korte puls op de trofee zodat duidelijk is dat er een badge bijkwam
+        if(trophyBtn && trophyBtn.animate && !miniShelf.classList.contains('shelf-open')){
+          trophyBtn.animate(
+            [{transform:'scale(1)'},{transform:'scale(1.32) rotate(-6deg)'},{transform:'scale(1)'}],
+            {duration:480, easing:'cubic-bezier(.34,1.56,.64,1)'}
+          );
+        }
       }, 1050);
     }
 
@@ -717,12 +728,12 @@
       localStorage.setItem('gekkoo-visited', JSON.stringify(Array.from(visited)));
     });
 
-    // Trophy-knop: shelf aan/uit
+    // Trophy-knop: badge-pill uitklappen/inklappen
     if(trophyBtn){
       trophyBtn.addEventListener('click', function(){
         if(!miniShelf) return;
-        const nowHidden = miniShelf.classList.toggle('shelf-hidden');
-        trophyBtn.classList.toggle('shelf-open', !nowHidden);
+        const nowOpen = miniShelf.classList.toggle('shelf-open');
+        trophyBtn.classList.toggle('shelf-open', nowOpen);
       });
     }
   })();

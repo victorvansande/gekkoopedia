@@ -1095,27 +1095,35 @@
   }
   body[data-theme="dark"] .badge-slot small{color:#a8bfe8;}
 
-  /* Vaste badge shelf onderaan */
+  /* Verticale badge-pill, rechts gedockt, uitklapbaar via de trofee */
   .mini-badge-shelf{
-    position:fixed;bottom:0;left:0;right:0;
+    position:fixed;top:50%;right:0;
     z-index:80;
-    display:flex;justify-content:center;flex-wrap:wrap;gap:.25rem;
-    padding:.45rem .6rem;
+    display:flex;flex-direction:column;align-items:center;gap:.5rem;
+    padding:.75rem .55rem;
+    max-height:84vh;overflow-y:auto;overflow-x:hidden;
+    scrollbar-width:none;
     background:rgba(255,255,255,.6);
     backdrop-filter:blur(20px) saturate(180%);
     -webkit-backdrop-filter:blur(20px) saturate(180%);
-    border-top:1px solid rgba(255,255,255,.55);
-    box-shadow:0 -6px 24px rgba(0,51,153,.08);
-    transform:translateY(0);
-    transition:transform .4s cubic-bezier(.4,0,.2,1);
+    border:1px solid rgba(255,255,255,.55);border-right:none;
+    border-radius:20px 0 0 20px;
+    box-shadow:-6px 0 24px rgba(0,51,153,.12);
+    opacity:0;pointer-events:none;
+    transform:translate(100%,-50%);
+    transition:transform .42s cubic-bezier(.4,0,.2,1),opacity .3s ease;
   }
-  .mini-badge-shelf.shelf-hidden{ transform:translateY(100%); }
+  .mini-badge-shelf::-webkit-scrollbar{width:0;height:0;}
+  .mini-badge-shelf.shelf-open{opacity:1;pointer-events:auto;transform:translate(0,-50%);}
+  .mini-badge-shelf .badge-slot small{display:none;}
+  .mini-badge-shelf .badge-ic{font-size:1.5rem;}
+  .mini-badge-shelf .badge-slot.earned:hover{transform:translateX(-4px) scale(1.16);}
   body[data-theme="dark"] .mini-badge-shelf{
     background:rgba(13,22,42,.52);
     backdrop-filter:blur(20px) saturate(160%);
     -webkit-backdrop-filter:blur(20px) saturate(160%);
-    border-top-color:rgba(168,191,232,.16);
-    box-shadow:0 -6px 24px rgba(0,0,0,.3);
+    border-color:rgba(168,191,232,.16);border-right:none;
+    box-shadow:-6px 0 24px rgba(0,0,0,.32);
   }
 
   /* Trophy-knop (verschijnt als alle badges behaald zijn) — basis komt van .glass-btn */
