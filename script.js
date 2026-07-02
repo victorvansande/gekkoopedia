@@ -270,7 +270,7 @@
     }
   })();
 
-  /* ---- Aftelklok naar de zomer (1 juli) ---- */
+  /* ---- Opteller: hoelang de zomer al bezig is (sinds 1 juli) ---- */
   (function(){
     const elDays = document.getElementById('cd-days');
     const elHours = document.getElementById('cd-hours');
@@ -283,29 +283,23 @@
     const bubble = document.getElementById('cd-bubble');
     if(!elDays || !sun) return;
 
-    function nextSummerTarget(){
+    function summerStart(){
       const now = new Date();
-      let target = new Date(now.getFullYear(), 6, 1, 0, 0, 0); // 1 juli, lokale tijd (maand 6 = juli)
-      if(now >= target){
-        target = new Date(now.getFullYear() + 1, 6, 1, 0, 0, 0);
+      let start = new Date(now.getFullYear(), 6, 1, 0, 0, 0); // 1 juli, lokale tijd (maand 6 = juli)
+      if(now < start){
+        start = new Date(now.getFullYear() - 1, 6, 1, 0, 0, 0); // zomer van vorig jaar
       }
-      return target;
+      return start;
     }
 
     function pad(n){ return String(n).padStart(2,'0'); }
 
     function tick(){
       const now = new Date();
-      const target = nextSummerTarget();
-      const diff = target - now;
+      const start = summerStart();
+      const diff = now - start; // verstreken tijd sinds 1 juli
 
-      if(diff <= 0){
-        elTitle.textContent = 'Het is zomer! ☀️';
-        elUnits.innerHTML = '<span class="cd-done">Geniet ervan!</span>';
-        elSub.textContent = 'tot 1 juli ☀️';
-        return;
-      }
-      const sec = Math.floor(diff / 1000);
+      const sec = Math.max(0, Math.floor(diff / 1000));
       const days = Math.floor(sec / 86400);
       const hours = Math.floor((sec % 86400) / 3600);
       const mins = Math.floor((sec % 3600) / 60);
