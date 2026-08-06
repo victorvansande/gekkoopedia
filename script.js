@@ -465,7 +465,7 @@
       text: 'Tijdens een activiteit zegt een kind dat het buikpijn heeft en zich niet goed voelt. Wat doe jij?',
       options: [
         {label: 'Ik zeg dat het vast wel meevalt en dat het gewoon meedoet.', correct:false, feedback:'Een ziek kind negeren is nooit oké. Neem elke klacht serieus, ook als je twijfelt.'},
-        {label: 'Ik laat het kind rustig zitten, verwittig een andere vrijwilliger en contacteer de ouders.', correct:true, feedback:'Goed gedaan! Rustig houden, iemand informeren en de ouders contacteren is de juiste aanpak.'},
+        {label: 'Ik blijf rustig bij het kind, stel het gerust, verwittig een andere vrijwilliger en contacteer de ouders.', correct:true, feedback:'Goed gedaan! Bij het kind blijven, het geruststellen, iemand informeren en de ouders contacteren is de juiste aanpak.'},
         {label: 'Ik stuur het kind meteen alleen naar huis.', correct:false, feedback:'Een kind alleen wegsturen is gevaarlijk. Zorg altijd dat een ouder of vertrouwde volwassene het ophaalt.'}
       ]
     },
@@ -1096,13 +1096,13 @@
 
     /* ---- DEEL 2: STADIUM spel ---- */
     const STAD = [
-      {l:'S',c:'var(--navy)',t:'Spelregels',ex:['Schrijf ze duidelijk uit zodat er geen twijfel mogelijk is','Bespreek de regels vóór het spel begint, niet er midden in'],d:'Hou de regels duidelijk en simpel. Te veel regels en de kinderen haken af — beperk je tot wat echt nodig is.'},
-      {l:'T',c:'var(--green)',t:'Tijd & terrein',ex:['Zorg dat je het spel vlot kan inkorten als het uitloopt','Controleer het terrein op gevaarlijke plekken voor je begint'],d:'Hoe lang duurt je activiteit, en op welk terrein? Zorg dat je het vlot kan inkorten of verlengen als dat nodig is.'},
-      {l:'A',c:'var(--red)',t:'Aanpassen',ex:['Pas het spel aan op de leeftijd van de groep','Houd rekening met kinderen die minder mee kunnen doen'],d:'Stem je activiteit af op de groep: hun leeftijd, het terrein en wat ze leuk vinden. Met kleuters doe je dezelfde activiteit anders dan met tieners.'},
-      {l:'D',c:'var(--navy)',t:'Doel',ex:['Mijn activiteit moet verbindend zijn','Kies bewust: wil je energie lossen of net kalmeren?'],d:'Wat wil je bereiken? Elkaar leren kennen, samenwerken of gewoon energie kwijt? Kies bewust, dan past je activiteit bij het moment.'},
-      {l:'I',c:'var(--green)',t:'Inkleding',ex:['Geef je activiteit een verhaaltje zodat het leeft','Gebruik het terrein als decor van je verhaal'],d:'Geef je activiteit een sfeer of een verhaaltje. Gebruik het terrein en je mede-vrijwilligers om het echt tot leven te brengen.'},
-      {l:'U',c:'var(--gold)',t:'Uitleg',ex:['Leg kort en krachtig uit, met ieders aandacht','Geef een demo als woorden niet genoeg zijn'],d:'Leg rustig en duidelijk uit, met de aandacht van iedereen erbij. Hou het kort, zodat de activiteit snel kan beginnen.'},
-      {l:'M',c:'var(--red)',t:'Materiaal',ex:['Zorg dat alles klaarstaat voor je begint','Wees creatief: wat kan je hergebruiken?'],d:'Wees creatief met wat je hebt, en draag er zorg voor. Zo kunnen je collega\'s het later ook nog gebruiken.'},
+      {l:'S',c:'var(--navy)',t:'Spelregels',ex:['Schrijf ze duidelijk uit zodat er geen twijfel mogelijk is','Bespreek de regels vóór het spel begint, niet er middenin'],d:'Hou de regels duidelijk, simpel en maak er niet te veel. Zo kunnen de kinderen makkelijk meedoen en onthouden ze de regels.'},
+      {l:'T',c:'var(--green)',t:'Tijd & terrein',ex:['Zorg dat je het spel vlot kan inkorten als het uitloopt','Controleer het terrein op gevaarlijke plekken voor je begint'],d:'Hoe lang duurt je spel en op welk terrein speel je? Zorg dat je het makkelijk korter of langer kan maken als dat nodig is.'},
+      {l:'A',c:'var(--red)',t:'Aanpassen',ex:['Pas het spel aan op de leeftijd van de groep','Houd rekening met kinderen die minder mee kunnen doen'],d:'Stem je spel af op de groep en de omstandigheden: leeftijd, wat de kinderen leuk vinden, het weer en het terrein. Met kleuters speel je hetzelfde spel anders dan met oudere kinderen.'},
+      {l:'D',c:'var(--navy)',t:'Doel',ex:['Mijn spel moet verbindend zijn','Kies bewust: wil je energie lossen of net kalmeren?'],d:'Wat wil je bereiken? Elkaar leren kennen, samenwerken of gewoon energie kwijt? Kies bewust, dan past je spel bij het moment.'},
+      {l:'I',c:'var(--green)',t:'Inkleding',ex:['Geef je spel een verhaaltje zodat het leeft','Gebruik het terrein als decor van je verhaal'],d:'Geef je spel een sfeer of een verhaaltje. Versier het terrein in thema en verkleed je met je team om alles echt tot leven te brengen.'},
+      {l:'U',c:'var(--gold)',t:'Uitleg',ex:['Leg kort en krachtig uit, met ieders aandacht','Geef een demo als woorden niet genoeg zijn'],d:'Leg het spel rustig en duidelijk uit, met de aandacht van iedereen erbij. Hou het kort, zodat het spel snel kan beginnen.'},
+      {l:'M',c:'var(--red)',t:'Materiaal',ex:['Zorg dat alles klaarstaat voor je begint','Wees creatief: wat kan je hergebruiken?'],d:'Wees creatief met wat je hebt en draag er zorg voor. Zo kunnen je collega\'s het later ook nog gebruiken.'},
     ];
     const stadPool = sec.querySelector('#stad-pool');
     const stadRows = sec.querySelector('#stad-rows');

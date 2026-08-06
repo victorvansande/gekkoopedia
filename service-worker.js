@@ -1,4 +1,4 @@
-const CACHE = 'gekkoo-v37';
+const CACHE = 'gekkoo-v38';
 const ASSETS = [
   './',
   './index.html',
