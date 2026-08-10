@@ -1217,11 +1217,11 @@
 
     /* ---- DEEL 3: Activiteitenkaart ---- */
     const ACTS = [
-      {n:'🏃 Vangen',z:'short-low'}, {n:'🏅 Estafette',z:'long-low'},
-      {n:'🍳 Kookcompetitie',z:'long-high'}, {n:'🃏 Memory',z:'short-low'},
-      {n:'🗺️ Schatkaarttocht',z:'long-high'}, {n:'🎵 Muzikale stoelen',z:'short-low'},
-      {n:'🎭 Theatershow',z:'long-high'}, {n:'⚽ Balspel',z:'short-low'},
-      {n:'✂️ Knutselactiviteit',z:'short-high'}, {n:'💌 Flessenpost',z:'long-low'},
+      {n:'🎹 123 piano',z:'short-low'}, {n:'♟️ Levende Stratego',z:'long-high'},
+      {n:'🎤 Gekkoo\'s got talent',z:'long-high'}, {n:'💣 Dikke Bertha',z:'short-high'},
+      {n:'🏃 Tikkertje hoogte',z:'short-high'}, {n:'🎭 Maskers maken',z:'long-low'},
+      {n:'🌍 Reisje rond de wereld',z:'long-low'}, {n:'👑 Koningsbal',z:'long-low'},
+      {n:'🗝️ Escape room',z:'long-high'},
     ];
     const actPool = sec.querySelector('#act-pool');
     const actMap  = sec.querySelector('#act-map');
