@@ -1,0 +1,6 @@
+.gitignore
+.assetsignore
+wrangler.toml
+serve.ps1
+TAALGIDS.md
+.github
