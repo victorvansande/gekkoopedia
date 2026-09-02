@@ -27,7 +27,10 @@
     --shadow-lg:0 14px 40px rgba(0,51,153,0.16);
   }
   *{box-sizing:border-box;}
-  html{overflow-x:hidden;scroll-behavior:smooth;}
+  html{
+    overflow-x:hidden;scroll-behavior:smooth;
+    -webkit-text-size-adjust:100%;text-size-adjust:100%;
+  }
   body{
     margin:0;
     font-family:'Atkinson Hyperlegible',sans-serif;
@@ -154,6 +157,17 @@
     max-width:56ch;margin-left:auto;margin-right:auto;
   }
 
+  .marker{
+    display:flex;gap:1rem;align-items:flex-start;
+    background:#fff;border:2px solid var(--pink);
+    border-radius:var(--radius);
+    padding:1.1rem 1.2rem;margin-top:1.1rem;
+    box-shadow:var(--shadow);
+  }
+  .marker .ic{font-size:2rem;line-height:1.1;flex:0 0 auto;}
+  .marker h3{font-size:1.15rem;margin:0 0 .3rem;}
+  .marker p{margin:0;}
+
   /* Eindresultaat */
   .mockup{
     background:#fff;border-radius:var(--radius);
@@ -212,6 +226,62 @@
   .footnote{font-size:.95rem;opacity:.75;}
 
   .confetti{position:fixed;pointer-events:none;z-index:50;width:9px;height:14px;border-radius:2px;}
+
+  /* Hover-effecten enkel op toestellen met een muis */
+  @media (hover:none){
+    .card:hover, .pc:hover{transform:none;box-shadow:var(--shadow);}
+  }
+
+  /* ---------- Telefoon ---------- */
+  @media (max-width:640px){
+    .wrap{
+      padding-left:calc(1rem + env(safe-area-inset-left));
+      padding-right:calc(1rem + env(safe-area-inset-right));
+    }
+    .garland{gap:.25rem;padding:.25rem .3rem .4rem;}
+    .flag{width:20px;height:25px;}
+
+    .hero{padding:1.5rem 0 1rem;}
+    .kicker{font-size:.72rem;letter-spacing:.09em;padding:.3rem .8rem;}
+    .lead{max-width:none;}
+    .anchor{padding:.6rem 1.15rem;gap:.5rem;}
+
+    section{padding:1.3rem 0;}
+    h2.sec{margin-bottom:.9rem;}
+
+    .cards{gap:1.5rem;}
+    .card{padding:1.15rem 1rem 1.2rem;}
+    .card .ic{font-size:1.7rem;}
+    .card h3{font-size:1.1rem;}
+
+    .prices{gap:.6rem;}
+    .price{padding:.85rem .5rem;}
+    .price .amt{font-size:1.7rem;}
+    .price.row .amt{font-size:1.15rem;}
+    .price .lbl{font-size:.95rem;margin-top:.3rem;}
+    .price .sub{font-size:.8rem;line-height:1.35;}
+    .freegift{font-size:1rem;text-align:left;}
+
+    .marker{flex-direction:column;gap:.5rem;padding:1rem;}
+    .marker .ic{font-size:1.8rem;}
+
+    .lotgrid{gap:.9rem;}
+    .lotbox{padding:1.1rem 1rem;}
+
+    .puzzlebox, .mockup{padding:.7rem;}
+    .grid{gap:4px;max-width:none;}
+    .pc{border-radius:7px;}
+    .counter{font-size:1rem;}
+
+    /* Namen op de voorbeeldpuzzel blijven leesbaar op een klein scherm */
+    #mock-notes{font-size:34px;stroke-width:7;}
+    #mock-doodles{transform:scale(1.25);transform-origin:center;transform-box:view-box;}
+
+    .biz{padding:1.3rem 1rem;}
+    .biz .big{font-size:1.15rem;padding:.4rem 1rem;}
+
+    .outro{padding:1.6rem 0 2.4rem;}
+  }
 
   @media (prefers-reduced-motion:reduce){
     *{animation:none !important;transition:none !important;}
@@ -280,6 +350,14 @@
       </div>
     </div>
     <p class="freegift">&#128176; <b>Een gewoon stukje mag ook een vrije gift zijn.</b> &euro;2 is het minimum. Geef je liever meer? Heel graag. Alles gaat naar de kinderen.</p>
+
+    <div class="marker">
+      <span class="ic" aria-hidden="true">&#128394;&#65039;</span>
+      <div>
+        <h3>Schrijf dwars over de puzzel &mdash; &euro;1</h3>
+        <p>Voor &euro;1 krijg je een stiftje en schrijf je iets over de al gelegde stukjes heen. Je naam, een korte boodschap, een mini-tekening. Het loopt over verschillende stukjes, dus het verbindt ze letterlijk met elkaar.</p>
+      </div>
+    </div>
   </section>
 
   <section>
@@ -398,7 +476,7 @@
           </g>
         </g>
       </svg>
-      <p class="cap">Een voorbeeld. Het echte resultaat maak jij mee.</p>
+      <p class="cap">Een voorbeeld. De namen en tekeningen lopen dwars over de stukjes heen.</p>
     </div>
   </section>
 
@@ -442,11 +520,11 @@
     g.appendChild(f);
   }
 
-  /* Puzzelraster 12 x 10 = 120 stukjes */
-  var COLS = 12, ROWS = 10;
+  /* Puzzelraster: altijd 120 stukjes. Op een smal scherm 8 x 15, zodat ze groot genoeg
+     blijven om met de vinger aan te tikken. Bij draaien wordt het raster herbouwd. */
   var grid = document.getElementById('grid');
   var countEl = document.getElementById('count');
-  var done = 0;
+  var COLS = 12, ROWS = 10, done = 0, isNarrow = null;
 
   function kind(r,c){
     var edgeR = (r === 0 || r === ROWS-1), edgeC = (c === 0 || c === COLS-1);
@@ -455,17 +533,37 @@
     return {col:'#003399', name:'middenstuk, 2 euro'};
   }
 
-  for(var r=0;r<ROWS;r++){
-    for(var c=0;c<COLS;c++){
-      var k = kind(r,c);
-      var b = document.createElement('button');
-      b.className = 'pc';
-      b.type = 'button';
-      b.setAttribute('aria-label', k.name);
-      b.dataset.col = k.col;
-      grid.appendChild(b);
+  function buildGrid(){
+    var narrow = window.innerWidth <= 640;
+    if(narrow === isNarrow) return;
+    isNarrow = narrow;
+    COLS = narrow ? 8 : 12;
+    ROWS = narrow ? 15 : 10;
+    grid.style.gridTemplateColumns = 'repeat(' + COLS + ',1fr)';
+    grid.textContent = '';
+
+    var n = 0;
+    for(var r=0;r<ROWS;r++){
+      for(var c=0;c<COLS;c++){
+        var k = kind(r,c);
+        var b = document.createElement('button');
+        b.className = 'pc';
+        b.type = 'button';
+        b.setAttribute('aria-label', k.name);
+        b.dataset.col = k.col;
+        if(n < done){ b.classList.add('on'); b.style.background = k.col; }  /* al gelegde stukjes bewaren */
+        grid.appendChild(b);
+        n++;
+      }
     }
   }
+  buildGrid();
+
+  var resizeTimer;
+  window.addEventListener('resize', function(){
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(buildGrid, 150);
+  });
 
   grid.addEventListener('click', function(e){
     var b = e.target.closest('.pc');
@@ -485,6 +583,7 @@
     var NS = 'http://www.w3.org/2000/svg';
     var PATS = ['p-dots','p-stripes','p-zig','p-checks','p-hearts','p-confetti','p-waves','p-stars'];
     var S = 60;
+    var COLS = 12, ROWS = 10;   /* de voorbeeldpuzzel blijft altijd liggend 12 x 10 */
 
     /* Vaste pseudo-willekeur, zodat het beeld altijd hetzelfde blijft */
     var seed = 20260213;

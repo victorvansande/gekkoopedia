@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>De Gekkoo-steunpuzzel &mdash; affiches</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  @font-face{
+    font-family:'ProvidenceSansPro';
+    src:url('ProvidenceSansPro.otf') format('opentype');
+    font-weight:normal;font-style:normal;
+  }
+  @page{ size:A4 landscape; margin:0; }
+
+  :root{
+    --navy:#003399;
+    --gold:#FFCC33;
+    --green:#479554;
+    --pink:#FF99CC;
+    --red:#FF3333;
+  }
+  *{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  html,body{margin:0;padding:0;background:#fff;}
+  body{
+    font-family:'Atkinson Hyperlegible',sans-serif;
+    color:var(--navy);line-height:1.45;
+  }
+  h1,h2,h3{font-family:'Fredoka',sans-serif;font-weight:600;margin:0;line-height:1.1;}
+  p{margin:0;}
+
+  .page{
+    width:297mm;height:210mm;
+    padding:14mm 16mm;
+    position:relative;overflow:hidden;
+    page-break-after:always;break-after:page;
+    display:flex;flex-direction:column;
+    background:#fff;
+  }
+  .page:last-child{page-break-after:auto;break-after:auto;}
+
+  /* Slinger bovenaan elke pagina */
+  .garland{
+    position:absolute;top:0;left:0;right:0;height:9mm;
+    display:flex;justify-content:center;gap:2.2mm;
+  }
+  .garland span{
+    width:7mm;height:9mm;
+    clip-path:polygon(0 0,100% 0,100% 62%,50% 100%,0 62%);
+  }
+  .page-inner{margin-top:7mm;flex:1;display:flex;flex-direction:column;justify-content:center;}
+
+  .sec-title{
+    font-size:34pt;text-align:center;margin-bottom:6mm;
+  }
+  .sec-title .sq{
+    display:inline-block;width:.5em;height:.5em;border-radius:4px;
+    background:var(--gold);margin-right:.35em;transform:rotate(12deg);
+  }
+
+  /* Pagina 1 */
+  .cover{align-items:center;justify-content:center;text-align:center;}
+  .kicker{
+    display:inline-block;background:var(--gold);color:var(--navy);
+    font-family:'Fredoka',sans-serif;font-weight:600;
+    font-size:14pt;letter-spacing:.14em;text-transform:uppercase;
+    padding:2mm 8mm;border-radius:99px;transform:rotate(-1.5deg);
+  }
+  .cover h1{font-size:82pt;font-weight:700;margin:7mm 0 4mm;}
+  .cover h1 .puz{color:var(--red);}
+  .cover .lead{font-size:20pt;max-width:24em;margin:0 auto 8mm;}
+  .anchor{
+    display:inline-block;background:var(--navy);color:#fff;
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:26pt;
+    padding:4mm 12mm;border-radius:99px;transform:rotate(-1deg);
+  }
+  .anchor .eq{color:var(--gold);}
+
+  /* Kaarten */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8mm;flex:1;align-content:center;}
+  .card{
+    border:2.5px solid rgba(0,51,153,.12);border-radius:8mm;
+    padding:9mm 7mm;position:relative;
+  }
+  .step-no{
+    position:absolute;top:-7mm;left:7mm;
+    width:14mm;height:14mm;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:20pt;color:#fff;
+  }
+  .card h3{font-size:22pt;margin:4mm 0 3mm;}
+  .card p{font-size:14pt;}
+
+  /* Prijzen */
+  .prices{display:grid;grid-template-columns:repeat(4,1fr);gap:6mm;}
+  .price{
+    border:2.5px dashed rgba(0,51,153,.2);border-radius:6mm;
+    padding:6mm 3mm;text-align:center;
+  }
+  .price .amt{font-family:'Fredoka',sans-serif;font-weight:700;font-size:40pt;display:block;line-height:1;}
+  .price.row .amt{font-size:24pt;padding-top:3mm;}
+  .price .lbl{font-weight:700;font-size:15pt;display:block;margin-top:2.5mm;}
+  .price .sub{font-size:12pt;display:block;opacity:.85;}
+  .price.corner .amt{color:var(--red);}
+  .price.edge .amt{color:var(--green);}
+  .price.mid .amt{color:var(--navy);}
+  .price.row{border-style:solid;border-color:var(--gold);background:#FFFBEF;}
+  .price.row .amt{color:#a87c00;}
+
+  .note{
+    border-radius:6mm;padding:5mm 7mm;margin-top:6mm;
+    font-size:14.5pt;text-align:center;
+  }
+  .note.gift{background:#FFFBEF;border:2.5px solid var(--gold);}
+  .note.marker{background:#FFF4FA;border:2.5px solid var(--pink);text-align:left;}
+  .note b{font-weight:700;}
+  .note .big{font-family:'Fredoka',sans-serif;font-weight:600;font-size:19pt;display:block;margin-bottom:1.5mm;}
+
+  /* Lot */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:8mm;flex:1;align-content:center;}
+  .lotbox{
+    background:#FFFBEF;border:2.5px solid var(--gold);
+    border-radius:8mm;padding:9mm 8mm;
+  }
+  .lotbox h3{font-size:23pt;margin:0 0 3mm;}
+  .lotbox p{font-size:14.5pt;}
+  .winwin{
+    display:inline-block;background:var(--red);color:#fff;
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:15pt;
+    padding:2mm 7mm;border-radius:99px;transform:rotate(-2deg);margin-top:4mm;
+  }
+
+  /* Mockup */
+  .mockrow{flex:1;display:flex;gap:8mm;align-items:center;}
+  .mockrow svg{width:170mm;height:auto;flex:0 0 auto;}
+  .mockrow .side h3{font-size:24pt;margin-bottom:4mm;}
+  .mockrow .side p{font-size:14.5pt;margin-bottom:4mm;}
+
+  /* Slot */
+  .biz{
+    background:var(--navy);color:#fff;border-radius:8mm;
+    padding:9mm;text-align:center;
+  }
+  .biz h2{color:#fff;font-size:30pt;margin-bottom:3mm;}
+  .biz .big{
+    display:inline-block;background:var(--gold);color:var(--navy);
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:19pt;
+    padding:2.5mm 8mm;border-radius:99px;margin:3mm 0 4mm;transform:rotate(-1.5deg);
+  }
+  .biz p{font-size:14.5pt;max-width:48em;margin:0 auto;}
+  .closing{text-align:center;margin-top:8mm;}
+  .closing .quote{font-family:'Fredoka',sans-serif;font-weight:600;font-size:26pt;margin-bottom:3mm;}
+  .closing p{font-size:15pt;}
+  .closing .foot{font-size:13pt;opacity:.75;margin-top:3mm;}
+  .heart{color:var(--red);}
+</style>
+</head>
+<body>
+
+<!-- 1. Cover -->
+<div class="page">
+  <div class="garland"></div>
+  <div class="page-inner cover">
+    <span class="kicker">Bedankingsfeest &bull; Gekkoo</span>
+    <h1>De grote <span class="puz">steunpuzzel</span></h1>
+    <p class="lead">Koop een stukje, versier het en leg het op de puzzel. Samen maken we het plaatje compleet.</p>
+    <div class="anchor">1 stukje <span class="eq">=</span> 1 kind erbij</div>
+  </div>
+</div>
+
+<!-- 2. Zo doe je mee -->
+<div class="page">
+  <div class="garland"></div>
+  <div class="page-inner">
+    <h2 class="sec-title"><span class="sq"></span>Zo doe je mee</h2>
+    <div class="cards">
+      <div class="card">
+        <span class="step-no" style="background:var(--red)">1</span>
+        <h3>Kies je stukje</h3>
+        <p>Zoek een plekje dat je aanspreekt: een hoek, een rand of ergens middenin. Je betaalt het aan de tafel.</p>
+      </div>
+      <div class="card">
+        <span class="step-no" style="background:var(--green)">2</span>
+        <h3>Versier het</h3>
+        <p>Teken erop, zet je naam of schrijf een boodschap. Alles mag. De stiften liggen klaar.</p>
+      </div>
+      <div class="card">
+        <span class="step-no" style="background:var(--navy)">3</span>
+        <h3>Leg het op de puzzel</h3>
+        <p>Klik je stukje vast op het grote bord. Kijk hoe de puzzel volloopt terwijl het feest doorgaat.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. Prijzen -->
+<div class="page">
+  <div class="garland"></div>
+  <div class="page-inner">
+    <h2 class="sec-title"><span class="sq"></span>Wat kost een stukje?</h2>
+    <div class="prices">
+      <div class="price corner"><span class="amt">&euro;10</span><span class="lbl">Hoekstuk</span><span class="sub">Er zijn er maar vier</span></div>
+      <div class="price edge"><span class="amt">&euro;4</span><span class="lbl">Randstuk</span><span class="sub">Houdt alles samen</span></div>
+      <div class="price mid"><span class="amt">&euro;2</span><span class="lbl">Middenstuk</span><span class="sub">Het hart van de puzzel</span></div>
+      <div class="price row"><span class="amt">Een hele rij</span><span class="lbl">Wil je meer geven?</span><span class="sub">Per stukje net iets voordeliger</span></div>
+    </div>
+    <div class="note gift">
+      <b>Een gewoon stukje mag ook een vrije gift zijn.</b> &euro;2 is het minimum. Geef je liever meer? Heel graag. Alles gaat naar de kinderen.
+    </div>
+    <div class="note marker">
+      <span class="big">Schrijf dwars over de puzzel &mdash; &euro;1</span>
+      Voor &euro;1 krijg je een stiftje en schrijf je iets over de al gelegde stukjes heen. Je naam, een korte boodschap, een mini-tekening. Het loopt over verschillende stukjes, dus het verbindt ze letterlijk met elkaar.
+    </div>
+  </div>
+</div>
+
+<!-- 4. Lot -->
+<div class="page">
+  <div class="garland"></div>
+  <div class="page-inner">
+    <h2 class="sec-title"><span class="sq"></span>Elk stukje is ook een lot</h2>
+    <div class="duo">
+      <div class="lotbox">
+        <h3>Koop een stukje, win misschien iets</h3>
+        <p>Bij elk stukje krijg je een lotje. Op het einde van de avond trekken we een winnaar. Hoe meer stukjes, hoe meer kans.</p>
+      </div>
+      <div class="lotbox">
+        <h3>Of geef je lotje weg</h3>
+        <p>Je mag je lotje doorgeven aan een vrijwilliger. Zo steun je Gekkoo <b>en</b> zet je iemand in de bloemetjes die hier elke week staat.</p>
+        <span class="winwin">Win-win!</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. Eindresultaat -->
+<div class="page">
+  <div class="garland"></div>
+  <div class="page-inner">
+    <h2 class="sec-title"><span class="sq"></span>Zo kan hij er straks uitzien</h2>
+    <div class="mockrow">
+      <svg viewBox="0 0 720 600" role="img" aria-label="Voorbeeld van de afgewerkte puzzel.">
+        <defs>
+          <pattern id="p-dots" width="20" height="20" patternUnits="userSpaceOnUse">
+            <rect width="20" height="20" fill="#FFF3D1"/>
+            <circle cx="6" cy="6" r="3" fill="#FFCC33"/>
+            <circle cx="16" cy="15" r="2.2" fill="#FFCC33" opacity=".7"/>
+          </pattern>
+          <pattern id="p-stripes" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="16" height="16" fill="#FFE7F3"/>
+            <rect width="7" height="16" fill="#FF99CC"/>
+          </pattern>
+          <pattern id="p-zig" width="24" height="14" patternUnits="userSpaceOnUse">
+            <rect width="24" height="14" fill="#E2F1E5"/>
+            <path d="M0 11 L6 4 L12 11 L18 4 L24 11" fill="none" stroke="#479554" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </pattern>
+          <pattern id="p-checks" width="22" height="22" patternUnits="userSpaceOnUse">
+            <rect width="22" height="22" fill="#E6EDFB"/>
+            <rect width="11" height="11" fill="#C7D6F4"/>
+            <rect x="11" y="11" width="11" height="11" fill="#C7D6F4"/>
+          </pattern>
+          <pattern id="p-hearts" width="24" height="24" patternUnits="userSpaceOnUse">
+            <rect width="24" height="24" fill="#FFE6E6"/>
+            <path d="M12 18 C4 12 6 5 12 9 C18 5 20 12 12 18 Z" fill="#FF3333" opacity=".55"/>
+          </pattern>
+          <pattern id="p-confetti" width="26" height="26" patternUnits="userSpaceOnUse">
+            <rect width="26" height="26" fill="#FFFDF5"/>
+            <rect x="3" y="4" width="7" height="3" rx="1.5" fill="#FF3333" transform="rotate(-20 6 5)"/>
+            <rect x="15" y="9" width="7" height="3" rx="1.5" fill="#003399" transform="rotate(30 18 10)"/>
+            <rect x="7" y="17" width="7" height="3" rx="1.5" fill="#479554" transform="rotate(12 10 18)"/>
+          </pattern>
+          <pattern id="p-waves" width="26" height="16" patternUnits="userSpaceOnUse">
+            <rect width="26" height="16" fill="#FFF7E3"/>
+            <path d="M0 10 Q6.5 3 13 10 T26 10" fill="none" stroke="#FF99CC" stroke-width="2.6" stroke-linecap="round"/>
+          </pattern>
+          <pattern id="p-stars" width="26" height="26" patternUnits="userSpaceOnUse">
+            <rect width="26" height="26" fill="#EAF3EC"/>
+            <path d="M13 5 l2.4 5.2 5.6.6 -4.2 3.8 1.2 5.6 -5-2.9 -5 2.9 1.2-5.6 -4.2-3.8 5.6-.6 Z" fill="#479554" opacity=".55"/>
+          </pattern>
+          <g id="d-smiley">
+            <circle cx="0" cy="0" r="16"/>
+            <circle cx="-6" cy="-4" r="1.6"/>
+            <circle cx="6" cy="-4" r="1.6"/>
+            <path d="M-7 5 Q0 11 7 5"/>
+          </g>
+          <path id="d-star" d="M0 -16 L4.7 -5.4 L16 -4.2 L7.6 3.4 L9.9 15 L0 9.2 L-9.9 15 L-7.6 3.4 L-16 -4.2 L-4.7 -5.4 Z"/>
+          <path id="d-heart" d="M0 12 C-13 3 -9 -10 0 -3 C9 -10 13 3 0 12 Z"/>
+        </defs>
+
+        <g id="mock-pieces"></g>
+
+        <g id="mock-logo">
+          <text x="360" y="330" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="700"
+                font-size="200" fill="#003399" stroke="#fff" stroke-width="14"
+                paint-order="stroke" letter-spacing="-4">gekkoo</text>
+          <g transform="translate(530,52) scale(0.115)">
+            <path fill="#FFCC33" stroke="#fff" stroke-width="26" paint-order="stroke"
+                  d="m1400.63,813.41s-7.69-12.63-11.69-19.57c-38.81-67.75-150.51-260.73-150.51-260.73,0,0-32.84-48.96-34.36-51.69-11-14.35-19.32-29.95-30.91-44,24.67-25.1,31.19-32.57,31.19-32.57l43.59-46.53c16.21-16.78,33.61-33.33,51.85-47.71.76-.77,16.11-16.26,16.11-16.26,0,0,25.58-21.73,35.71-32.59l-95.36-101.34c-8.04,7.86-35.74,32.58-35.74,32.58,0,0-15.54,15.67-17.46,17.54l-42.38,38.29s-48.11,53.49-86.05,94.68c-1.41-103.1-2.65-203.22-2.82-296.91l-151.52.28v6.13s-1.84,156.3-1.69,234.42c-1.54,0-15.15-14.61-15.15-14.61-51.38-57.73-73.6-85.53-129.03-139.27l-33.62-33.81s-33.8-33.1-55.44-51.21c-1.38-1.54-19.31-17.05-19.31-17.66l-97.19,131.43c2.08,1.4,3.87,2.98,5.42,4.9,0,0,49.58,45.72,71.54,66.95,0,0,139.33,155.46,218.97,220.68-55.31,49.22-122.32,95.52-169.76,152.15-52.71,62.92-131.89,164.86-179.58,231.65l122.52,105.98c76.15-106.13,179.06-232.42,278.03-317.74-3.62,110.48-1.08,311.82-.88,422.3l161.99-.3c3.54-161.76,2.36-336.02.23-508.01,6.84,9.93,20.15,27.65,20.15,27.65,1.14,1.18,10.45,17.33,14,21.91l17.51,29.96,95.73,166.16c16.73,29.43,59.88,103.07,60.61,103.88l119.28-69.59c-1.23-3.26-2.77-4.84-3.95-7.42Z"/>
+          </g>
+        </g>
+
+        <g id="mock-notes" font-family="ProvidenceSansPro, cursive" fill="#003399" font-size="26"
+           stroke="#fff" stroke-width="5.5" paint-order="stroke" stroke-linejoin="round">
+          <text x="52" y="72" transform="rotate(-7 52 72)">Merci Gekkoo!</text>
+          <text x="330" y="88" transform="rotate(4 330 88)">Lotte &#9829;</text>
+          <text x="70" y="470" transform="rotate(-4 70 470)">Team Essen</text>
+          <text x="404" y="452" transform="rotate(6 404 452)">Voor alle kids</text>
+          <text x="466" y="546" transform="rotate(-5 466 546)">Mo &amp; papa</text>
+          <text x="126" y="560" transform="rotate(3 126 560)">Dikke duim!</text>
+          <text x="576" y="212" transform="rotate(-8 576 212)">Jana</text>
+          <text x="40" y="222" transform="rotate(5 40 222)">2026</text>
+        </g>
+
+        <g id="mock-doodles" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <g transform="translate(212,104) rotate(-8)">
+            <use href="#d-smiley" stroke="#fff" stroke-width="9"/>
+            <use href="#d-smiley" stroke="#003399" stroke-width="3"/>
+          </g>
+          <g transform="translate(612,438) rotate(9)">
+            <use href="#d-star" stroke="#fff" stroke-width="9"/>
+            <use href="#d-star" stroke="#FFCC33" stroke-width="3" fill="#FFCC33"/>
+          </g>
+          <g transform="translate(288,536) rotate(-5)">
+            <use href="#d-heart" stroke="#fff" stroke-width="9"/>
+            <use href="#d-heart" stroke="#FF3333" stroke-width="3" fill="#FF3333"/>
+          </g>
+        </g>
+      </svg>
+      <div class="side">
+        <h3>De puzzel blijft hangen</h3>
+        <p>Als de puzzel af is, krijgt hij een vaste plek op ons kantoor of op een andere centrale Gekkoo-plek. Zo kan je je eigen stukje altijd komen terugzien.</p>
+        <p>De namen en tekeningen lopen dwars over de stukjes heen. Elk stukje is anders, want elk stukje is van iemand.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. Meer bijdragen + slot -->
+<div class="page">
+  <div class="garland"></div>
+  <div class="page-inner" style="justify-content:center;">
+    <div class="biz">
+      <h2>Wil je nog m&eacute;&eacute;r bijdragen?</h2>
+      <span class="big">Neem een hele rij</span>
+      <p>E&eacute;n stukje te klein? Je kan ook een volledige rij nemen. Per stukje is dat net iets voordeliger en je naam komt op de rij te staan. Leuk voor een gezin, een groep vrienden, een club of een bedrijf. Spreek Victor aan op het feest.</p>
+    </div>
+    <div class="closing">
+      <p class="quote">Elk stukje is nodig voor het geheel. Net als bij ons.</p>
+      <p>Wat je geeft, gaat rechtstreeks naar onze werking. Zo blijft er elke vakantie plaats voor &eacute;lk kind.</p>
+      <p class="foot">Bedankt dat je erbij bent. <span class="heart">&hearts;</span> Gekkoo</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var COLORS = ['#003399','#FFCC33','#479554','#FF99CC','#FF3333'];
+
+  /* Slingers op elke pagina */
+  var gs = document.querySelectorAll('.garland');
+  for(var i=0;i<gs.length;i++){
+    for(var j=0;j<32;j++){
+      var f = document.createElement('span');
+      f.style.background = COLORS[j % COLORS.length];
+      gs[i].appendChild(f);
+    }
+  }
+
+  /* Voorbeeldpuzzel */
+  var host = document.getElementById('mock-pieces');
+  if(!host) return;
+  var NS = 'http://www.w3.org/2000/svg';
+  var PATS = ['p-dots','p-stripes','p-zig','p-checks','p-hearts','p-confetti','p-waves','p-stars'];
+  var S = 60, COLS = 12, ROWS = 10;
+
+  var seed = 20260213;
+  function rand(){
+    seed = (seed * 1103515245 + 12345) % 2147483648;
+    return seed / 2147483648;
+  }
+  function sign(){ return rand() < 0.5 ? -1 : 1; }
+
+  var hs = [], vs = [], r, c;
+  for(r=0;r<=ROWS;r++){ hs[r] = []; for(c=0;c<COLS;c++) hs[r][c] = sign(); }
+  for(r=0;r<ROWS;r++){ vs[r] = []; for(c=0;c<=COLS;c++) vs[r][c] = sign(); }
+
+  function edge(ax, ay, bx, by, s){
+    if(!s) return 'L' + bx + ' ' + by;
+    var dx = (bx-ax)/S, dy = (by-ay)/S;
+    var p1x = ax + dx*S*0.39, p1y = ay + dy*S*0.39;
+    var p2x = ax + dx*S*0.61, p2y = ay + dy*S*0.61;
+    var R = (S*0.155).toFixed(2);
+    return 'L' + p1x.toFixed(1) + ' ' + p1y.toFixed(1) +
+           'A' + R + ' ' + R + ' 0 1 ' + (s > 0 ? 1 : 0) + ' ' + p2x.toFixed(1) + ' ' + p2y.toFixed(1) +
+           'L' + bx + ' ' + by;
+  }
+
+  var defs = host.ownerSVGElement.querySelector('defs');
+  var VARIANTS = [];
+  for(var pi=0; pi<PATS.length; pi++){
+    var src = document.getElementById(PATS[pi]);
+    for(var k=0;k<4;k++){
+      var clone = src.cloneNode(true);
+      clone.setAttribute('id', PATS[pi] + '-' + k);
+      clone.setAttribute('patternTransform',
+        'translate(' + (rand()*24-12).toFixed(1) + ',' + (rand()*24-12).toFixed(1) + ') ' +
+        'rotate(' + (rand()*360).toFixed(1) + ')');
+      defs.appendChild(clone);
+      VARIANTS.push({id: PATS[pi] + '-' + k, base: pi});
+    }
+  }
+
+  var used = [];
+  function pick(r, c){
+    var left = c > 0 ? used[r][c-1] : -1;
+    var up   = r > 0 ? used[r-1][c] : -1;
+    var v;
+    for(var t=0;t<12;t++){
+      v = VARIANTS[Math.floor(rand()*VARIANTS.length)];
+      if(v.base !== left && v.base !== up) break;
+    }
+    used[r][c] = v.base;
+    return v.id;
+  }
+
+  var frag = document.createDocumentFragment();
+  for(r=0;r<ROWS;r++){
+    used[r] = [];
+    for(c=0;c<COLS;c++){
+      var x0 = c*S, y0 = r*S, x1 = x0+S, y1 = y0+S;
+      var d = 'M' + x0 + ' ' + y0 +
+        edge(x0, y0, x1, y0, r === 0      ?  0 :  hs[r][c]) +
+        edge(x1, y0, x1, y1, c === COLS-1 ?  0 :  vs[r][c+1]) +
+        edge(x1, y1, x0, y1, r === ROWS-1 ?  0 : -hs[r+1][c]) +
+        edge(x0, y1, x0, y0, c === 0      ?  0 : -vs[r][c]) + 'Z';
+
+      var path = document.createElementNS(NS,'path');
+      path.setAttribute('d', d);
+      path.setAttribute('fill', 'url(#' + pick(r,c) + ')');
+      path.setAttribute('stroke', '#ffffff');
+      path.setAttribute('stroke-width', '2.2');
+      path.setAttribute('stroke-linejoin', 'round');
+      frag.appendChild(path);
+    }
+  }
+  host.appendChild(frag);
+})();
+</script>
+</body>
+</html>
