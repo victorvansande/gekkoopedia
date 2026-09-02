@@ -268,9 +268,10 @@
     .lotgrid{gap:.9rem;}
     .lotbox{padding:1.1rem 1rem;}
 
-    .puzzlebox, .mockup{padding:.7rem;}
-    .grid{gap:4px;max-width:none;}
-    .pc{border-radius:7px;}
+    /* De puzzel krijgt de volle schermbreedte, zodat 12 x 10 ruim genoeg blijft */
+    .puzzlebox, .mockup{padding:.5rem;margin:0 -.55rem;}
+    .grid{gap:2px;max-width:none;}
+    .pc{border-radius:4px;}
     .counter{font-size:1rem;}
 
     /* Namen op de voorbeeldpuzzel blijven leesbaar op een klein scherm */
@@ -520,11 +521,11 @@
     g.appendChild(f);
   }
 
-  /* Puzzelraster: altijd 120 stukjes. Op een smal scherm 8 x 15, zodat ze groot genoeg
-     blijven om met de vinger aan te tikken. Bij draaien wordt het raster herbouwd. */
+  /* Puzzelraster: altijd 12 x 10, ook op een telefoon. De verhouding van de echte
+     puzzel blijft zo behouden; de stukjes schalen gewoon mee. */
   var grid = document.getElementById('grid');
   var countEl = document.getElementById('count');
-  var COLS = 12, ROWS = 10, done = 0, isNarrow = null;
+  var COLS = 12, ROWS = 10, done = 0;
 
   function kind(r,c){
     var edgeR = (r === 0 || r === ROWS-1), edgeC = (c === 0 || c === COLS-1);
@@ -533,37 +534,17 @@
     return {col:'#003399', name:'middenstuk, 2 euro'};
   }
 
-  function buildGrid(){
-    var narrow = window.innerWidth <= 640;
-    if(narrow === isNarrow) return;
-    isNarrow = narrow;
-    COLS = narrow ? 8 : 12;
-    ROWS = narrow ? 15 : 10;
-    grid.style.gridTemplateColumns = 'repeat(' + COLS + ',1fr)';
-    grid.textContent = '';
-
-    var n = 0;
-    for(var r=0;r<ROWS;r++){
-      for(var c=0;c<COLS;c++){
-        var k = kind(r,c);
-        var b = document.createElement('button');
-        b.className = 'pc';
-        b.type = 'button';
-        b.setAttribute('aria-label', k.name);
-        b.dataset.col = k.col;
-        if(n < done){ b.classList.add('on'); b.style.background = k.col; }  /* al gelegde stukjes bewaren */
-        grid.appendChild(b);
-        n++;
-      }
+  for(var r=0;r<ROWS;r++){
+    for(var c=0;c<COLS;c++){
+      var k = kind(r,c);
+      var b = document.createElement('button');
+      b.className = 'pc';
+      b.type = 'button';
+      b.setAttribute('aria-label', k.name);
+      b.dataset.col = k.col;
+      grid.appendChild(b);
     }
   }
-  buildGrid();
-
-  var resizeTimer;
-  window.addEventListener('resize', function(){
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(buildGrid, 150);
-  });
 
   grid.addEventListener('click', function(e){
     var b = e.target.closest('.pc');
