@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>De Gekkoo-steunpuzzel</title>
+<meta name="description" content="Koop een puzzelstukje, versier het en leg het op de grote Gekkoo-puzzel. Elk stukje is een kind erbij.">
+<link rel="icon" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003399;
+    --gold:#FFCC33;
+    --green:#479554;
+    --pink:#FF99CC;
+    --red:#FF3333;
+    --bg:#F2F5FA;
+    --radius:22px;
+    --shadow:0 6px 18px rgba(0,51,153,0.10);
+    --shadow-lg:0 14px 40px rgba(0,51,153,0.16);
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:hidden;scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Atkinson Hyperlegible',sans-serif;
+    background:radial-gradient(ellipse 1100px 720px at 50% -12%, #ffffff 0%, #e9f0fb 32%, var(--bg) 64%);
+    color:var(--navy);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3{font-family:'Fredoka',sans-serif;font-weight:600;margin:0;line-height:1.12;}
+  p{margin:0 0 .8em 0;}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 1.1rem;}
+
+  /* Slingers bovenaan */
+  .garland{
+    position:sticky;top:0;z-index:20;
+    display:flex;justify-content:center;gap:.35rem;
+    padding:.3rem .5rem .5rem;
+    background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,0));
+    -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+    overflow:hidden;
+  }
+  .flag{
+    width:26px;height:32px;flex:0 0 auto;
+    clip-path:polygon(0 0,100% 0,100% 62%,50% 100%,0 62%);
+    animation:sway 3.2s ease-in-out infinite;
+    transform-origin:top center;
+  }
+  @keyframes sway{0%,100%{transform:rotate(-4deg);}50%{transform:rotate(4deg);}}
+
+  /* Hero */
+  .hero{text-align:center;padding:2.2rem 0 1.4rem;}
+  .kicker{
+    display:inline-block;
+    font-family:'Fredoka',sans-serif;font-weight:600;
+    font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;
+    background:var(--gold);color:var(--navy);
+    padding:.35rem 1rem;border-radius:999px;
+    box-shadow:var(--shadow);
+    transform:rotate(-1.5deg);
+  }
+  .hero h1{
+    font-size:clamp(2.6rem,8vw,5rem);
+    font-weight:700;
+    margin:.7rem 0 .4rem;
+  }
+  .hero h1 .puz{color:var(--red);display:inline-block;animation:pop 4s ease-in-out infinite;}
+  @keyframes pop{0%,88%,100%{transform:rotate(-2deg) scale(1);}93%{transform:rotate(3deg) scale(1.07);}}
+  .lead{font-size:clamp(1.05rem,2.6vw,1.35rem);max-width:36ch;margin:0 auto 1.2rem;}
+  .anchor{
+    display:inline-flex;align-items:center;gap:.7rem;flex-wrap:wrap;justify-content:center;
+    background:var(--navy);color:#fff;
+    font-family:'Fredoka',sans-serif;font-weight:700;
+    font-size:clamp(1.1rem,3.4vw,1.7rem);
+    padding:.7rem 1.5rem;border-radius:999px;
+    box-shadow:var(--shadow-lg);
+    transform:rotate(-1deg);
+  }
+  .anchor .eq{color:var(--gold);}
+
+  /* Secties */
+  section{padding:1.7rem 0;}
+  h2.sec{font-size:clamp(1.5rem,4.5vw,2.2rem);text-align:center;margin-bottom:1.2rem;}
+  h2.sec .sq{
+    display:inline-block;width:.5em;height:.5em;border-radius:5px;
+    background:var(--gold);margin-right:.45rem;transform:rotate(12deg);
+  }
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.3rem;}
+  .card{
+    background:#fff;border-radius:var(--radius);
+    padding:1.3rem 1.2rem 1.35rem;
+    box-shadow:var(--shadow);
+    border:2px solid rgba(0,51,153,.06);
+    position:relative;
+    transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s;
+  }
+  .card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+  .step-no{
+    position:absolute;top:-17px;left:18px;
+    width:38px;height:38px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.15rem;
+    color:#fff;box-shadow:var(--shadow);
+  }
+  .card h3{font-size:1.2rem;margin:.6rem 0 .35rem;}
+  .card .ic{font-size:2rem;line-height:1;}
+
+  /* Prijzen */
+  .prices{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.85rem;}
+  .price{
+    background:#fff;border-radius:18px;padding:1.1rem .8rem;
+    text-align:center;box-shadow:var(--shadow);
+    border:2px dashed rgba(0,51,153,.16);
+  }
+  .price .amt{font-family:'Fredoka',sans-serif;font-weight:700;font-size:2.1rem;display:block;line-height:1;}
+  .price .lbl{font-weight:700;display:block;margin-top:.4rem;}
+  .price .sub{font-size:.9rem;opacity:.8;}
+  .price.corner .amt{color:var(--red);}
+  .price.edge .amt{color:var(--green);}
+  .price.mid .amt{color:var(--navy);}
+  .price.logo{border-style:solid;border-color:var(--gold);background:#FFFBEF;}
+  .price.logo .amt{color:#b58600;}
+  .lot{text-align:center;margin-top:1.1rem;font-size:1.05rem;}
+
+  /* Puzzel */
+  .puzzlebox{
+    background:#fff;border-radius:var(--radius);
+    padding:1.1rem;box-shadow:var(--shadow);
+    border:2px solid rgba(0,51,153,.06);
+  }
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;max-width:640px;margin:0 auto;}
+  .pc{
+    aspect-ratio:1;border:none;padding:0;cursor:pointer;
+    border-radius:5px;background:#e6ecf7;
+    transition:transform .2s cubic-bezier(.34,1.56,.64,1),background .3s;
+  }
+  .pc:hover{transform:scale(1.22);}
+  .pc:focus-visible{outline:3px solid var(--navy);outline-offset:2px;}
+  .pc.on{animation:snap .45s cubic-bezier(.34,1.56,.64,1);}
+  @keyframes snap{0%{transform:scale(.4) rotate(-20deg);}100%{transform:scale(1) rotate(0);}}
+  .counter{text-align:center;font-family:'Fredoka',sans-serif;font-weight:600;font-size:1.05rem;margin:.9rem 0 .1rem;}
+  .counter b{color:var(--red);font-size:1.3rem;}
+  .hint{text-align:center;font-size:.92rem;opacity:.75;margin:0;}
+
+  /* Bedrijven */
+  .biz{
+    background:linear-gradient(135deg,var(--navy),#0047cc);
+    color:#fff;border-radius:var(--radius);
+    padding:1.6rem 1.3rem;box-shadow:var(--shadow-lg);text-align:center;
+  }
+  .biz h2{color:#fff;font-size:clamp(1.4rem,4vw,2rem);margin-bottom:.4rem;}
+  .biz .big{
+    display:inline-block;background:var(--gold);color:var(--navy);
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.4rem;
+    padding:.4rem 1.2rem;border-radius:999px;margin:.6rem 0 .8rem;
+    transform:rotate(-1.5deg);
+  }
+  .biz p{max-width:52ch;margin:0 auto .6rem;}
+
+  /* Slot */
+  .outro{text-align:center;padding:2rem 0 3.2rem;}
+  .outro .quote{
+    font-family:'Fredoka',sans-serif;font-weight:600;
+    font-size:clamp(1.3rem,4vw,2rem);max-width:24ch;margin:0 auto 1rem;
+  }
+  .outro p{max-width:44ch;margin-left:auto;margin-right:auto;}
+  .heart{color:var(--red);}
+  .footnote{font-size:.95rem;opacity:.75;}
+
+  .confetti{position:fixed;pointer-events:none;z-index:50;width:9px;height:14px;border-radius:2px;}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="garland" id="garland" aria-hidden="true"></div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <span class="kicker">Bedankingsfeest &bull; Gekkoo</span>
+    <h1>De grote <span class="puz">steunpuzzel</span></h1>
+    <p class="lead">Koop een stukje, versier het en leg het op de puzzel. Samen maken we het plaatje compleet.</p>
+    <div class="anchor"><span>1 stukje</span><span class="eq">=</span><span>1 kind erbij</span></div>
+  </header>
+
+  <section>
+    <h2 class="sec"><span class="sq"></span>Zo doe je mee</h2>
+    <div class="cards">
+      <div class="card">
+        <span class="step-no" style="background:var(--red)">1</span>
+        <span class="ic" aria-hidden="true">&#129513;</span>
+        <h3>Kies je stukje</h3>
+        <p>Zoek een plekje dat je aanspreekt: een hoek, een rand of ergens middenin. Je betaalt het aan de tafel.</p>
+      </div>
+      <div class="card">
+        <span class="step-no" style="background:var(--green)">2</span>
+        <span class="ic" aria-hidden="true">&#128393;</span>
+        <h3>Versier het</h3>
+        <p>Teken erop, zet je naam of schrijf een boodschap. Alles mag. De stiften liggen klaar.</p>
+      </div>
+      <div class="card">
+        <span class="step-no" style="background:var(--navy)">3</span>
+        <span class="ic" aria-hidden="true">&#10024;</span>
+        <h3>Leg het op de puzzel</h3>
+        <p>Klik je stukje vast op het grote bord. Kijk hoe de puzzel volloopt terwijl het feest doorgaat.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="sq"></span>Wat kost een stukje?</h2>
+    <div class="prices">
+      <div class="price corner">
+        <span class="amt">&euro;10</span>
+        <span class="lbl">Hoekstuk</span>
+        <span class="sub">Er zijn er maar vier</span>
+      </div>
+      <div class="price edge">
+        <span class="amt">&euro;4</span>
+        <span class="lbl">Randstuk</span>
+        <span class="sub">Houdt alles samen</span>
+      </div>
+      <div class="price mid">
+        <span class="amt">&euro;2</span>
+        <span class="lbl">Middenstuk</span>
+        <span class="sub">Het hart van de puzzel</span>
+      </div>
+      <div class="price logo">
+        <span class="amt">&euro;25</span>
+        <span class="lbl">Het logostuk</span>
+        <span class="sub">Eentje per puzzel</span>
+      </div>
+    </div>
+    <p class="lot">&#127903; <b>Elk stukje is ook een lot.</b> Op het einde van de avond trekken we een winnaar.</p>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="sq"></span>Klik mee en zie het groeien</h2>
+    <div class="puzzlebox">
+      <div class="grid" id="grid" role="group" aria-label="Voorbeeldpuzzel van 120 stukjes"></div>
+      <p class="counter"><b id="count">0</b> van de 120 stukjes gelegd</p>
+      <p class="hint">Klik op de stukjes hierboven. Rood is een hoek, groen een rand, blauw het midden.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="biz">
+      <h2>Voor bedrijven: koop een hele rij</h2>
+      <span class="big">&euro;150 voor 12 stukjes</span>
+      <p>Je naam of logo komt op de rij te staan en blijft daar staan. De puzzel krijgt na het feest een vaste plek in onze werking.</p>
+      <p style="opacity:.85;font-size:.95rem;">Interesse? Spreek Victor aan op het feest.</p>
+    </div>
+  </section>
+
+  <section class="outro">
+    <p class="quote">Elk stukje is nodig voor het geheel. Net als bij ons.</p>
+    <p>Met jouw stukje speelt een kind mee dat het anders niet kan betalen. Dat is het kansentarief.</p>
+    <p class="footnote">Bedankt dat je erbij bent. <span class="heart">&hearts;</span> Gekkoo</p>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  var COLORS = ['#003399','#FFCC33','#479554','#FF99CC','#FF3333'];
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Slingers */
+  var g = document.getElementById('garland');
+  for(var i=0;i<28;i++){
+    var f = document.createElement('span');
+    f.className = 'flag';
+    f.style.background = COLORS[i % COLORS.length];
+    f.style.animationDelay = (i * 0.12).toFixed(2) + 's';
+    g.appendChild(f);
+  }
+
+  /* Puzzelraster 12 x 10 = 120 stukjes */
+  var COLS = 12, ROWS = 10;
+  var grid = document.getElementById('grid');
+  var countEl = document.getElementById('count');
+  var done = 0;
+
+  function kind(r,c){
+    var edgeR = (r === 0 || r === ROWS-1), edgeC = (c === 0 || c === COLS-1);
+    if(edgeR && edgeC) return {col:'#FF3333', name:'hoekstuk, 10 euro'};
+    if(edgeR || edgeC) return {col:'#479554', name:'randstuk, 4 euro'};
+    return {col:'#003399', name:'middenstuk, 2 euro'};
+  }
+
+  for(var r=0;r<ROWS;r++){
+    for(var c=0;c<COLS;c++){
+      var k = kind(r,c);
+      var b = document.createElement('button');
+      b.className = 'pc';
+      b.type = 'button';
+      b.setAttribute('aria-label', k.name);
+      b.dataset.col = k.col;
+      grid.appendChild(b);
+    }
+  }
+
+  grid.addEventListener('click', function(e){
+    var b = e.target.closest('.pc');
+    if(!b || b.classList.contains('on')) return;
+    b.classList.add('on');
+    b.style.background = b.dataset.col;
+    done++;
+    countEl.textContent = done;
+    burst(b);
+    if(done === COLS * ROWS) party();
+  });
+
+  /* Confetti */
+  function piece(x, y, color){
+    var el = document.createElement('span');
+    el.className = 'confetti';
+    el.style.background = color;
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    document.body.appendChild(el);
+    var dx = (Math.random() - 0.5) * 220;
+    var dy = -(60 + Math.random() * 140);
+    var rot = (Math.random() - 0.5) * 720;
+    var anim = el.animate([
+      {transform:'translate(0,0) rotate(0deg)', opacity:1},
+      {transform:'translate(' + dx + 'px,' + (dy + 420) + 'px) rotate(' + rot + 'deg)', opacity:0}
+    ], {duration: 1100 + Math.random() * 700, easing:'cubic-bezier(.2,.6,.4,1)'});
+    anim.onfinish = function(){ el.remove(); };
+  }
+
+  function burst(el){
+    if(reduce) return;
+    var r = el.getBoundingClientRect();
+    for(var i=0;i<7;i++){
+      piece(r.left + r.width/2, r.top + r.height/2, COLORS[Math.floor(Math.random()*COLORS.length)]);
+    }
+  }
+
+  function rain(n, y, step){
+    if(reduce) return;
+    for(var i=0;i<n;i++){
+      (function(i){
+        setTimeout(function(){
+          piece(Math.random() * window.innerWidth, y, COLORS[Math.floor(Math.random()*COLORS.length)]);
+        }, i * step);
+      })(i);
+    }
+  }
+
+  function party(){ rain(90, window.innerHeight * 0.75, 22); }
+
+  window.addEventListener('load', function(){ rain(40, 50, 35); });
+})();
+</script>
+</body>
+</html>
