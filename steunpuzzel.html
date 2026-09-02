@@ -125,9 +125,24 @@
   .price.corner .amt{color:var(--red);}
   .price.edge .amt{color:var(--green);}
   .price.mid .amt{color:var(--navy);}
-  .price.logo{border-style:solid;border-color:var(--gold);background:#FFFBEF;}
-  .price.logo .amt{color:#b58600;}
-  .lot{text-align:center;margin-top:1.1rem;font-size:1.05rem;}
+  .price.row{border-style:solid;border-color:var(--gold);background:#FFFBEF;}
+  .price.row .amt{color:#b58600;font-size:1.5rem;padding-top:.35rem;}
+
+  /* Lotje */
+  .lotbox{
+    background:#FFFBEF;border:2px solid var(--gold);
+    border-radius:var(--radius);padding:1.4rem 1.2rem;
+    box-shadow:var(--shadow);
+  }
+  .lotbox h3{font-size:clamp(1.15rem,3vw,1.45rem);margin:.55rem 0 .35rem;}
+  .lotbox .ic{font-size:2rem;line-height:1;}
+  .lotgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.2rem;}
+  .winwin{
+    display:inline-block;background:var(--red);color:#fff;
+    font-family:'Fredoka',sans-serif;font-weight:700;
+    padding:.3rem 1rem;border-radius:999px;
+    transform:rotate(-2deg);margin-top:.4rem;
+  }
 
   /* Puzzel */
   .puzzlebox{
@@ -205,7 +220,7 @@
       </div>
       <div class="card">
         <span class="step-no" style="background:var(--green)">2</span>
-        <span class="ic" aria-hidden="true">&#128393;</span>
+        <span class="ic" aria-hidden="true">&#9997;&#65039;</span>
         <h3>Versier het</h3>
         <p>Teken erop, zet je naam of schrijf een boodschap. Alles mag. De stiften liggen klaar.</p>
       </div>
@@ -236,13 +251,29 @@
         <span class="lbl">Middenstuk</span>
         <span class="sub">Het hart van de puzzel</span>
       </div>
-      <div class="price logo">
-        <span class="amt">&euro;25</span>
-        <span class="lbl">Het logostuk</span>
-        <span class="sub">Eentje per puzzel</span>
+      <div class="price row">
+        <span class="amt">Een hele rij</span>
+        <span class="lbl">Voor bedrijven</span>
+        <span class="sub">Per stukje net iets voordeliger</span>
       </div>
     </div>
-    <p class="lot">&#127903; <b>Elk stukje is ook een lot.</b> Op het einde van de avond trekken we een winnaar.</p>
+  </section>
+
+  <section>
+    <h2 class="sec"><span class="sq"></span>Elk stukje is ook een lot</h2>
+    <div class="lotgrid">
+      <div class="lotbox">
+        <span class="ic" aria-hidden="true">&#127903;</span>
+        <h3>Koop een stukje, win misschien iets</h3>
+        <p>Bij elk stukje krijg je een lotje. Op het einde van de avond trekken we een winnaar. Hoe meer stukjes, hoe meer kans.</p>
+      </div>
+      <div class="lotbox">
+        <span class="ic" aria-hidden="true">&#129309;&#65039;</span>
+        <h3>Of geef je lotje weg</h3>
+        <p>Je mag je lotje doorgeven aan een vrijwilliger. Zo steun je Gekkoo <b>en</b> zet je iemand in de bloemetjes die hier elke week staat.</p>
+        <span class="winwin">Win-win!</span>
+      </div>
+    </div>
   </section>
 
   <section>
@@ -257,9 +288,17 @@
   <section>
     <div class="biz">
       <h2>Voor bedrijven: koop een hele rij</h2>
-      <span class="big">&euro;150 voor 12 stukjes</span>
-      <p>Je naam of logo komt op de rij te staan en blijft daar staan. De puzzel krijgt na het feest een vaste plek in onze werking.</p>
+      <span class="big">&#128188; Een rij in plaats van een stukje</span>
+      <p>Wil je als bedrijf of partner groter meedoen? Dan koop je een volledige rij. Per stukje is dat net iets voordeliger en je naam komt op de rij te staan.</p>
       <p style="opacity:.85;font-size:.95rem;">Interesse? Spreek Victor aan op het feest.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="lotbox" style="text-align:center;">
+      <span class="ic" aria-hidden="true">&#128444;&#65039;</span>
+      <h3>De puzzel blijft hangen</h3>
+      <p style="max-width:48ch;margin:0 auto;">Als de puzzel af is, krijgt hij een vaste plek op ons kantoor of op een andere centrale Gekkoo-plek. Zo kan je je eigen stukje altijd komen terugzien.</p>
     </div>
   </section>
 
