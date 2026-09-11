@@ -133,8 +133,6 @@
   .price.corner .amt{color:var(--red);}
   .price.edge .amt{color:var(--green);}
   .price.mid .amt{color:var(--navy);}
-  .price.row{border-style:solid;border-color:var(--gold);background:#FFFBEF;}
-  .price.row .amt{color:#b58600;font-size:1.5rem;padding-top:.35rem;}
 
   /* Lotje */
   .lotbox{
@@ -152,9 +150,20 @@
     transform:rotate(-2deg);margin-top:.4rem;
   }
 
-  .freegift{
-    text-align:center;margin-top:1.1rem;font-size:1.05rem;
-    max-width:56ch;margin-left:auto;margin-right:auto;
+  .gift{
+    background:#FFFBEF;border:2px solid var(--gold);
+    border-radius:var(--radius);
+    padding:1.2rem 1.3rem;margin-top:1.1rem;text-align:center;
+    box-shadow:var(--shadow);
+  }
+  .gift .ic{font-size:2rem;line-height:1;}
+  .gift h3{font-size:clamp(1.15rem,3vw,1.4rem);margin:.4rem 0 .4rem;}
+  .gift p{max-width:54ch;margin:0 auto .5rem;font-size:1.05rem;}
+  .gift .more{
+    display:inline-block;margin:.3rem 0 0;
+    font-family:'Fredoka',sans-serif;font-weight:600;
+    background:var(--gold);color:var(--navy);
+    padding:.3rem 1rem;border-radius:999px;transform:rotate(-1deg);
   }
 
   .marker{
@@ -167,6 +176,7 @@
   .marker .ic{font-size:2rem;line-height:1.1;flex:0 0 auto;}
   .marker h3{font-size:1.15rem;margin:0 0 .3rem;}
   .marker p{margin:0;}
+  .marker .care{margin-top:.5rem;font-weight:700;color:#c2185b;}
 
   /* Eindresultaat */
   .mockup{
@@ -201,19 +211,6 @@
   .hint{text-align:center;font-size:.92rem;opacity:.75;margin:0;}
 
   /* Bedrijven */
-  .biz{
-    background:linear-gradient(135deg,var(--navy),#0047cc);
-    color:#fff;border-radius:var(--radius);
-    padding:1.6rem 1.3rem;box-shadow:var(--shadow-lg);text-align:center;
-  }
-  .biz h2{color:#fff;font-size:clamp(1.4rem,4vw,2rem);margin-bottom:.4rem;}
-  .biz .big{
-    display:inline-block;background:var(--gold);color:var(--navy);
-    font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.4rem;
-    padding:.4rem 1.2rem;border-radius:999px;margin:.6rem 0 .8rem;
-    transform:rotate(-1.5deg);
-  }
-  .biz p{max-width:52ch;margin:0 auto .6rem;}
 
   /* Slot */
   .outro{text-align:center;padding:2rem 0 3.2rem;}
@@ -223,6 +220,29 @@
   }
   .outro p{max-width:44ch;margin-left:auto;margin-right:auto;}
   .heart{color:var(--red);}
+
+  /* Slotboodschap */
+  .finale{
+    background:linear-gradient(135deg,var(--navy),#0047cc);
+    color:#fff;border-radius:var(--radius);
+    padding:2.2rem 1.4rem 2rem;box-shadow:var(--shadow-lg);
+  }
+  .finale-pieces{display:flex;justify-content:center;gap:.5rem;margin-bottom:1.1rem;}
+  .finale-pieces span{
+    width:26px;height:26px;border-radius:7px;display:block;
+    animation:bob 2.6s ease-in-out infinite;
+  }
+  .finale-pieces span:nth-child(2){animation-delay:.2s;}
+  .finale-pieces span:nth-child(3){animation-delay:.4s;}
+  .finale-pieces span:nth-child(4){animation-delay:.6s;}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-7px) rotate(4deg);}}
+  .finale-quote{
+    font-family:'Fredoka',sans-serif;font-weight:700;
+    font-size:clamp(1.55rem,5.6vw,2.9rem);line-height:1.15;
+    max-width:20ch;margin:0 auto .9rem;
+  }
+  .finale-quote .gk{color:var(--gold);}
+  .finale-sub{font-size:1.05rem;opacity:.9;max-width:34ch;margin:0 auto;}
   .footnote{font-size:.95rem;opacity:.75;}
 
   .confetti{position:fixed;pointer-events:none;z-index:50;width:9px;height:14px;border-radius:2px;}
@@ -257,10 +277,8 @@
     .prices{gap:.6rem;}
     .price{padding:.85rem .5rem;}
     .price .amt{font-size:1.7rem;}
-    .price.row .amt{font-size:1.15rem;}
     .price .lbl{font-size:.95rem;margin-top:.3rem;}
     .price .sub{font-size:.8rem;line-height:1.35;}
-    .freegift{font-size:1rem;text-align:left;}
 
     .marker{flex-direction:column;gap:.5rem;padding:1rem;}
     .marker .ic{font-size:1.8rem;}
@@ -278,8 +296,6 @@
     #mock-notes{font-size:34px;stroke-width:7;}
     #mock-doodles{transform:scale(1.25);transform-origin:center;transform-box:view-box;}
 
-    .biz{padding:1.3rem 1rem;}
-    .biz .big{font-size:1.15rem;padding:.4rem 1rem;}
 
     .outro{padding:1.6rem 0 2.4rem;}
   }
@@ -299,7 +315,7 @@
     <span class="kicker">Bedankingsfeest &bull; Gekkoo</span>
     <h1>De grote <span class="puz">steunpuzzel</span></h1>
     <p class="lead">Koop een stukje, versier het en leg het op de puzzel. Samen maken we het plaatje compleet.</p>
-    <div class="anchor"><span>1 stukje</span><span class="eq">=</span><span>1 kind erbij</span></div>
+    <div class="anchor"><span>Hoe klein ook</span><span class="eq">&bull;</span><span>elk stukje steunt rechtstreeks onze werking</span></div>
   </header>
 
   <section>
@@ -309,13 +325,13 @@
         <span class="step-no" style="background:var(--red)">1</span>
         <span class="ic" aria-hidden="true">&#129513;</span>
         <h3>Kies je stukje</h3>
-        <p>Zoek een plekje dat je aanspreekt: een hoek, een rand of ergens middenin. Je betaalt het aan de tafel.</p>
+        <p>Zoek een plekje dat je aanspreekt: een hoek, een rand of ergens middenin. De prijs verschilt per plek. Je betaalt het aan de tafel.</p>
       </div>
       <div class="card">
         <span class="step-no" style="background:var(--green)">2</span>
         <span class="ic" aria-hidden="true">&#9997;&#65039;</span>
         <h3>Versier het</h3>
-        <p>Teken erop, zet je naam of schrijf een boodschap. Alles mag. De stiften liggen klaar.</p>
+        <p>Teken erop, zet je naam of schrijf een boodschap. Alles mag, en maak het gerust zo mooi als je kan. De stiften liggen klaar.</p>
       </div>
       <div class="card">
         <span class="step-no" style="background:var(--navy)">3</span>
@@ -344,19 +360,21 @@
         <span class="lbl">Middenstuk</span>
         <span class="sub">Het hart van de puzzel</span>
       </div>
-      <div class="price row">
-        <span class="amt">Een hele rij</span>
-        <span class="lbl">Wil je meer geven?</span>
-        <span class="sub">Per stukje net iets voordeliger</span>
-      </div>
     </div>
-    <p class="freegift">&#128176; <b>Een gewoon stukje mag ook een vrije gift zijn.</b> &euro;2 is het minimum. Geef je liever meer? Heel graag. Alles gaat naar de kinderen.</p>
+
+    <div class="gift">
+      <span class="ic" aria-hidden="true">&#128176;</span>
+      <h3>Dit zijn richtprijzen</h3>
+      <p>Bij een middenstuk geef je wat je zelf wil: 2 cent, 2 euro of 20 euro &mdash; alles is goed. Dat geldt eigenlijk voor elk stukje. Geef wat voor jou past.</p>
+      <p class="more">En je mag gerust meerdere stukjes tegelijk nemen.</p>
+    </div>
 
     <div class="marker">
       <span class="ic" aria-hidden="true">&#128394;&#65039;</span>
       <div>
         <h3>Schrijf dwars over de puzzel &mdash; &euro;1</h3>
         <p>Voor &euro;1 krijg je een stiftje en schrijf je iets over de al gelegde stukjes heen. Je naam, een korte boodschap, een mini-tekening. Het loopt over verschillende stukjes, dus het verbindt ze letterlijk met elkaar.</p>
+        <p class="care">Hou het wel mooi: de puzzel wordt achteraf opgehangen.</p>
       </div>
     </div>
   </section>
@@ -456,7 +474,6 @@
           <text x="330" y="88" transform="rotate(4 330 88)">Lotte &#9829;</text>
           <text x="70" y="470" transform="rotate(-4 70 470)">Team Essen</text>
           <text x="404" y="452" transform="rotate(6 404 452)">Voor alle kids</text>
-          <text x="486" y="546" transform="rotate(-5 486 546)">Mo &amp; papa</text>
           <text x="126" y="560" transform="rotate(3 126 560)">Dikke duim!</text>
           <text x="40" y="222" transform="rotate(5 40 222)">2026</text>
           <text x="25" y="580" transform="rotate(-6 25 580)">Sara</text>
@@ -486,15 +503,6 @@
   </section>
 
   <section>
-    <div class="biz">
-      <h2>Wil je nog m&eacute;&eacute;r bijdragen?</h2>
-      <span class="big">&#10024; Neem een hele rij</span>
-      <p>E&eacute;n stukje te klein? Je kan ook een volledige rij nemen. Per stukje is dat net iets voordeliger en je naam komt op de rij te staan. Leuk voor een gezin, een groep vrienden, een club of een bedrijf.</p>
-      <p style="opacity:.85;font-size:.95rem;">Zin om mee te doen? Spreek Victor aan op het feest.</p>
-    </div>
-  </section>
-
-  <section>
     <div class="lotbox" style="text-align:center;">
       <span class="ic" aria-hidden="true">&#128444;&#65039;</span>
       <h3>De puzzel blijft hangen</h3>
@@ -503,9 +511,16 @@
   </section>
 
   <section class="outro">
-    <p class="quote">Elk stukje is nodig voor het geheel. Net als bij ons.</p>
-    <p>Wat je geeft, gaat rechtstreeks naar onze werking. Zo blijft er elke vakantie plaats voor &eacute;lk kind.</p>
-    <p class="footnote">Bedankt dat je erbij bent. <span class="heart">&hearts;</span> Gekkoo</p>
+    <div class="finale">
+      <div class="finale-pieces" aria-hidden="true">
+        <span style="background:var(--red)"></span>
+        <span style="background:var(--gold)"></span>
+        <span style="background:var(--green)"></span>
+        <span style="background:var(--pink)"></span>
+      </div>
+      <p class="finale-quote">Elk stukje helpt ons verder bouwen<br>aan ons verhaal bij <span class="gk">Gekkoo</span></p>
+      <p class="finale-sub">Merci om er vandaag bij te zijn. Tot bij de puzzel!</p>
+    </div>
   </section>
 
 </div>

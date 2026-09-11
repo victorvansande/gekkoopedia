@@ -70,7 +70,7 @@
   .cover .lead{font-size:20pt;max-width:24em;margin:0 auto 8mm;}
   .anchor{
     display:inline-block;background:var(--navy);color:#fff;
-    font-family:'Fredoka',sans-serif;font-weight:700;font-size:26pt;
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:21pt;
     padding:4mm 12mm;border-radius:99px;transform:rotate(-1deg);
   }
   .anchor .eq{color:var(--gold);}
@@ -91,20 +91,17 @@
   .card p{font-size:14pt;}
 
   /* Prijzen */
-  .prices{display:grid;grid-template-columns:repeat(4,1fr);gap:6mm;}
+  .prices{display:grid;grid-template-columns:repeat(3,1fr);gap:8mm;max-width:230mm;margin:0 auto;}
   .price{
     border:2.5px dashed rgba(0,51,153,.2);border-radius:6mm;
     padding:6mm 3mm;text-align:center;
   }
   .price .amt{font-family:'Fredoka',sans-serif;font-weight:700;font-size:40pt;display:block;line-height:1;}
-  .price.row .amt{font-size:24pt;padding-top:3mm;}
   .price .lbl{font-weight:700;font-size:15pt;display:block;margin-top:2.5mm;}
   .price .sub{font-size:12pt;display:block;opacity:.85;}
   .price.corner .amt{color:var(--red);}
   .price.edge .amt{color:var(--green);}
   .price.mid .amt{color:var(--navy);}
-  .price.row{border-style:solid;border-color:var(--gold);background:#FFFBEF;}
-  .price.row .amt{color:#a87c00;}
 
   .note{
     border-radius:6mm;padding:5mm 7mm;margin-top:6mm;
@@ -136,22 +133,39 @@
   .mockrow .side p{font-size:14.5pt;margin-bottom:4mm;}
 
   /* Slot */
-  .biz{
-    background:var(--navy);color:#fff;border-radius:8mm;
-    padding:9mm;text-align:center;
-  }
-  .biz h2{color:#fff;font-size:30pt;margin-bottom:3mm;}
-  .biz .big{
-    display:inline-block;background:var(--gold);color:var(--navy);
-    font-family:'Fredoka',sans-serif;font-weight:700;font-size:19pt;
-    padding:2.5mm 8mm;border-radius:99px;margin:3mm 0 4mm;transform:rotate(-1.5deg);
-  }
-  .biz p{font-size:14.5pt;max-width:48em;margin:0 auto;}
-  .closing{text-align:center;margin-top:8mm;}
-  .closing .quote{font-family:'Fredoka',sans-serif;font-weight:600;font-size:26pt;margin-bottom:3mm;}
-  .closing p{font-size:15pt;}
-  .closing .foot{font-size:13pt;opacity:.75;margin-top:3mm;}
   .heart{color:var(--red);}
+
+  /* Slotpagina */
+  .finale-page{
+    background:linear-gradient(135deg,var(--navy) 0%,#0047cc 55%,#0052e6 100%);
+    color:#fff;position:relative;overflow:hidden;
+  }
+  .finale-blobs span{
+    position:absolute;border-radius:50%;opacity:.18;
+  }
+  .finale-blobs .b1{width:110mm;height:110mm;background:var(--gold);top:-45mm;right:-30mm;}
+  .finale-blobs .b2{width:80mm;height:80mm;background:var(--pink);bottom:-35mm;left:-25mm;}
+  .finale-blobs .b3{width:45mm;height:45mm;background:var(--green);bottom:18mm;right:25mm;opacity:.22;}
+  .finale-blobs .b4{width:28mm;height:28mm;background:var(--red);top:28mm;left:32mm;opacity:.22;}
+
+  .finale{align-items:center;justify-content:center;text-align:center;position:relative;z-index:1;}
+  .finale-row{display:flex;gap:5mm;margin-bottom:11mm;}
+  .finale-row span{
+    width:15mm;height:15mm;border-radius:4mm;display:block;
+  }
+  .finale-row span:nth-child(odd){transform:rotate(-7deg);}
+  .finale-row span:nth-child(even){transform:rotate(7deg);}
+  .finale-quote{
+    font-family:'Fredoka',sans-serif;font-weight:700;
+    font-size:46pt;line-height:1.18;margin-bottom:9mm;
+  }
+  .finale-quote .gk{color:var(--gold);}
+  .finale-sub{font-size:20pt;opacity:.92;}
+  .finale-foot{
+    font-family:'Fredoka',sans-serif;font-weight:600;
+    font-size:13pt;letter-spacing:.12em;text-transform:uppercase;
+    opacity:.7;margin-top:14mm;
+  }
 </style>
 </head>
 <body>
@@ -163,7 +177,7 @@
     <span class="kicker">Bedankingsfeest &bull; Gekkoo</span>
     <h1>De grote <span class="puz">steunpuzzel</span></h1>
     <p class="lead">Koop een stukje, versier het en leg het op de puzzel. Samen maken we het plaatje compleet.</p>
-    <div class="anchor">1 stukje <span class="eq">=</span> 1 kind erbij</div>
+    <div class="anchor">Hoe klein ook <span class="eq">&bull;</span> elk stukje steunt rechtstreeks onze werking</div>
   </div>
 </div>
 
@@ -176,12 +190,12 @@
       <div class="card">
         <span class="step-no" style="background:var(--red)">1</span>
         <h3>Kies je stukje</h3>
-        <p>Zoek een plekje dat je aanspreekt: een hoek, een rand of ergens middenin. Je betaalt het aan de tafel.</p>
+        <p>Zoek een plekje dat je aanspreekt: een hoek, een rand of ergens middenin. De prijs verschilt per plek. Je betaalt het aan de tafel.</p>
       </div>
       <div class="card">
         <span class="step-no" style="background:var(--green)">2</span>
         <h3>Versier het</h3>
-        <p>Teken erop, zet je naam of schrijf een boodschap. Alles mag. De stiften liggen klaar.</p>
+        <p>Teken erop, zet je naam of schrijf een boodschap. Alles mag, en maak het gerust zo mooi als je kan. De stiften liggen klaar.</p>
       </div>
       <div class="card">
         <span class="step-no" style="background:var(--navy)">3</span>
@@ -201,14 +215,14 @@
       <div class="price corner"><span class="amt">&euro;10</span><span class="lbl">Hoekstuk</span><span class="sub">Er zijn er maar vier</span></div>
       <div class="price edge"><span class="amt">&euro;4</span><span class="lbl">Randstuk</span><span class="sub">Houdt alles samen</span></div>
       <div class="price mid"><span class="amt">&euro;2</span><span class="lbl">Middenstuk</span><span class="sub">Het hart van de puzzel</span></div>
-      <div class="price row"><span class="amt">Een hele rij</span><span class="lbl">Wil je meer geven?</span><span class="sub">Per stukje net iets voordeliger</span></div>
     </div>
     <div class="note gift">
-      <b>Een gewoon stukje mag ook een vrije gift zijn.</b> &euro;2 is het minimum. Geef je liever meer? Heel graag. Alles gaat naar de kinderen.
+      <span class="big">Dit zijn richtprijzen</span>
+      Bij een middenstuk geef je wat je zelf wil: 2 cent, 2 euro of 20 euro &mdash; alles is goed. Dat geldt eigenlijk voor elk stukje. <b>En je mag gerust meerdere stukjes tegelijk nemen.</b>
     </div>
     <div class="note marker">
       <span class="big">Schrijf dwars over de puzzel &mdash; &euro;1</span>
-      Voor &euro;1 krijg je een stiftje en schrijf je iets over de al gelegde stukjes heen. Je naam, een korte boodschap, een mini-tekening. Het loopt over verschillende stukjes, dus het verbindt ze letterlijk met elkaar.
+      Voor &euro;1 krijg je een stiftje en schrijf je iets over de al gelegde stukjes heen. Je naam, een korte boodschap, een mini-tekening. Het loopt over verschillende stukjes, dus het verbindt ze letterlijk met elkaar. <b>Hou het wel mooi: de puzzel wordt achteraf opgehangen.</b>
     </div>
   </div>
 </div>
@@ -304,7 +318,6 @@
           <text x="330" y="88" transform="rotate(4 330 88)">Lotte &#9829;</text>
           <text x="70" y="470" transform="rotate(-4 70 470)">Team Essen</text>
           <text x="404" y="452" transform="rotate(6 404 452)">Voor alle kids</text>
-          <text x="466" y="546" transform="rotate(-5 466 546)">Mo &amp; papa</text>
           <text x="126" y="560" transform="rotate(3 126 560)">Dikke duim!</text>
           <text x="40" y="222" transform="rotate(5 40 222)">2026</text>
           <text x="24" y="580" transform="rotate(-6 24 580)">Sara</text>
@@ -338,20 +351,22 @@
   </div>
 </div>
 
-<!-- 6. Meer bijdragen + slot -->
-<div class="page">
-  <div class="garland"></div>
-  <div class="page-inner" style="justify-content:center;">
-    <div class="biz">
-      <h2>Wil je nog m&eacute;&eacute;r bijdragen?</h2>
-      <span class="big">Neem een hele rij</span>
-      <p>E&eacute;n stukje te klein? Je kan ook een volledige rij nemen. Per stukje is dat net iets voordeliger en je naam komt op de rij te staan. Leuk voor een gezin, een groep vrienden, een club of een bedrijf. Spreek Victor aan op het feest.</p>
+<!-- 6. Slotboodschap -->
+<div class="page finale-page">
+  <div class="finale-blobs" aria-hidden="true">
+    <span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="b4"></span>
+  </div>
+  <div class="page-inner finale">
+    <div class="finale-row" aria-hidden="true">
+      <span style="background:var(--red)"></span>
+      <span style="background:var(--gold)"></span>
+      <span style="background:var(--green)"></span>
+      <span style="background:var(--pink)"></span>
+      <span style="background:#fff"></span>
     </div>
-    <div class="closing">
-      <p class="quote">Elk stukje is nodig voor het geheel. Net als bij ons.</p>
-      <p>Wat je geeft, gaat rechtstreeks naar onze werking. Zo blijft er elke vakantie plaats voor &eacute;lk kind.</p>
-      <p class="foot">Bedankt dat je erbij bent. <span class="heart">&hearts;</span> Gekkoo</p>
-    </div>
+    <p class="finale-quote">Elk stukje helpt ons verder bouwen<br>aan ons verhaal bij <span class="gk">Gekkoo</span></p>
+    <p class="finale-sub">Merci om er vandaag bij te zijn. Tot bij de puzzel!</p>
+    <p class="finale-foot">Bedankingsfeest &bull; Gekkoo <span class="heart">&hearts;</span></p>
   </div>
 </div>
 
