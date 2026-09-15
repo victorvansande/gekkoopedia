@@ -1006,12 +1006,7 @@
       clearTimeout(bubTimer);
       bubTimer=setTimeout(()=>bubble.classList.remove('show'),2600);
     }
-    const GECKO_LINK = 'https://app.twizzit.com/v2/public/form/b95050160943aadf93600168b6e0c6ee';
-    gecko.addEventListener('click',()=>{
-      SFX.greet();
-      showMsg(MSGS[msgIdx++%MSGS.length]);
-      window.open(GECKO_LINK, '_blank', 'noopener');
-    });
+    gecko.addEventListener('click',()=>{ SFX.greet(); showMsg(MSGS[msgIdx++%MSGS.length]); });
     gecko.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); gecko.click(); }});
     document.addEventListener('mousemove',e=>{mouseX=e.clientX;mouseY=e.clientY;});
     document.addEventListener('touchmove',e=>{ if(e.touches.length){mouseX=e.touches[0].clientX;mouseY=e.touches[0].clientY;} },{passive:true});
