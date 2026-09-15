@@ -4,3 +4,6 @@ wrangler.toml
 serve.ps1
 TAALGIDS.md
 .github
+.git
+node_modules
+.wrangler
