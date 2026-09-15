@@ -645,7 +645,7 @@
     gap:.8rem;
   }
   .skill-card{
-    background:var(--card);border-radius:16px;padding:1rem;
+    background:rgba(255,255,255,.68);border-radius:16px;padding:1rem;
     box-shadow:var(--shadow);
     display:flex;flex-direction:column;gap:.35rem;
     transition:transform .15s ease, box-shadow .15s ease;
@@ -719,7 +719,7 @@
     gap:.8rem;margin-bottom:1.2rem;
   }
   .rule-card{
-    background:var(--card);border-radius:16px;padding:1rem;
+    background:rgba(255,255,255,.68);border-radius:16px;padding:1rem;
     box-shadow:var(--shadow);text-align:center;
     transition:transform .15s ease, box-shadow .15s ease;
   }
@@ -734,7 +734,7 @@
     font-size:.9rem;border-left:5px solid var(--gold);margin-bottom:1.2rem;
   }
   .info-box{
-    background:var(--card);border:2px solid var(--navy);border-radius:var(--radius);
+    background:rgba(255,255,255,.72);border:2px solid var(--navy);border-radius:var(--radius);
     padding:1.1rem 1.2rem;margin:0 0 1.2rem 0;box-shadow:var(--shadow);
     transition:box-shadow .15s ease;
   }
@@ -742,7 +742,7 @@
   .info-box h3{font-size:1.05rem;margin-bottom:.5rem;}
   .info-box p{font-size:.92rem;margin:0;}
   .api-box{
-    background:#FFF8E8;border:2px solid var(--gold);border-radius:var(--radius);
+    background:rgba(255,248,232,.75);border:2px solid var(--gold);border-radius:var(--radius);
     padding:1.1rem 1.2rem;margin:1.2rem 0;
     transition:box-shadow .15s ease;
   }
@@ -1237,7 +1237,7 @@
   body[data-theme="dark"] .faq-cat{color:#a8bfe8;}
   .faq-list{display:flex;flex-direction:column;gap:.45rem;}
   .faq-item{
-    background:var(--card);border-radius:12px;
+    background:rgba(255,255,255,.65);border-radius:12px;
     box-shadow:0 2px 8px rgba(0,51,153,.06);
     overflow:hidden;
   }
@@ -1366,9 +1366,11 @@
   body[data-theme="dark"] .api-person .info p,body[data-theme="dark"] .stadium-body p,
   body[data-theme="dark"] .rule-card p{color:#9aafcc;}
   body[data-theme="dark"] .contact-card a{color:#a8bfe8;}
-  body[data-theme="dark"] .info-box{border-color:rgba(168,191,232,.2);}
+  body[data-theme="dark"] .info-box{background:rgba(26,36,56,.7);border-color:rgba(168,191,232,.2);}
   body[data-theme="dark"] .info-box p,body[data-theme="dark"] .info-box h3{color:#cdd9f0;}
-  body[data-theme="dark"] .api-box{background:#1a2010;border-color:rgba(100,160,80,.3);}
+  body[data-theme="dark"] .api-box{background:rgba(26,32,16,.72);border-color:rgba(100,160,80,.3);}
+  body[data-theme="dark"] .skill-card,body[data-theme="dark"] .rule-card{background:rgba(26,36,56,.68);}
+  body[data-theme="dark"] .faq-item{background:rgba(26,36,56,.65);}
   body[data-theme="dark"] .note{background:#2a1e06;border-color:#8a6a18;color:#cdd9f0;}
   body[data-theme="dark"] .option-btn{background:#1a2438;color:#cdd9f0;border-color:rgba(168,191,232,.2);}
   body[data-theme="dark"] .option-btn:hover:not(:disabled){border-color:#a8bfe8;}
@@ -1691,22 +1693,22 @@
     box-shadow:0 2px 14px rgba(0,0,0,.2);
   }
   .info-box{
-    backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);
+    backdrop-filter:blur(18px) saturate(180%);-webkit-backdrop-filter:blur(18px) saturate(180%);
     box-shadow:0 4px 24px rgba(0,51,153,.1),inset 0 1px 0 rgba(255,255,255,.7);
   }
   .api-box{
-    backdrop-filter:blur(12px) saturate(150%);-webkit-backdrop-filter:blur(12px) saturate(150%);
+    backdrop-filter:blur(16px) saturate(170%);-webkit-backdrop-filter:blur(16px) saturate(170%);
     box-shadow:0 4px 20px rgba(180,140,0,.08),inset 0 1px 0 rgba(255,255,255,.6);
   }
   .faq-item{
-    backdrop-filter:blur(10px) saturate(140%);-webkit-backdrop-filter:blur(10px) saturate(140%);
+    backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);
     box-shadow:0 2px 12px rgba(0,51,153,.07),inset 0 1px 0 rgba(255,255,255,.65);
   }
   .trophy-card{
     backdrop-filter:blur(28px) saturate(220%);-webkit-backdrop-filter:blur(28px) saturate(220%);
   }
   .skill-card,.rule-card{
-    backdrop-filter:blur(10px) saturate(140%);-webkit-backdrop-filter:blur(10px) saturate(140%);
+    backdrop-filter:blur(16px) saturate(170%);-webkit-backdrop-filter:blur(16px) saturate(170%);
     box-shadow:0 4px 16px rgba(0,51,153,.08),inset 0 1px 0 rgba(255,255,255,.6);
   }
   .band-card{
