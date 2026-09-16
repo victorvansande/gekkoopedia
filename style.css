@@ -176,6 +176,46 @@
   }
   .quicklinks a:hover{background:rgba(0,51,153,0.12);color:var(--navy);transform:translateY(-1px);box-shadow:0 3px 9px rgba(0,51,153,.12);}
   .quicklinks .ql-ic{font-size:.85rem;line-height:1;}
+
+  /* ---- 'In opbouw'-afzettape ---- */
+  .construction-banner{
+    max-width:880px;margin:.5rem auto 0;
+    border-radius:12px;overflow:hidden;
+    box-shadow:0 4px 16px rgba(0,0,0,.12);
+    position:relative;z-index:2;
+  }
+  .construction-tape{
+    height:22px;overflow:hidden;
+    background:repeating-linear-gradient(135deg,var(--gold) 0 22px,#1a1a1a 22px 44px);
+    display:flex;align-items:center;white-space:nowrap;
+  }
+  .construction-tape span{
+    display:inline-block;flex:0 0 auto;
+    padding:0 1.5rem;
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:.72rem;
+    letter-spacing:.04em;color:#fff;
+    -webkit-text-stroke:.5px #1a1a1a;
+    text-shadow:-1px -1px 0 #1a1a1a,1px -1px 0 #1a1a1a,-1px 1px 0 #1a1a1a,1px 1px 0 #1a1a1a;
+    animation:tape-scroll 14s linear infinite;
+  }
+  .construction-tape:nth-child(3) span{animation-direction:reverse;}
+  @keyframes tape-scroll{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .construction-tape span{animation:none;}
+  }
+  .construction-text{
+    margin:0;padding:.65rem 1.1rem;
+    background:var(--navy);color:#fff;
+    font-size:.82rem;line-height:1.55;text-align:center;
+  }
+  .construction-text a{color:var(--gold);font-weight:600;text-decoration:underline;}
+  .construction-text a:hover{color:#fff;}
+  body.zen .construction-banner{opacity:0;pointer-events:none;transition:opacity .5s ease;}
+  body[data-theme="dark"] .construction-text{background:#0d1a3f;}
+
   .brand-logo{height:3rem;width:auto;transition:height .25s ease;}
   .brand-logo path{fill:var(--navy);}
   body:has(#hub.active) .brand-logo{height:4rem;}
