@@ -394,11 +394,38 @@
     if(document.getElementById(id)) showView(id, false);
   });
 
+  /* Badge-kaartje in 'Ontdek de rest van de gids': teller, 10 vakjes en een zinnetje */
+  // Let op: wordt al vroeg aangeroepen (herstel uit localStorage), dus geen externe const gebruiken
   function updateProgress(){
-    document.getElementById('progress').textContent = visited.size + " van 10 pagina's ontdekt";
-    const fill = document.getElementById('progress-fill');
-    if(fill) fill.style.width = (visited.size / 10 * 100) + '%';
+    const SEG_COLORS = ['var(--navy)','var(--gold)','var(--pink)','var(--green)','var(--red)'];
+    const n = visited.size;
+    const count = document.getElementById('progress');
+    const segs = document.getElementById('progress-segs');
+    const sub = document.getElementById('progress-sub');
+    const card = document.getElementById('progress-card');
+    if(count) count.innerHTML = '<strong>' + n + '</strong> van 10';
+    if(segs){
+      if(!segs.children.length){
+        for(let i = 0; i < 10; i++){
+          const s = document.createElement('span');
+          s.style.setProperty('--seg', SEG_COLORS[i % SEG_COLORS.length]);
+          segs.appendChild(s);
+        }
+      }
+      [...segs.children].forEach(function(s, i){ s.classList.toggle('on', i < n); });
+    }
+    if(sub) sub.textContent = n >= 10 ? 'Alles ontdekt, de trofee is van jou!' : n === 9 ? 'Nog 1 tot de trofee!' : 'Nog ' + (10 - n) + ' tot de trofee';
+    if(card){
+      card.classList.toggle('complete', n >= 10);
+      card.setAttribute('aria-label', 'Jouw badges: ' + n + ' van 10. Bekijk ze');
+    }
   }
+  updateProgress();
+  (function(){
+    const card = document.getElementById('progress-card');
+    const trophy = document.getElementById('trophy-btn');
+    if(card && trophy) card.addEventListener('click', function(){ SFX.tap(); trophy.click(); });
+  })();
 
   tiles.forEach(tile => {
     tile.addEventListener('click', () => {
