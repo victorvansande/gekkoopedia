@@ -407,6 +407,16 @@
     });
   });
 
+  // Hoogte van de plakkende menubalk als CSS-variabele (voor scroll-marges)
+  (function(){
+    const hdr = document.querySelector('.site-header');
+    if(!hdr) return;
+    const set = () => document.documentElement.style.setProperty('--hdr-h', hdr.offsetHeight + 'px');
+    set();
+    if('ResizeObserver' in window) new ResizeObserver(set).observe(hdr);
+    else window.addEventListener('resize', set);
+  })();
+
   /* ---- Hamburgermenu: alle pagina's, opgebouwd uit de kaarten ---- */
   (function(){
     const toggle  = document.getElementById('menu-toggle');
