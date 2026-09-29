@@ -270,71 +270,98 @@
     }
   })();
 
-  /* ---- Opteller: hoelang de zomer al bezig is (sinds 1 juli) ---- */
+  /* ---- Vakantieteller: telt af naar de volgende schoolvakantie met speelpleinen
+          (herfst → pasen → zomer → herfst ...), en telt op zolang er een bezig is ---- */
   (function(){
     const elDays = document.getElementById('cd-days');
     const elHours = document.getElementById('cd-hours');
     const elMins = document.getElementById('cd-mins');
     const elSecs = document.getElementById('cd-secs');
     const elTitle = document.getElementById('cd-title');
-    const elSub = document.getElementById('cd-sub');
-    const elUnits = document.getElementById('cd-units');
     const sun = document.getElementById('cd-sun');
     const bubble = document.getElementById('cd-bubble');
+    const box = document.getElementById('countdown');
     if(!elDays || !sun) return;
 
-    function summerStart(){
-      const now = new Date();
-      let start = new Date(now.getFullYear(), 6, 1, 0, 0, 0); // 1 juli, lokale tijd (maand 6 = juli)
-      if(now < start){
-        start = new Date(now.getFullYear() - 1, 6, 1, 0, 0, 0); // zomer van vorig jaar
-      }
-      return start;
+    // Officiële Vlaamse schoolvakanties (begin en einde, beide inclusief)
+    const SEASONS = {
+      herfst: {naam:'Herfstvakantie', ic:'🍂', msgs:[
+        'Tik! Een blaadje voor jou 🍂','Laarzen klaarzetten 🥾','Tijd voor een herfstwandeling 🌰',
+        'Warme choco na het spelen ☕','Regenjas mee, dan kan alles ☔','Paddenstoelen spotten 🍄']},
+      paas:   {naam:'Paasvakantie', ic:'🐣', msgs:[
+        'Tik! Er zit een kuikentje in 🐣','Eitjes zoeken op het plein? 🥚','De lente is begonnen 🌷',
+        'Paashaas in aantocht 🐰','Buiten spelen zonder jas 🌤️','Bloemetjes overal 🌼']},
+      zomer:  {naam:'Zomervakantie', ic:'☀️', msgs:[
+        'Tik! De zon groet je terug ☀️','Tijd voor ijsjes 🍦','Korte broeken klaarleggen 🩳',
+        'Zonnebrand niet vergeten 🧴','Waterpistolen poetsen 💦','De zon vindt jou alvast top ⭐']},
+    };
+    const VAKANTIES = [
+      ['zomer','2026-07-01','2026-08-31'],
+      ['herfst','2026-11-02','2026-11-08'],
+      ['paas','2027-03-29','2027-04-11'],
+      ['zomer','2027-07-01','2027-08-31'],
+      ['herfst','2027-11-01','2027-11-07'],
+      ['paas','2028-04-03','2028-04-17'],
+      ['zomer','2028-07-01','2028-08-31'],
+      ['herfst','2028-10-30','2028-11-05'],
+      ['paas','2029-04-02','2029-04-15'],
+      ['zomer','2029-07-01','2029-08-31'],
+      ['herfst','2029-10-29','2029-11-04'],
+      ['paas','2030-04-08','2030-04-22'],
+      ['zomer','2030-07-01','2030-08-31'],
+    ].map(function(v){
+      const s = v[1].split('-').map(Number), e = v[2].split('-').map(Number);
+      return {key:v[0], start:new Date(s[0], s[1]-1, s[2]), end:new Date(e[0], e[1]-1, e[2]+1)}; // lokale middernacht
+    });
+
+    // Huidige of eerstvolgende vakantie; na de lijst: de zomer volgens de vaste regel (1 juli – 31 augustus)
+    function current(now){
+      for(const v of VAKANTIES){ if(now < v.end) return v; }
+      let y = now.getFullYear();
+      if(now >= new Date(y, 8, 1)) y++;
+      return {key:'zomer', start:new Date(y, 6, 1), end:new Date(y, 8, 1)};
     }
 
     function pad(n){ return String(n).padStart(2,'0'); }
+    let shownKey = null;
 
     function tick(){
       const now = new Date();
-      const start = summerStart();
-      const diff = now - start; // verstreken tijd sinds 1 juli
+      const v = current(now);
+      const s = SEASONS[v.key];
+      const bezig = now >= v.start;
+      const diff = bezig ? now - v.start : v.start - now;
+
+      if(shownKey !== v.key + bezig){
+        shownKey = v.key + bezig;
+        sun.textContent = s.ic;
+        elTitle.textContent = bezig ? s.naam + ' bezig:' : s.naam + ' over';
+        box.dataset.season = v.key;
+        sun.setAttribute('aria-label', bezig ? 'De ' + s.naam.toLowerCase() + ' is bezig! Tik voor een berichtje' : 'Aftellen naar de ' + s.naam.toLowerCase() + '. Tik voor een berichtje');
+      }
 
       const sec = Math.max(0, Math.floor(diff / 1000));
-      const days = Math.floor(sec / 86400);
-      const hours = Math.floor((sec % 86400) / 3600);
-      const mins = Math.floor((sec % 3600) / 60);
-      const secs = sec % 60;
-
-      elDays.textContent = pad(days);
-      elHours.textContent = pad(hours);
-      elMins.textContent = pad(mins);
-      elSecs.textContent = pad(secs);
+      elDays.textContent = pad(Math.floor(sec / 86400));
+      elHours.textContent = pad(Math.floor((sec % 86400) / 3600));
+      elMins.textContent = pad(Math.floor((sec % 3600) / 60));
+      elSecs.textContent = pad(sec % 60);
     }
 
     tick();
     setInterval(tick, 1000);
 
-    /* Interactief zonnetje: klik voor bubbelberichtje + zon die opkomt en teruggaat */
-    const sunMessages = [
-      'Tik! De zon groet je terug ☀️',
-      'Bijna tijd voor ijsjes 🍦',
-      'Korte broeken klaarleggen 🩳',
-      'Zonnebrand niet vergeten 🧴',
-      'Zomerse vibes onderweg 😎',
-      'Waterpistolen poetsen 💦',
-      'Nog even doorzetten, het komt eraan!',
-      'De zon vindt jou alvast top ⭐'
-    ];
+    /* Interactief icoontje: klik voor een bubbelberichtje in het thema van de vakantie */
     let bubbleTimer = null;
-    let sunMsgIndex = 0;
+    let msgIndex = 0;
     const sunRise = document.getElementById('sun-rise');
     function showSunMessage(){
+      const msgs = SEASONS[current(new Date()).key].msgs;
       SFX.sun();
       sun.classList.remove('spin');
       requestAnimationFrame(() => sun.classList.add('spin'));
-      if(sunRise){ sunRise.classList.remove('rising'); requestAnimationFrame(() => sunRise.classList.add('rising')); }
-      bubble.textContent = sunMessages[sunMsgIndex % sunMessages.length];
-      sunMsgIndex++;
+      if(sunRise && box.dataset.season === 'zomer'){ sunRise.classList.remove('rising'); requestAnimationFrame(() => sunRise.classList.add('rising')); }
+      bubble.textContent = msgs[msgIndex % msgs.length];
+      msgIndex++;
       bubble.classList.add('show');
       clearTimeout(bubbleTimer);
       bubbleTimer = setTimeout(() => bubble.classList.remove('show'), 2800);

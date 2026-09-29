@@ -344,6 +344,11 @@
   .hero-row{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.6rem .9rem;}
   .hero-row .countdown{opacity:1;background:transparent;border-color:rgba(255,204,51,.55);padding:.4rem .85rem .4rem .6rem;}
   .hero-row .cd-unit-secs{display:none;}
+  /* Kleur van het chipje volgt de vakantie */
+  .hero-row .countdown[data-season="herfst"]{border-color:rgba(230,126,34,.55);background:rgba(230,126,34,.07);}
+  .hero-row .countdown[data-season="paas"]{border-color:rgba(255,153,204,.75);background:rgba(255,153,204,.1);}
+  body[data-theme="dark"] .hero-row .countdown[data-season="herfst"]{border-color:rgba(255,160,80,.45);background:rgba(255,160,80,.08);}
+  body[data-theme="dark"] .hero-row .countdown[data-season="paas"]{border-color:rgba(255,159,207,.45);background:rgba(255,159,207,.08);}
   .hero-row .cd-unit:nth-child(3)::after{content:none;}
   .hero-jump{
     display:inline-flex;align-items:center;gap:.4rem;
@@ -1920,8 +1925,8 @@
     opacity:0;pointer-events:none;transform:translateY(-8px);
   }
   body.zen .zen-exit{opacity:1;pointer-events:auto;transform:translateY(0);}
+  /* De footer blijft zichtbaar in zen-modus: daar staan de contactgegevens */
   body.zen .top,
-  body.zen footer,
   body.zen .mini-badge-shelf,
   body.zen #trophy-btn,
   body.zen #back-to-top,
@@ -1931,15 +1936,14 @@
     opacity:0;pointer-events:none;
     transition:opacity .5s ease;
   }
-  body:not(.zen) .top,
-  body:not(.zen) footer{transition:opacity .5s ease;}
+  body:not(.zen) .top{transition:opacity .5s ease;}
   body.zen main{
     max-width:680px;
     transition:max-width .5s ease;
   }
   @media (prefers-reduced-motion: reduce){
     .search-overlay,.search-panel,#tooltip,.zen-exit,
-    body.zen .top,body.zen footer,body.zen main{transition:none;}
+    body.zen .top,body.zen main{transition:none;}
   }
 
   /* ====== ZON-ANIMATIE (zonnetje-klik) ====== */
