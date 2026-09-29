@@ -33,6 +33,7 @@
     position:relative;
   }
   .bg-blob{
+    display:none;
     position:absolute;top:-160px;right:-200px;width:460px;height:auto;
     opacity:.05;pointer-events:none;z-index:0;
   }
@@ -86,10 +87,15 @@
     grid-template-areas:"brand search controls";
     align-items:center;gap:1.1rem;
   }
-  .sh-brand{grid-area:brand;align-items:center;gap:.65rem;text-decoration:none;color:#fff;}
-  .sh-title{display:flex;flex-direction:column;line-height:1.05;text-align:left;}
-  .sh-name{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.3rem;letter-spacing:.01em;}
-  .sh-sub{font-family:'ProvidenceSansPro',sans-serif;font-size:.95rem;color:var(--gold);}
+  /* Woordmerk: het Gekkoo-logo zelf + 'Pedia' = één naam, geen dubbele 'gekkoo' */
+  .sh-brand{grid-area:brand;flex-direction:column;align-items:flex-start;gap:.1rem;text-decoration:none;color:#fff;}
+  .sh-word{display:flex;align-items:flex-end;gap:.08rem;line-height:1;}
+  .sh-pedia{
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.55rem;line-height:1;
+    color:var(--gold);letter-spacing:.005em;
+    margin-bottom:.44rem;
+  }
+  .sh-sub{font-family:'ProvidenceSansPro',sans-serif;font-size:.82rem;line-height:1;color:rgba(255,255,255,.72);padding-left:.1rem;}
   .header-controls{
     grid-area:controls;
     display:inline-flex;align-items:center;gap:.45rem;
@@ -201,46 +207,7 @@
   .logo:hover{transform:scale(1.04);}
   .logo:active{transform:scale(0.97);}
 
-  /* ---- 'In opbouw'-afzettape ---- */
-  .construction-banner{
-    max-width:880px;margin:.8rem auto 0;
-    border-radius:12px;overflow:hidden;
-    box-shadow:0 4px 16px rgba(0,0,0,.12);
-    position:relative;z-index:2;
-  }
-  .construction-tape{
-    height:22px;overflow:hidden;
-    background:repeating-linear-gradient(135deg,var(--gold) 0 22px,#1a1a1a 22px 44px);
-    display:flex;align-items:center;white-space:nowrap;
-  }
-  .construction-tape span{
-    display:inline-block;flex:0 0 auto;
-    padding:0 1.5rem;
-    font-family:'Fredoka',sans-serif;font-weight:700;font-size:.72rem;
-    letter-spacing:.04em;color:#fff;
-    -webkit-text-stroke:.5px #1a1a1a;
-    text-shadow:-1px -1px 0 #1a1a1a,1px -1px 0 #1a1a1a,-1px 1px 0 #1a1a1a,1px 1px 0 #1a1a1a;
-    animation:tape-scroll 14s linear infinite;
-  }
-  .construction-tape:nth-child(3) span{animation-direction:reverse;}
-  @keyframes tape-scroll{
-    from{transform:translateX(0);}
-    to{transform:translateX(-50%);}
-  }
-  @media (prefers-reduced-motion: reduce){
-    .construction-tape span{animation:none;}
-  }
-  .construction-text{
-    margin:0;padding:.65rem 1.1rem;
-    background:var(--navy);color:#fff;
-    font-size:.82rem;line-height:1.55;text-align:center;
-  }
-  .construction-text a{color:var(--gold);font-weight:600;text-decoration:underline;}
-  .construction-text a:hover{color:#fff;}
-  body.zen .construction-banner{opacity:0;pointer-events:none;transition:opacity .5s ease;}
-  body[data-theme="dark"] .construction-text{background:#0d1a3f;}
-
-  .brand-logo{height:2.6rem;width:auto;display:block;}
+  .brand-logo{height:1.9rem;width:auto;display:block;}
   .brand-logo path{fill:#fff;}
   main{
     max-width:880px;
@@ -280,14 +247,19 @@
     font-size:1.2rem;line-height:1.1;color:var(--red);
     margin:0 0 .15rem;
   }
-  .hub-hero{position:relative;z-index:1;text-align:center;padding:.4rem 0 2.2rem;}
+  .hub-hero{position:relative;z-index:1;text-align:center;padding:2.2rem 0 2.4rem;}
   .hero-title{
     font-family:'Fredoka',sans-serif;font-weight:700;
-    font-size:clamp(1.8rem,6vw,2.7rem);line-height:1.08;
-    max-width:18ch;margin:1.1rem auto .7rem;color:var(--navy);
+    font-size:clamp(1.7rem,5.2vw,2.4rem);line-height:1.1;
+    max-width:20ch;margin:0 auto .6rem;color:var(--navy);
   }
-  .hero-title .kicker{display:block;font-size:.55em;margin-bottom:.25rem;}
-  .hero-lead{color:#3d4f6e;max-width:470px;margin:0 auto 1.1rem;font-size:1.02rem;}
+  .hero-title .kicker{display:block;font-size:.5em;margin-bottom:.3rem;}
+  .hero-title .wave-emoji{font-family:system-ui,sans-serif;font-size:.9em;}
+  .hero-lead{color:#3d4f6e;max-width:440px;margin:0 auto 1.2rem;font-size:1rem;}
+  .hero-row{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.6rem .9rem;}
+  .hero-row .countdown{opacity:1;background:transparent;border-color:rgba(255,204,51,.55);padding:.4rem .85rem .4rem .6rem;}
+  .hero-row .cd-unit-secs{display:none;}
+  .hero-row .cd-unit:nth-child(3)::after{content:none;}
   .hero-jump{
     display:inline-flex;align-items:center;gap:.4rem;
     font-family:'Fredoka',sans-serif;font-weight:600;font-size:.95rem;
@@ -1646,9 +1618,9 @@
     .header-controls{gap:.3rem;}
     .header-controls .ctrl-btn{width:1.85rem;height:1.85rem;font-size:.85rem;}
     .header-controls .theme-pill{width:3.7rem;height:1.7rem;}
-    .brand-logo{height:2.1rem;}
-    .sh-name{font-size:1.1rem;}
-    .sh-sub{font-size:.82rem;}
+    .brand-logo{height:1.6rem;}
+    .sh-pedia{font-size:1.3rem;margin-bottom:.37rem;}
+    .sh-sub{font-size:.74rem;}
 
     .tiles{gap:.6rem;margin-top:.6rem;}
     .tile{
@@ -1671,9 +1643,8 @@
   /* ---- Heel smalle schermen: voorkom overlap logo/knoppen ---- */
   @media (max-width: 360px){
     .sh-inner{padding:.45rem .6rem .55rem;}
-    .brand-logo{height:1.8rem;}
-    .sh-brand{gap:.45rem;}
-    .sh-name{font-size:1rem;}
+    .brand-logo{height:1.45rem;}
+    .sh-pedia{font-size:1.15rem;margin-bottom:.34rem;}
     .header-controls{gap:.25rem;}
     .header-controls .theme-pill{width:3.2rem;height:1.6rem;}
     .header-controls .ctrl-btn{width:1.7rem;height:1.7rem;font-size:.8rem;}
@@ -2254,4 +2225,146 @@
     /* Typografie iets groter voor print */
     body { font-size: 10.5pt; line-height: 1.55; }
     .band-title { font-size: 22pt !important; }
+  }
+
+  /* =====================================================================
+     DONKER THEMA · "Gekkoo by night"
+     Eén samenhangende laag bovenop de losse dark-regels hierboven:
+     diep nachtblauw als basis, elk blok een eigen gekleurde gloed,
+     kaarten als lichte glasvlakken met een fijne rand, volle tegels.
+     ===================================================================== */
+  @media screen{
+  body[data-theme="dark"]{
+    --bg:#0C142C;
+    --card:#16213F;
+    --shadow:0 8px 24px rgba(0,0,0,.35);
+    --d-line:rgba(160,185,255,.14);
+    --d-line-2:rgba(160,185,255,.26);
+    --d-text:#EAF0FC;
+    --d-text-2:#A9B8DA;
+    --d-blue:#8FB0FF;
+    --d-gold:#FFD452;
+    --d-pink:#FF9FCF;
+    --d-green:#7FD694;
+    --d-red:#FF8F8F;
+    background:#0C142C radial-gradient(ellipse 1200px 700px at 50% -10%, #1D3372 0%, #12204A 38%, #0C142C 72%) no-repeat;
+    color:var(--d-text);
+  }
+
+  /* Menubalk: donker glas i.p.v. effen vlak */
+  body[data-theme="dark"] .site-header{
+    background:rgba(9,16,38,.82);
+    backdrop-filter:blur(16px) saturate(160%);
+    -webkit-backdrop-filter:blur(16px) saturate(160%);
+    border-bottom:1px solid var(--d-line);
+    box-shadow:0 6px 24px rgba(0,0,0,.35);
+  }
+  body[data-theme="dark"] .sh-search{background:rgba(255,255,255,.07);border-color:var(--d-line);color:var(--d-text-2);}
+  body[data-theme="dark"] .sh-search:hover{border-color:rgba(255,212,82,.6);background:rgba(255,255,255,.1);}
+  body[data-theme="dark"] .sh-sub{color:var(--d-text-2);}
+
+  /* Hero */
+  body[data-theme="dark"] .hero-title{color:#fff;}
+  body[data-theme="dark"] .hero-title .kicker{color:var(--d-pink);}
+  body[data-theme="dark"] .hero-lead{color:var(--d-text-2);}
+  body[data-theme="dark"] .hero-jump{color:#fff;background:rgba(143,176,255,.14);border-color:rgba(143,176,255,.35);}
+  body[data-theme="dark"] .hero-jump:hover{background:rgba(143,176,255,.24);}
+  body[data-theme="dark"] .hero-row .countdown{background:rgba(255,212,82,.06);border-color:rgba(255,212,82,.35);}
+
+  /* Blokken: zelfde nachtblauw, telkens een andere kleurgloed */
+  body[data-theme="dark"] .hub-block::before{box-shadow:inset 0 1px 0 rgba(255,255,255,.04);}
+  body[data-theme="dark"] .hb-white{--hb-bg:radial-gradient(900px 360px at 88% 0%, rgba(143,176,255,.12), transparent 70%), #0F1936;}
+  body[data-theme="dark"] .hb-gold {--hb-bg:radial-gradient(900px 360px at 10% 0%, rgba(255,212,82,.13), transparent 70%), #131A3A;}
+  body[data-theme="dark"] .hb-cta  {--hb-bg:radial-gradient(700px 300px at 50% 0%, rgba(255,212,82,.16), transparent 70%), linear-gradient(135deg,#1D45BC 0%,#10297A 100%);}
+  body[data-theme="dark"] .hb-blue {--hb-bg:radial-gradient(900px 360px at 50% 0%, rgba(95,140,255,.16), transparent 70%), #0E1733;}
+  body[data-theme="dark"] .hb-pink {--hb-bg:radial-gradient(900px 360px at 88% 0%, rgba(255,159,207,.13), transparent 70%), #141837;}
+  body[data-theme="dark"] .hb-green{--hb-bg:radial-gradient(900px 360px at 12% 0%, rgba(127,214,148,.12), transparent 70%), #0D1831;}
+  body[data-theme="dark"] .block-title{color:#fff;}
+  body[data-theme="dark"] .block-lead{color:var(--d-text-2);}
+  body[data-theme="dark"] #hub-principes .kicker{color:var(--d-red);}
+  body[data-theme="dark"] #hub-rol .kicker{color:var(--d-gold);}
+  body[data-theme="dark"] #hub-gids .kicker{color:var(--d-blue);}
+  body[data-theme="dark"] #hub-stem .kicker{color:var(--d-pink);}
+  body[data-theme="dark"] #hub-faq .kicker{color:var(--d-red);}
+  body[data-theme="dark"] #hub-media .kicker{color:var(--d-green);}
+  body[data-theme="dark"] .hb-cta .kicker{color:var(--d-gold);}
+  body[data-theme="dark"] .cta-btn{box-shadow:0 6px 0 #b8860b, 0 12px 30px rgba(0,0,0,.4);}
+
+  /* Kaarten: licht glas met fijne rand */
+  body[data-theme="dark"] .skill-card,
+  body[data-theme="dark"] .rule-card,
+  body[data-theme="dark"] .faq-item,
+  body[data-theme="dark"] .spotlight,
+  body[data-theme="dark"] .info-box{
+    background:rgba(255,255,255,.045);
+    border:1px solid var(--d-line);
+    box-shadow:0 8px 24px rgba(0,0,0,.25);
+  }
+  body[data-theme="dark"] .skill-card:hover,
+  body[data-theme="dark"] .rule-card:hover{background:rgba(255,255,255,.075);border-color:var(--d-line-2);box-shadow:0 12px 30px rgba(0,0,0,.35);}
+  body[data-theme="dark"] #hub-rol .skill-card{border-color:rgba(255,212,82,.18);}
+  body[data-theme="dark"] #hub-rol .skill-card:hover{border-color:rgba(255,212,82,.4);}
+  body[data-theme="dark"] .skill-card h3,body[data-theme="dark"] .rule-card h3,body[data-theme="dark"] .info-box h3{color:#fff;}
+  body[data-theme="dark"] .skill-card p,body[data-theme="dark"] .rule-card p,body[data-theme="dark"] .info-box p{color:var(--d-text-2);}
+  body[data-theme="dark"] .note{background:rgba(255,212,82,.08);border-color:rgba(255,212,82,.35);color:var(--d-text);}
+  body[data-theme="dark"] .api-box{background:rgba(127,214,148,.07);border-color:rgba(127,214,148,.35);}
+  body[data-theme="dark"] .faq-cat{color:var(--d-blue);}
+  body[data-theme="dark"] .faq-q{color:#fff;}
+  body[data-theme="dark"] .faq-q::after{color:var(--d-blue);}
+  body[data-theme="dark"] .faq-a{color:var(--d-text-2);border-top-color:var(--d-line);}
+  body[data-theme="dark"] .spotlight .spot-quote p{color:#fff;}
+  body[data-theme="dark"] .spotlight--open .spot-photo{background:rgba(255,255,255,.04);border-color:var(--d-pink);}
+  body[data-theme="dark"] .spot-who{color:var(--d-text-2);}
+  body[data-theme="dark"] .spot-who a{color:var(--d-pink);}
+
+  /* Tegels: vol en helder, met een zacht verloop i.p.v. doffe transparantie */
+  body[data-theme="dark"] .tile{border-color:rgba(255,255,255,.14);box-shadow:0 10px 26px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.18);}
+  body[data-theme="dark"] .tile:hover{box-shadow:0 16px 34px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.22);}
+  body[data-theme="dark"] .tile-navy {background:linear-gradient(160deg,#3461E6,#1C3FA8);color:#fff;}
+  body[data-theme="dark"] .tile-gold {background:linear-gradient(160deg,#FFD85C,#E8AE1C);color:#141B38;}
+  body[data-theme="dark"] .tile-pink {background:linear-gradient(160deg,#FFA8D4,#E26DAA);color:#141B38;}
+  body[data-theme="dark"] .tile-green{background:linear-gradient(160deg,#78CC88,#3E9852);color:#0E1A14;}
+  body[data-theme="dark"] .tile-red  {background:linear-gradient(160deg,#FF7373,#DB3A3A);color:#fff;}
+  body[data-theme="dark"] .tile-white{background:rgba(255,255,255,.06);color:#fff;border:1.5px solid rgba(143,176,255,.45);}
+  body[data-theme="dark"] .tile-white .tile-check{border-color:rgba(255,255,255,.4);}
+  body[data-theme="dark"] .tile-white .tile-check::after{color:#fff;}
+  body[data-theme="dark"] .progress{background:rgba(255,255,255,.06);border-color:var(--d-line);color:#fff;}
+  body[data-theme="dark"] .progress-bar{background:rgba(255,255,255,.1);}
+  body[data-theme="dark"] .progress-fill{background:var(--d-green);}
+  body[data-theme="dark"] .tiles-sep::before,body[data-theme="dark"] .tiles-sep::after{background:var(--d-line);}
+  body[data-theme="dark"] .tiles-sep span{color:var(--d-text-2);}
+
+  /* Paginabanden in de onderdelen: nachtblauw vlak met gekleurde gloed + accentrand */
+  body[data-theme="dark"] .page-band{color:var(--d-text);}
+  body[data-theme="dark"] .page-band::before{
+    background-color:#121C3E;
+    background-image:radial-gradient(760px 280px at 18% 0%, var(--band-glow,rgba(95,140,255,.3)), transparent 72%);
+    border-bottom:3px solid var(--band-edge,#5A82FF);
+    box-shadow:0 14px 34px rgba(0,0,0,.35);
+  }
+  body[data-theme="dark"] .page-navy {--band-glow:rgba(90,130,255,.38); --band-edge:#5A82FF;}
+  body[data-theme="dark"] .page-gold {--band-glow:rgba(255,212,82,.28); --band-edge:#FFD452;}
+  body[data-theme="dark"] .page-pink {--band-glow:rgba(255,159,207,.28);--band-edge:#FF9FCF;}
+  body[data-theme="dark"] .page-green{--band-glow:rgba(127,214,148,.26);--band-edge:#7FD694;}
+  body[data-theme="dark"] .page-red  {--band-glow:rgba(255,115,115,.3); --band-edge:#FF7373;}
+  body[data-theme="dark"] .page-band .deco{color:var(--band-edge,#5A82FF);opacity:.22;}
+  body[data-theme="dark"] .band-title{color:#fff;}
+  body[data-theme="dark"] .band-intro{color:var(--d-text-2);opacity:1;}
+  body[data-theme="dark"] .handwritten{color:var(--d-gold);}
+
+  /* Interactieve onderdelen harmoniseren */
+  body[data-theme="dark"] .option-btn,
+  body[data-theme="dark"] .hr-num,
+  body[data-theme="dark"] .game-tab,
+  body[data-theme="dark"] .feedback,
+  body[data-theme="dark"] .contact-card,
+  body[data-theme="dark"] .quote-card{background:rgba(255,255,255,.05);border-color:var(--d-line);}
+  body[data-theme="dark"] .option-btn:hover:not(:disabled){background:rgba(255,255,255,.08);border-color:var(--d-blue);}
+  body[data-theme="dark"] .hr-num.active,body[data-theme="dark"] .game-tab.active{background:#2F5BDB;border-color:#2F5BDB;color:#fff;}
+  body[data-theme="dark"] .next-btn,body[data-theme="dark"] .hr-pagenav button,body[data-theme="dark"] .game-btn{background:#2F5BDB;}
+  body[data-theme="dark"] .back{background:rgba(255,255,255,.07);color:#fff;}
+
+  /* Footer */
+  body[data-theme="dark"] .site-footer{background:#070D22;border-top:1px solid var(--d-line);}
+  body[data-theme="dark"] .site-footer .kicker{color:var(--d-gold);}
   }
