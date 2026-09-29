@@ -389,6 +389,44 @@
     });
   });
 
+  // Interne ankers: zelf scrollen, zodat er geen hash-popstate de view reset
+  document.querySelectorAll('a.hero-jump[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if(!target) return;
+      e.preventDefault();
+      target.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+
+  // Knoppen die een onderdeel openen alsof je op de kaart klikt (badge telt mee)
+  document.querySelectorAll('[data-goto]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tile = document.querySelector('.tile[data-module="'+btn.dataset.goto+'"]');
+      if(tile) tile.click();
+    });
+  });
+
+  /* ---- Kernblokken op de homepagina: badge zodra je ze tot het einde gelezen hebt ---- */
+  (function(){
+    if(!('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(!en.isIntersecting) return;
+        const mod = en.target.dataset.read;
+        io.unobserve(en.target);
+        if(visited.has(mod)) return;
+        visited.add(mod);
+        updateProgress();
+        document.dispatchEvent(new CustomEvent('moduleVisited', {detail: mod}));
+        if(visited.size === 10 && !celebrated) setTimeout(showCelebration, 1400);
+      });
+    });
+    document.querySelectorAll('.read-sentinel').forEach(function(s){
+      if(!visited.has(s.dataset.read)) io.observe(s);
+    });
+  })();
+
   document.querySelectorAll('[data-back]').forEach(btn => {
     btn.addEventListener('click', () => { SFX.back(); history.back(); });
   });
@@ -803,6 +841,20 @@
         snippet: (tile.querySelector('.tile-desc')||{}).textContent.trim(),
         text: (sec ? sec.textContent : '').replace(/\s+/g,' ').trim(),
         go: function(){ showView('module-'+mod); }
+      });
+    });
+    document.querySelectorAll('#hub [data-search-title]').forEach(function(sec){
+      index.push({
+        icon: sec.dataset.searchIcon || '📄',
+        title: sec.dataset.searchTitle,
+        cat: 'Onderdeel',
+        snippet: (sec.querySelector('.block-lead')||{textContent:''}).textContent.trim(),
+        text: sec.textContent.replace(/\s+/g,' ').trim(),
+        go: function(){
+          const onHub = document.getElementById('hub').classList.contains('active');
+          if(!onHub) showView('hub');
+          setTimeout(function(){ sec.scrollIntoView({behavior:'smooth',block:'start'}); }, onHub ? 0 : 400);
+        }
       });
     });
     document.querySelectorAll('.faq-item').forEach(function(item){

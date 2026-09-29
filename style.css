@@ -16,13 +16,15 @@
     --shadow:0 6px 18px rgba(0,51,153,0.10);
   }
   *{box-sizing:border-box;}
+  /* html mag 'hidden' blijven (gaat over op de viewport). Op body 'clip' i.p.v. 'hidden':
+     'hidden' maakt van body een scrollcontainer en dan werkt de sticky menubalk niet. */
   html{
     overflow-x:hidden;
     max-width:100%;
   }
   body{
     margin:0;
-    overflow-x:hidden;
+    overflow-x:hidden;overflow-x:clip;
     font-family:'Atkinson Hyperlegible',sans-serif;
     background:radial-gradient(ellipse 1100px 720px at 50% -12%, #ffffff 0%, #e9f0fb 32%, var(--bg) 64%);
     color:var(--navy);
@@ -71,17 +73,68 @@
   body[data-theme="dark"] ::-webkit-scrollbar-thumb:hover{background:rgba(168,191,232,.45);background-clip:content-box;}
 
   /* Layout shell */
-  .top{
-    padding:.7rem 1.2rem .3rem;
-    text-align:center;
-    position:relative;
+  /* ---- Menubalk: effen navy zoals gekkoo.be, logo + titel links, zoekbalk, knoppen rechts ---- */
+  .site-header{
+    position:sticky;top:0;z-index:60;
+    background:var(--navy);color:#fff;
+    box-shadow:0 4px 18px rgba(0,30,90,.18);
   }
-  .header-left{
-    position:absolute;left:.8rem;top:50%;transform:translateY(-50%);
+  .sh-inner{
+    max-width:1080px;margin:0 auto;
+    padding:.55rem 1.2rem;
+    display:grid;grid-template-columns:auto minmax(0,1fr) auto;
+    grid-template-areas:"brand search controls";
+    align-items:center;gap:1.1rem;
   }
+  .sh-brand{grid-area:brand;align-items:center;gap:.65rem;text-decoration:none;color:#fff;}
+  .sh-title{display:flex;flex-direction:column;line-height:1.05;text-align:left;}
+  .sh-name{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.3rem;letter-spacing:.01em;}
+  .sh-sub{font-family:'ProvidenceSansPro',sans-serif;font-size:.95rem;color:var(--gold);}
   .header-controls{
-    position:absolute;right:.8rem;top:50%;transform:translateY(-50%);
+    grid-area:controls;
     display:inline-flex;align-items:center;gap:.45rem;
+  }
+
+  /* Zoekbalk: ziet eruit als een invoerveld, opent de zoek-overlay */
+  .sh-search{
+    grid-area:search;
+    justify-self:center;width:100%;max-width:460px;
+    display:flex;align-items:center;gap:.55rem;
+    padding:.5rem .6rem .5rem .9rem;
+    background:rgba(255,255,255,.95);
+    border:2px solid transparent;border-radius:999px;
+    color:#5b6b85;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.9rem;
+    cursor:text;text-align:left;
+    box-shadow:inset 0 1px 3px rgba(0,30,90,.12);
+    transition:border-color .15s, box-shadow .15s, background .15s;
+  }
+  .sh-search:hover{border-color:var(--gold);}
+  .sh-search:focus-visible{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,204,51,.45);}
+  .sh-search-ic{font-size:.95rem;line-height:1;}
+  .sh-search-ph{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .sh-search-kbd{
+    font-family:'Fredoka',sans-serif;font-weight:600;font-size:.72rem;
+    color:var(--navy);background:rgba(0,51,153,.08);
+    border:1px solid rgba(0,51,153,.18);border-radius:6px;padding:.05rem .4rem;
+  }
+  /* Knoppen op de navy balk */
+  .site-header .glass-btn{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28);color:#fff;box-shadow:none;}
+  .site-header .glass-btn:hover{background:rgba(255,255,255,.2);box-shadow:0 4px 12px rgba(0,0,0,.2);}
+  .site-header .theme-pill{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28);}
+  .site-header :focus-visible{outline-color:var(--gold);}
+  body[data-theme="dark"] .site-header{background:#0b1733;box-shadow:0 4px 18px rgba(0,0,0,.4);}
+  body[data-theme="dark"] .sh-search{background:rgba(255,255,255,.1);color:#a8bfe8;box-shadow:none;}
+  body[data-theme="dark"] .sh-search-kbd{color:#cdd9f0;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18);}
+  body[data-theme="dark"] .site-header .glass-btn{background:rgba(255,255,255,.08);color:#cdd9f0;}
+
+  @media (max-width:700px){
+    .sh-inner{
+      grid-template-columns:minmax(0,1fr) auto;
+      grid-template-areas:"brand controls" "search search";
+      gap:.5rem .6rem;padding:.5rem .9rem .6rem;
+    }
+    .sh-search{max-width:none;padding:.42rem .6rem .42rem .8rem;}
+    .sh-search-kbd{display:none;}
   }
 
   /* ---- Gedeeld knop-design: glas, o.b.v. de trofee-knop ---- */
@@ -110,13 +163,6 @@
   }
   .mute-toggle.muted{opacity:.45;}
 
-  /* Zoek-pill links bovenaan */
-  .search-trigger{
-    display:inline-flex;align-items:center;gap:.4rem;
-    padding:.34rem .85rem .34rem .68rem;
-    font-family:'Fredoka',sans-serif;font-weight:600;font-size:.8rem;
-  }
-  .search-trigger .st-ic{font-size:.9rem;}
   .theme-pill{
     position:relative;
     display:flex;align-items:center;
@@ -155,31 +201,9 @@
   .logo:hover{transform:scale(1.04);}
   .logo:active{transform:scale(0.97);}
 
-  /* ---- Beknopte linkbalk, zoals een bladwijzerbalk ---- */
-  .quicklinks{
-    display:flex;justify-content:center;align-items:center;
-    flex-wrap:wrap;gap:.35rem;
-    max-width:880px;margin:0 auto;
-    padding:.2rem 1rem .4rem;
-  }
-  .quicklinks a{
-    display:inline-flex;align-items:center;gap:.32rem;
-    font-family:'Fredoka',sans-serif;font-weight:600;
-    font-size:.74rem;color:#5b6b85;
-    background:rgba(0,51,153,0.05);
-    border:1px solid rgba(0,51,153,0.10);
-    border-radius:999px;
-    padding:.28rem .65rem;
-    text-decoration:none;
-    transition:background .15s ease, color .15s ease, transform .15s ease, box-shadow .15s ease;
-    white-space:nowrap;
-  }
-  .quicklinks a:hover{background:rgba(0,51,153,0.12);color:var(--navy);transform:translateY(-1px);box-shadow:0 3px 9px rgba(0,51,153,.12);}
-  .quicklinks .ql-ic{font-size:.85rem;line-height:1;}
-
   /* ---- 'In opbouw'-afzettape ---- */
   .construction-banner{
-    max-width:880px;margin:.5rem auto 0;
+    max-width:880px;margin:.8rem auto 0;
     border-radius:12px;overflow:hidden;
     box-shadow:0 4px 16px rgba(0,0,0,.12);
     position:relative;z-index:2;
@@ -216,9 +240,8 @@
   body.zen .construction-banner{opacity:0;pointer-events:none;transition:opacity .5s ease;}
   body[data-theme="dark"] .construction-text{background:#0d1a3f;}
 
-  .brand-logo{height:3rem;width:auto;transition:height .25s ease;}
-  .brand-logo path{fill:var(--navy);}
-  body:has(#hub.active) .brand-logo{height:4rem;}
+  .brand-logo{height:2.6rem;width:auto;display:block;}
+  .brand-logo path{fill:#fff;}
   main{
     max-width:880px;
     margin:0 auto;
@@ -251,8 +274,148 @@
     white-space:nowrap;opacity:.9;
     min-width:8rem;
   }
-  .intro{position:relative;z-index:1;text-align:center;padding:.3rem 0 .6rem;}
-  .intro p{color:#3d4f6e;max-width:480px;margin:0 auto .6rem;}
+  /* ---- Homepagina: hero + blokkensysteem met wisselende achtergronden ---- */
+  .kicker{
+    font-family:'ProvidenceSansPro',sans-serif;font-weight:normal;
+    font-size:1.2rem;line-height:1.1;color:var(--red);
+    margin:0 0 .15rem;
+  }
+  .hub-hero{position:relative;z-index:1;text-align:center;padding:.4rem 0 2.2rem;}
+  .hero-title{
+    font-family:'Fredoka',sans-serif;font-weight:700;
+    font-size:clamp(1.8rem,6vw,2.7rem);line-height:1.08;
+    max-width:18ch;margin:1.1rem auto .7rem;color:var(--navy);
+  }
+  .hero-title .kicker{display:block;font-size:.55em;margin-bottom:.25rem;}
+  .hero-lead{color:#3d4f6e;max-width:470px;margin:0 auto 1.1rem;font-size:1.02rem;}
+  .hero-jump{
+    display:inline-flex;align-items:center;gap:.4rem;
+    font-family:'Fredoka',sans-serif;font-weight:600;font-size:.95rem;
+    color:var(--navy);text-decoration:none;
+    background:rgba(0,51,153,.07);border:1.5px solid rgba(0,51,153,.16);
+    padding:.5rem 1.1rem;border-radius:999px;
+    transition:background .15s, transform .15s;
+  }
+  .hero-jump:hover{background:rgba(0,51,153,.13);transform:translateY(2px);}
+
+  .hub-block{
+    position:relative;isolation:isolate;
+    padding:2.6rem 0 2.8rem;
+    scroll-margin-top:5.5rem;
+  }
+  .hub-block::before{
+    content:'';position:absolute;top:0;bottom:0;left:50%;
+    width:100vw;transform:translateX(-50%);
+    background:var(--hb-bg,transparent);
+    z-index:-1;
+  }
+  .hb-white{--hb-bg:rgba(255,255,255,.78);}
+  .hb-gold {--hb-bg:#FFF4D6;}
+  .hb-blue {--hb-bg:#E6EEFB;}
+  .hb-pink {--hb-bg:#FFEAF4;}
+  .hb-green{--hb-bg:#E6F2E8;}
+  .hb-cta  {--hb-bg:var(--navy);color:#fff;text-align:center;}
+  .block-title{
+    font-family:'Fredoka',sans-serif;font-weight:700;
+    font-size:clamp(1.6rem,5vw,2.2rem);line-height:1.1;
+    margin:0 0 .6rem;color:var(--navy);
+  }
+  .block-lead{color:#3d4f6e;max-width:40rem;margin:0 0 1.4rem;}
+  .hb-cta .block-title{color:#fff;}
+  .hb-cta .block-lead{color:#dfe7f7;margin-left:auto;margin-right:auto;}
+  .hb-cta .kicker{color:var(--gold);}
+  .read-sentinel{display:block;height:1px;}
+
+  /* Actieknop */
+  .cta-actions{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.8rem 1.4rem;}
+  .cta-btn{
+    display:inline-flex;align-items:center;gap:.5rem;
+    background:var(--gold);color:var(--navy);
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.15rem;
+    padding:.8rem 1.8rem;border-radius:999px;text-decoration:none;
+    box-shadow:0 6px 0 #d9a915, 0 10px 24px rgba(0,0,0,.25);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 0 #d9a915, 0 14px 28px rgba(0,0,0,.28);}
+  .cta-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #d9a915, 0 4px 10px rgba(0,0,0,.2);}
+  .cta-link{
+    background:none;border:none;cursor:pointer;padding:.3rem 0;
+    color:#fff;font-family:'Fredoka',sans-serif;font-weight:600;font-size:.95rem;
+    text-decoration:underline;text-decoration-color:rgba(255,204,51,.7);text-underline-offset:4px;
+  }
+  .cta-link:hover{color:var(--gold);}
+  .hb-cta :focus-visible{outline-color:var(--gold);}
+
+  /* Vrijwilliger aan het woord */
+  .spotlight{
+    margin:0;display:grid;grid-template-columns:auto 1fr;
+    grid-template-areas:"photo quote" "photo who";
+    align-items:center;gap:.4rem 1.6rem;
+    background:rgba(255,255,255,.72);
+    backdrop-filter:blur(16px) saturate(170%);
+    -webkit-backdrop-filter:blur(16px) saturate(170%);
+    border-radius:24px;padding:1.5rem 1.8rem;
+    box-shadow:var(--shadow);
+  }
+  .spot-photo{
+    grid-area:photo;width:140px;height:140px;border-radius:50%;
+    object-fit:cover;border:4px solid var(--pink);
+    box-shadow:0 6px 18px rgba(0,51,153,.15);
+  }
+  .spotlight--open .spot-photo{
+    display:flex;align-items:center;justify-content:center;
+    font-size:2.8rem;background:#fff;border-style:dashed;
+  }
+  .spot-quote{grid-area:quote;margin:0;position:relative;}
+  .spot-quote p{
+    font-family:'Fredoka',sans-serif;font-weight:500;font-size:1.2rem;line-height:1.4;
+    color:var(--navy);margin:0;
+  }
+  .spot-quote::before{
+    content:'\201C';position:absolute;left:-.9rem;top:-1.2rem;
+    font-family:'Fredoka',sans-serif;font-size:3.4rem;color:var(--pink);line-height:1;
+  }
+  .spot-who{grid-area:who;font-size:.9rem;color:#3d4f6e;}
+  .spot-who strong{display:block;color:var(--navy);font-family:'Fredoka',sans-serif;font-size:1rem;}
+  .spot-who a{color:var(--navy);font-weight:700;}
+  @media (max-width:560px){
+    .spotlight{grid-template-columns:1fr;grid-template-areas:"photo" "quote" "who";text-align:center;justify-items:center;padding:1.4rem 1.2rem;gap:.8rem;}
+    .spot-photo{width:110px;height:110px;}
+    .spot-quote::before{left:50%;transform:translateX(-50%);top:-1.6rem;opacity:.5;}
+  }
+
+  .hub-block.faq-section,.hub-block.hub-extra{margin:0;text-align:left;}
+  #hub-gids .progress-wrap{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem .9rem;margin-bottom:.4rem;}
+  #hub-gids .progress-bar{margin:0;width:180px;flex:0 1 180px;}
+
+  /* 'Lees meer'-affordance op de kaarten */
+  #hub-gids .tile::after{
+    content:'Lees meer \2192';
+    font-family:'Fredoka',sans-serif;font-weight:600;font-size:.74rem;
+    margin-top:.3rem;opacity:.75;
+    transition:opacity .15s, transform .15s;
+  }
+  #hub-gids .tile:hover::after{opacity:1;transform:translateX(3px);}
+  #hub-gids .tile-regio::after{content:'Open met code \2192';}
+
+  /* Hub loopt naadloos door tot in de footer */
+  body:not(.in-module) main{padding-bottom:0;}
+
+  body[data-theme="dark"] .hero-title,body[data-theme="dark"] .block-title{color:#e6ecf8;}
+  body[data-theme="dark"] .hero-lead,body[data-theme="dark"] .block-lead{color:#9aafcc;}
+  body[data-theme="dark"] .kicker{color:#ff8a8a;}
+  body[data-theme="dark"] .hero-jump{color:#cdd9f0;background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16);}
+  body[data-theme="dark"] .hb-white{--hb-bg:rgba(255,255,255,.035);}
+  body[data-theme="dark"] .hb-gold {--hb-bg:rgba(255,204,51,.07);}
+  body[data-theme="dark"] .hb-blue {--hb-bg:rgba(120,160,240,.08);}
+  body[data-theme="dark"] .hb-pink {--hb-bg:rgba(255,153,204,.07);}
+  body[data-theme="dark"] .hb-green{--hb-bg:rgba(71,149,84,.1);}
+  body[data-theme="dark"] .hb-cta  {--hb-bg:#12235a;}
+  body[data-theme="dark"] .hb-cta .block-title{color:#fff;}
+  body[data-theme="dark"] .spotlight{background:rgba(26,36,56,.7);}
+  body[data-theme="dark"] .spot-quote p,body[data-theme="dark"] .spot-who strong,body[data-theme="dark"] .spot-who a{color:#e6ecf8;}
+  body[data-theme="dark"] .spot-who{color:#9aafcc;}
+  body[data-theme="dark"] .spotlight--open .spot-photo{background:#1a2438;}
   .progress-wrap{display:inline-block;text-align:center;}
   .progress{
     display:inline-block;
@@ -334,7 +497,7 @@
   .cd-bubble.show{opacity:1;transform:translateX(-50%) translateY(0) scale(1);}
 
   /* Subtiele huisstijl-vormen op de achtergrond van de hub */
-  #hub{position:relative;padding-bottom:4rem;}
+  #hub{position:relative;}
   .bg-deco{position:absolute;pointer-events:none;opacity:.13;z-index:0;}
   @keyframes drift1{
     0%,100%{transform:translate(0,0);}
@@ -1036,12 +1199,38 @@
   }
   .relock:hover{color:var(--navy);}
 
-  footer{
-    text-align:center;color:#9aa4b8;font-size:.8rem;
-    padding:1.5rem 0 2.5rem;
-    margin-top:1rem;
-    border-top:1px solid rgba(0,51,153,.07);
+  /* ---- Footer: contact, socials en nieuwsbrief gebundeld (zoals gekkoo.be) ---- */
+  .site-footer{
+    background:var(--navy);color:#dfe7f7;
+    margin-top:0;padding:2.6rem 1.25rem 1.2rem;
+    position:relative;z-index:1;
   }
+  .sf-inner{
+    max-width:840px;margin:0 auto;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:1.8rem 2rem;
+  }
+  .site-footer .kicker{color:var(--gold);}
+  .sf-title{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;color:#fff;margin:0 0 .7rem;line-height:1.1;}
+  .sf-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.5rem;font-size:.9rem;}
+  .sf-list a,.sf-text a{color:#fff;text-decoration:underline;text-decoration-color:rgba(255,204,51,.6);text-underline-offset:3px;}
+  .sf-list a:hover{color:var(--gold);}
+  .sf-list a[href^="https://wa.me"]{white-space:nowrap;}
+  .sf-text{font-size:.9rem;margin:0 0 .8rem;}
+  .sf-btn{
+    display:inline-flex;align-items:center;
+    background:var(--gold);color:var(--navy);
+    font-family:'Fredoka',sans-serif;font-weight:600;font-size:.92rem;
+    padding:.5rem 1.2rem;border-radius:999px;text-decoration:none;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .sf-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.25);}
+  .sf-bottom{
+    max-width:840px;margin:2rem auto 0;padding-top:1rem;
+    border-top:1px solid rgba(255,255,255,.14);
+    text-align:center;font-size:.78rem;color:rgba(223,231,247,.7);
+  }
+  body[data-theme="dark"] .site-footer{background:#0b1733;}
 
   /* ---- Game tabs ---- */
   .game-tabs{
@@ -1376,8 +1565,6 @@
   }
   body[data-theme="dark"] .bg-blob path{fill:rgba(255,255,255,.025);}
   body[data-theme="dark"] .brand-logo path{fill:#cdd9f0;}
-  body[data-theme="dark"] .quicklinks a{color:#a8bfe8;}
-  body[data-theme="dark"] .quicklinks a:hover{background:rgba(168,191,232,.12);color:#cdd9f0;}
   body[data-theme="dark"] .theme-pill{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.22);}
   body[data-theme="dark"] .theme-pill:hover{background:rgba(255,255,255,.16);box-shadow:0 2px 8px rgba(0,0,0,.3);}
   body[data-theme="dark"] .theme-pill-moon{opacity:1;}
@@ -1442,8 +1629,6 @@
   body[data-theme="dark"] .go-card p{color:#9aafcc;}
   body[data-theme="dark"] .game-btn{background:#2a4a9a;}
   body[data-theme="dark"] .go-card .go-score{color:#cdd9f0;}
-  body[data-theme="dark"] footer{border-top-color:rgba(255,255,255,.07);color:#6a80a0;}
-  body[data-theme="dark"] footer a{color:#a8bfe8;}
   body[data-theme="dark"] .dot{background:rgba(168,191,232,.3);}
   body[data-theme="dark"] .dot.active{background:var(--pink);}
   body[data-theme="dark"] .avatar-circle{border-color:#2a4a9a;background:#1a2438;}
@@ -1458,12 +1643,12 @@
   /* ---- Mobiel: compacter, 2-koloms tegels ---- */
   @media (max-width: 540px){
     main{padding:0 .9rem 4rem;}
-    .top{padding:.6rem .6rem .25rem;}
-    .header-left{left:.6rem;}
-    .header-controls{right:.6rem;gap:.3rem;}
+    .header-controls{gap:.3rem;}
     .header-controls .ctrl-btn{width:1.85rem;height:1.85rem;font-size:.85rem;}
     .header-controls .theme-pill{width:3.7rem;height:1.7rem;}
-    body:has(#hub.active) .brand-logo{height:2.9rem;}
+    .brand-logo{height:2.1rem;}
+    .sh-name{font-size:1.1rem;}
+    .sh-sub{font-size:.82rem;}
 
     .tiles{gap:.6rem;margin-top:.6rem;}
     .tile{
@@ -1485,13 +1670,13 @@
 
   /* ---- Heel smalle schermen: voorkom overlap logo/knoppen ---- */
   @media (max-width: 360px){
-    .top{padding:.6rem .45rem .25rem;}
-    body:has(#hub.active) .brand-logo{height:2.4rem;}
-    .brand-logo{height:2.2rem;}
+    .sh-inner{padding:.45rem .6rem .55rem;}
+    .brand-logo{height:1.8rem;}
+    .sh-brand{gap:.45rem;}
+    .sh-name{font-size:1rem;}
     .header-controls{gap:.25rem;}
     .header-controls .theme-pill{width:3.2rem;height:1.6rem;}
     .header-controls .ctrl-btn{width:1.7rem;height:1.7rem;font-size:.8rem;}
-    .quicklinks a{font-size:.7rem;padding:.26rem .55rem;}
   }
 
   /* ---- Zoek-overlay ---- */
@@ -1565,10 +1750,6 @@
   body[data-theme="dark"] .sr-mark{background:rgba(255,204,51,.3);}
   .search-hint,.search-empty{padding:.8rem 1rem 1rem;font-size:.85rem;color:#5b6b85;text-align:center;}
   body[data-theme="dark"] .search-hint,body[data-theme="dark"] .search-empty{color:#8a98b5;}
-  @media (max-width:480px){
-    .search-trigger .st-label{display:none;}
-    .search-trigger{padding:.36rem .5rem;}
-  }
 
   /* ---- Contextuele tooltip ---- */
   .has-tip{
@@ -1609,7 +1790,6 @@
   }
   body.zen .zen-exit{opacity:1;pointer-events:auto;transform:translateY(0);}
   body.zen .top,
-  body.zen .quicklinks,
   body.zen footer,
   body.zen .mini-badge-shelf,
   body.zen #trophy-btn,
@@ -1621,7 +1801,6 @@
     transition:opacity .5s ease;
   }
   body:not(.zen) .top,
-  body:not(.zen) .quicklinks,
   body:not(.zen) footer{transition:opacity .5s ease;}
   body.zen main{
     max-width:680px;
@@ -1629,7 +1808,7 @@
   }
   @media (prefers-reduced-motion: reduce){
     .search-overlay,.search-panel,#tooltip,.zen-exit,
-    body.zen .top,body.zen .quicklinks,body.zen footer,body.zen main{transition:none;}
+    body.zen .top,body.zen footer,body.zen main{transition:none;}
   }
 
   /* ====== ZON-ANIMATIE (zonnetje-klik) ====== */
