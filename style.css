@@ -448,13 +448,14 @@
 
   .hub-block.faq-section,.hub-block.hub-extra{margin:0;text-align:left;}
   /* Kop van 'Ontdek de gids': tekst links, badge-kaartje rechts */
-  .gids-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1.2rem 2rem;flex-wrap:wrap;margin-bottom:1.1rem;}
-  .gids-intro{flex:1 1 360px;min-width:0;}
+  /* Tekst links, compact badge-kaartje rechts: blijft altijd naast elkaar (geen lege ruimte eronder) */
+  .gids-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:1rem 1.6rem;margin-bottom:1.1rem;}
+  .gids-intro{min-width:0;}
   .gids-intro .block-lead{margin-bottom:0;}
   .progress-card{
-    flex:0 0 auto;
-    display:flex;align-items:center;gap:.85rem;
-    padding:.8rem 1.1rem .85rem .9rem;
+    display:flex;align-items:center;gap:.65rem;
+    width:210px;
+    padding:.6rem .85rem .65rem .7rem;
     background:rgba(255,255,255,.75);
     backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);
     border:1.5px solid rgba(0,51,153,.12);border-radius:18px;
@@ -463,23 +464,25 @@
     transition:transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease, border-color .2s;
   }
   .progress-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,51,153,.14);border-color:rgba(255,204,51,.7);}
-  .pc-ic{font-size:2rem;line-height:1;filter:grayscale(.55);opacity:.8;transition:filter .3s, opacity .3s, transform .3s;}
+  .pc-ic{font-size:1.55rem;line-height:1;filter:grayscale(.55);opacity:.8;transition:filter .3s, opacity .3s, transform .3s;}
   .progress-card.complete .pc-ic{filter:none;opacity:1;transform:rotate(-8deg) scale(1.08);}
-  .pc-body{display:flex;flex-direction:column;gap:.2rem;min-width:170px;}
-  .pc-label{font-family:'Fredoka',sans-serif;font-weight:600;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(0,51,153,.55);}
-  .pc-count{font-family:'Fredoka',sans-serif;font-weight:600;font-size:.95rem;line-height:1.1;}
-  .pc-count strong{font-size:1.45rem;font-weight:700;}
-  .pc-segs{display:flex;gap:3px;margin:.15rem 0 .05rem;}
+  .pc-body{display:flex;flex-direction:column;gap:.25rem;flex:1;min-width:0;}
+  .pc-top{display:flex;align-items:baseline;justify-content:space-between;gap:.5rem;}
+  .pc-label{font-family:'Fredoka',sans-serif;font-weight:600;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(0,51,153,.55);}
+  .pc-count{font-family:'Fredoka',sans-serif;font-weight:600;font-size:.82rem;line-height:1;}
+  .pc-count strong{font-size:1.1rem;font-weight:700;}
+  .pc-segs{display:flex;gap:3px;}
   .pc-segs span{
-    flex:1;height:8px;border-radius:99px;
+    flex:1;height:6px;border-radius:99px;
     background:rgba(0,51,153,.1);
     transition:background .35s ease, transform .35s cubic-bezier(.34,1.56,.64,1);
   }
   .pc-segs span.on{background:var(--seg);}
-  .pc-sub{font-size:.78rem;color:#5b6b85;}
+  .pc-sub{font-size:.72rem;line-height:1.2;color:#5b6b85;}
+  /* Gsm: smalle balk over de volle breedte onder de tekst */
   @media (max-width:560px){
-    .progress-card{width:100%;}
-    .pc-body{flex:1;}
+    .gids-head{grid-template-columns:1fr;gap:.9rem;}
+    .progress-card{width:100%;padding:.55rem .85rem;}
   }
   body[data-theme="dark"] .progress-card{background:rgba(255,255,255,.05);border-color:rgba(160,185,255,.18);box-shadow:0 8px 24px rgba(0,0,0,.25);color:#fff;}
   body[data-theme="dark"] .progress-card:hover{border-color:rgba(255,212,82,.5);}

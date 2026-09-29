@@ -403,7 +403,7 @@
     const segs = document.getElementById('progress-segs');
     const sub = document.getElementById('progress-sub');
     const card = document.getElementById('progress-card');
-    if(count) count.innerHTML = '<strong>' + n + '</strong> van 10';
+    if(count) count.innerHTML = '<strong>' + n + '</strong>/10';
     if(segs){
       if(!segs.children.length){
         for(let i = 0; i < 10; i++){
