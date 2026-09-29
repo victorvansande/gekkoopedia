@@ -2002,9 +2002,11 @@
   }
   #gecko-bubble.show{opacity:1;transform:translateY(0) scale(1);}
   @media(prefers-reduced-motion:reduce){#site-gecko,#gecko-bubble{display:none;}}
-  /* Gecko verstopt zich zolang het menu open is */
+  /* Gecko verstopt zich zolang het menu of het zoekvenster open is */
   body:has(.site-menu.open) #site-gecko,
-  body:has(.site-menu.open) #gecko-bubble{opacity:0;pointer-events:none;}
+  body:has(.site-menu.open) #gecko-bubble,
+  body:has(.search-overlay.open) #site-gecko,
+  body:has(.search-overlay.open) #gecko-bubble{opacity:0;pointer-events:none;}
 
   /* ====== FIXES ====== */
   /* Landscape mobile: witte randen weg */

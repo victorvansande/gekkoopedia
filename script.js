@@ -992,6 +992,22 @@
         }
       });
     });
+    // Wat als-situaties (worden één voor één in JS getoond, dus apart indexeren)
+    if(typeof scenarios !== 'undefined'){
+      const watalsTile = document.querySelector('.tile[data-module="watals"]');
+      scenarios.forEach(function(s, i){
+        const good = s.options.find(function(o){ return o.correct; });
+        index.push({
+          icon: s.icon, title: s.text.replace(/\s*Wat doe jij\?\s*$/, ''), cat: 'Wat als...?',
+          snippet: good ? good.label : '',
+          text: s.text + ' ' + s.options.map(function(o){ return o.label + ' ' + o.feedback; }).join(' '),
+          go: function(){
+            if(watalsTile) watalsTile.click(); else showView('module-watals');
+            current = i; quizScore = 0; renderScenario();
+          }
+        });
+      });
+    }
     document.querySelectorAll('.faq-item').forEach(function(item){
       const q = (item.querySelector('.faq-q')||{}).textContent.trim();
       const a = (item.querySelector('.faq-a')||{}).textContent.trim();
