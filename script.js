@@ -407,6 +407,104 @@
     });
   });
 
+  /* ---- Hamburgermenu: alle pagina's, opgebouwd uit de kaarten ---- */
+  (function(){
+    const toggle  = document.getElementById('menu-toggle');
+    const menu    = document.getElementById('site-menu');
+    const overlay = document.getElementById('menu-overlay');
+    const body    = document.getElementById('menu-body');
+    const closeBtn= document.getElementById('menu-close');
+    if(!toggle || !menu || !body) return;
+
+    function goHubSection(sec){
+      const onHub = document.getElementById('hub').classList.contains('active');
+      if(!onHub) showView('hub');
+      setTimeout(function(){
+        if(sec) sec.scrollIntoView({behavior:'smooth', block:'start'});
+        else window.scrollTo({top:0, behavior:'smooth'});
+      }, onHub ? 0 : 400);
+    }
+
+    // Groepen opbouwen
+    const groups = [
+      {label:'Start', items:[
+        {icon:'🏠', title:'Startpagina', view:'hub', go:function(){ goHubSection(null); }},
+        {icon:'🧭', title:'Onze basisprincipes', read:'welkom', go:function(){ goHubSection(document.getElementById('hub-principes')); }},
+        {icon:'⭐', title:'Jouw rol als vrijwilliger', read:'rol', go:function(){ goHubSection(document.getElementById('hub-rol')); }},
+        {icon:'💬', title:'Veelgestelde vragen', go:function(){ goHubSection(document.getElementById('hub-faq')); }},
+      ]},
+      {label:'Onderdelen', items:[]},
+      {label:'Extra\'s', items:[]},
+    ];
+    document.querySelectorAll('#hub .tiles .tile').forEach(function(tile){
+      const mod = tile.dataset.module;
+      groups[tile.classList.contains('tile-extra') ? 2 : 1].items.push({
+        icon: (tile.querySelector('.tile-icon')||{}).textContent || '📄',
+        title: (tile.querySelector('.tile-title')||{}).textContent.trim(),
+        desc: (tile.querySelector('.tile-desc')||{}).textContent.trim(),
+        view: 'module-'+mod, tile: tile,
+        go: function(){ tile.click(); }
+      });
+    });
+
+    const buttons = [];
+    groups.forEach(function(g){
+      const h = document.createElement('p');
+      h.className = 'sm-group'; h.textContent = g.label;
+      body.appendChild(h);
+      const ul = document.createElement('ul');
+      ul.className = 'sm-list';
+      g.items.forEach(function(it){
+        const li = document.createElement('li');
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'sm-item';
+        b.innerHTML = '<span class="sm-ic" aria-hidden="true"></span><span class="sm-txt"><span class="sm-t"></span>'+(it.desc?'<span class="sm-d"></span>':'')+'</span><span class="sm-check" aria-hidden="true">✓</span>';
+        b.querySelector('.sm-ic').textContent = it.icon;
+        b.querySelector('.sm-t').textContent = it.title;
+        if(it.desc) b.querySelector('.sm-d').textContent = it.desc;
+        b.addEventListener('click', function(){ close(false); it.go(); });
+        li.appendChild(b); ul.appendChild(li);
+        buttons.push({btn:b, it:it});
+      });
+      body.appendChild(ul);
+    });
+
+    // Status bijwerken bij elke keer openen: huidige pagina + behaalde badges
+    function refresh(){
+      const active = (document.querySelector('.view.active')||{}).id;
+      buttons.forEach(function(o){
+        const it = o.it;
+        const done = it.tile ? it.tile.classList.contains('visited') : (it.read ? visited.has(it.read) : false);
+        o.btn.classList.toggle('done', done);
+        if(it.view && it.view === active) o.btn.setAttribute('aria-current','page');
+        else o.btn.removeAttribute('aria-current');
+      });
+    }
+
+    let closeTimer = null;
+    function open(){
+      clearTimeout(closeTimer);
+      refresh();
+      menu.hidden = false; overlay.hidden = false;
+      requestAnimationFrame(function(){ menu.classList.add('open'); overlay.classList.add('open'); });
+      toggle.setAttribute('aria-expanded','true');
+      const cur = body.querySelector('[aria-current]') || body.querySelector('.sm-item');
+      if(cur) setTimeout(function(){ cur.focus({preventScroll:true}); }, 60);
+    }
+    function close(returnFocus){
+      menu.classList.remove('open'); overlay.classList.remove('open');
+      toggle.setAttribute('aria-expanded','false');
+      closeTimer = setTimeout(function(){ menu.hidden = true; overlay.hidden = true; }, 280);
+      if(returnFocus !== false) toggle.focus({preventScroll:true});
+    }
+    toggle.addEventListener('click', function(){ SFX.tap(); menu.hidden ? open() : close(); });
+    closeBtn.addEventListener('click', function(){ close(); });
+    overlay.addEventListener('click', function(){ close(); });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && !menu.hidden) close();
+    });
+  })();
+
   /* ---- Kernblokken op de homepagina: badge zodra je ze tot het einde gelezen hebt ---- */
   (function(){
     if(!('IntersectionObserver' in window)) return;

@@ -67,9 +67,22 @@
       <span class="theme-pill-knob"></span>
       <span class="theme-pill-sun" aria-hidden="true">☀️</span>
     </button>
+    <button class="glass-btn ctrl-btn menu-toggle" id="menu-toggle" type="button" aria-label="Menu: alle pagina's" aria-expanded="false" aria-controls="site-menu" data-tip="Alle pagina's">
+      <span class="burger" aria-hidden="true"><span></span><span></span><span></span></span>
+    </button>
   </div>
   </div>
 </header>
+
+<!-- Hamburgermenu: alle pagina's (wordt opgebouwd uit de kaarten in script.js) -->
+<div id="menu-overlay" class="menu-overlay" hidden></div>
+<nav id="site-menu" class="site-menu" aria-label="Alle pagina's" hidden>
+  <div class="sm-head">
+    <span class="sm-title">Alle pagina's</span>
+    <button id="menu-close" class="search-close" type="button" aria-label="Menu sluiten">✕</button>
+  </div>
+  <div class="sm-body" id="menu-body"></div>
+</nav>
 
 <main>
 
