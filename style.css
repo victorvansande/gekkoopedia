@@ -94,7 +94,7 @@
   .sh-word{display:flex;align-items:flex-end;gap:.08rem;line-height:1;}
   .sh-pedia{
     font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.55rem;line-height:1;
-    color:var(--gold);letter-spacing:.005em;
+    color:var(--red);letter-spacing:.005em;
     margin-bottom:.44rem;
   }
   .sh-sub{font-family:'ProvidenceSansPro',sans-serif;font-size:.82rem;line-height:1;color:rgba(255,255,255,.72);padding-left:.1rem;}
