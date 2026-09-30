@@ -36,9 +36,9 @@
 
     let bird, pipes, score, best, speed, running, state; // state: idle | play | dead
     let particles, groundX, scorePop, passedCount;
-    // Geheime power-up: tik rechtstreeks op een bonus-ster → even onsterfelijk, beukt buizen kapot
-    const POWER_FRAMES = 360; // ~6 seconden
-    let power, shake;
+    // Cheatcode: druk op * → SUPERGEKKO (onsterfelijk, beukt buizen kapot) tot je opnieuw op * drukt
+    const POWER_FRAMES = 90;  // na het uitzetten nog ~1,5 s genadetijd (knippert)
+    let power, shake, cheat;
 
     function reset(){
       bird = {x:80, y:H/2, vy:0, r:15};
@@ -49,21 +49,13 @@
       groundX = 0;
       scorePop = 0;
       passedCount = 0;
-      power = 0; shake = 0;
+      power = 0; shake = 0; cheat = false;
     }
 
-    function tryStarTap(x, y){
-      for(const p of pipes){
-        if(!p.star || p.star.got || p.broken) continue;
-        const sx = p.x + PW/2, sy = p.top + GAP/2, dx = x - sx, dy = y - sy;
-        if(dx*dx + dy*dy < 30*30){
-          p.star.got = true; score += 2; scorePop = 1;
-          power = POWER_FRAMES;
-          spawnSpark(sx, sy); spawnSpark(bird.x, bird.y);
-          return true;
-        }
-      }
-      return false;
+    function toggleCheat(){
+      cheat = !cheat;
+      power = POWER_FRAMES;
+      spawnSpark(bird.x, bird.y);
     }
 
     function smashPipe(p){
@@ -167,6 +159,7 @@
     onLeaveSpel = resetToIdle; // gekoppeld aan showView: pauzeer bij verlaten
 
     function update(){
+      if(cheat) power = POWER_FRAMES + 1;
       if(power > 0){
         power--;
         if(power % 3 === 0 && !reduceMotion){
@@ -302,7 +295,7 @@
       ctx.fillStyle = 'rgba(255,255,255,0.5)';
       ctx.beginPath(); ctx.arc(0,0,bird.r+6,0,Math.PI*2); ctx.fill();
       // power-up: regenboog-aura (knippert als hij bijna op is)
-      if(power > 0 && (power > 90 || Math.floor(power/6) % 2 === 0)){
+      if(power > 0 && (cheat || Math.floor(power/6) % 2 === 0)){
         const hue = (Date.now()/4) % 360;
         const aura = ctx.createRadialGradient(0,0,bird.r*0.6,0,0,bird.r+16);
         aura.addColorStop(0,'hsla('+hue+',100%,65%,0.75)');
@@ -369,7 +362,7 @@
 
         // power-up balkje dat aftelt
         if(power > 0){
-          const bw = 120, bx = W/2 - bw/2, by = 74, pct = power / POWER_FRAMES;
+          const bw = 120, bx = W/2 - bw/2, by = 74, pct = cheat ? 1 : power / POWER_FRAMES;
           ctx.fillStyle = 'rgba(0,42,128,0.55)';
           rr(bx - 4, by - 4, bw + 8, 16, 8); ctx.fill();
           const hue = (Date.now()/4) % 360;
@@ -451,20 +444,16 @@
       }).join('');
     }
 
-    // Tik/klik: altijd hoppen; wie precies op een ster tikt, ontdekt de geheime power-up
-    function pointerTap(clientX, clientY){
-      if(state === 'play'){
-        const rect = canvas.getBoundingClientRect();
-        tryStarTap((clientX - rect.left) * (W / rect.width), (clientY - rect.top) * (H / rect.height));
-      }
-      flap();
-    }
-    canvas.addEventListener('mousedown', e => { e.preventDefault(); pointerTap(e.clientX, e.clientY); });
-    canvas.addEventListener('touchstart', e => { e.preventDefault(); const t = e.touches[0]; pointerTap(t.clientX, t.clientY); }, {passive:false});
+    canvas.addEventListener('mousedown', e => { e.preventDefault(); flap(); });
+    canvas.addEventListener('touchstart', e => { e.preventDefault(); flap(); }, {passive:false});
     document.addEventListener('keydown', e => {
       const hopPanel = document.getElementById('gpanel-hop');
-      if(e.code === 'Space' && document.getElementById('module-spel').classList.contains('active') && hopPanel && !hopPanel.hidden){
-        e.preventDefault(); flap();
+      const visible = document.getElementById('module-spel').classList.contains('active') && hopPanel && !hopPanel.hidden;
+      if(!visible) return;
+      if(e.code === 'Space'){ e.preventDefault(); flap(); }
+      // cheatcode (niet tijdens het typen van je naam)
+      else if(e.key === '*' && state === 'play' && !/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)){
+        e.preventDefault(); toggleCheat();
       }
     });
     document.getElementById('btn-start').addEventListener('click', startGame);
