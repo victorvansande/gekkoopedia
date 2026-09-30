@@ -1246,11 +1246,32 @@
     gecko.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); gecko.click(); }});
     document.addEventListener('mousemove',e=>{mouseX=e.clientX;mouseY=e.clientY;});
     document.addEventListener('touchmove',e=>{ if(e.touches.length){mouseX=e.touches[0].clientX;mouseY=e.touches[0].clientY;} },{passive:true});
+    document.addEventListener('touchstart',e=>{ if(e.touches.length){mouseX=e.touches[0].clientX;mouseY=e.touches[0].clientY;} },{passive:true});
 
     function frame(ts){
       const dt=Math.min((ts-lastTs)/1000,0.05); lastTs=ts;
       const vw=window.innerWidth, vh=window.innerHeight;
       const M=16;
+      // Gsm: geen muis om voor te vluchten, dus niet over tekst en knoppen zweven.
+      // Hij kruipt langs de linkerrand op en neer (half uit beeld, zoals tegen een muur).
+      if(vw <= 540){
+        const hdr = document.querySelector('.site-header');
+        const top = (hdr ? hdr.offsetHeight : 60) + 10, bottom = vh - GH - 24;
+        const dyT = y - mouseY;
+        let sp = SPEED * .55;
+        if(Math.abs(dyT) < FLEE_R && Math.abs(x - mouseX) < 90){ sp = SPEED * FLEE_MULT * .6; vy = dyT >= 0 ? 1 : -1; }
+        if(Math.random() < .004) vy = -vy;            // af en toe van richting wisselen
+        vy = vy >= 0 ? 1 : -1;
+        y += vy * sp * dt;
+        if(y < top){ y = top; vy = 1; } if(y > bottom){ y = bottom; vy = -1; }
+        x = -GW * .58;
+        gecko.style.left = x + 'px'; gecko.style.top = y + 'px';
+        gecko.style.transform = 'rotate(' + (vy > 0 ? 90 : -90) + 'deg)';
+        bubble.style.left = (GW * .9) + 'px'; bubble.style.top = (y - 6) + 'px';
+        bubble.style.transform = 'none';
+        requestAnimationFrame(frame);
+        return;
+      }
       // Flee
       const dx=x-mouseX, dy=y-mouseY;
       const d=Math.sqrt(dx*dx+dy*dy);

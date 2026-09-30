@@ -2143,7 +2143,12 @@
   .emotion-grid{
     display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;margin:1.2rem 0;
   }
-  @media(max-width:500px){.emotion-grid{grid-template-columns:repeat(auto-fill,minmax(68px,1fr));}}
+  /* Gsm: twee nette rijen van vijf (10 emoties) i.p.v. 4+4+2 */
+  @media(max-width:500px){
+    .emotion-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:.35rem;}
+    .emotion-btn{padding:.55rem 0 .5rem;font-size:1.55rem;border-radius:12px;border-width:1.5px;}
+    .emotion-btn span{font-size:.56rem;line-height:1.15;letter-spacing:-.01em;white-space:normal;text-align:center;padding:0 .15rem;hyphens:manual;}
+  }
   .emotion-btn{
     display:flex;flex-direction:column;align-items:center;gap:.2rem;
     padding:.7rem .2rem;border-radius:14px;
@@ -2574,4 +2579,57 @@
   /* Footer */
   body[data-theme="dark"] .site-footer{background:#070D22;border-top:1px solid var(--d-line);}
   body[data-theme="dark"] .site-footer .kicker{color:var(--d-gold);}
+  }
+
+  /* =====================================================================
+     GSM-POLISH (±90% van de bezoekers): compacter, rustiger ritme
+     ===================================================================== */
+  @media (max-width:540px){
+    /* Kaartjes: icoon links naast titel + tekst i.p.v. alles gestapeld */
+    .skill-grid{gap:.55rem;}
+    .skill-card{
+      display:grid;grid-template-columns:2rem minmax(0,1fr);
+      column-gap:.8rem;row-gap:.15rem;align-items:start;
+      padding:.85rem 1rem;border-radius:14px;
+    }
+    .skill-card .ic{grid-row:1 / span 2;font-size:1.55rem;line-height:1.25;text-align:center;}
+    .skill-card h3,.skill-card p{grid-column:2;}
+    .skill-card h3{font-size:.98rem;line-height:1.25;}
+    .skill-card p{font-size:.88rem;line-height:1.45;}
+
+    /* Blokken op de startpagina: minder lucht rondom, zelfde ritme */
+    .hub-hero{padding:1.6rem 0 1.9rem;}
+    .hub-block{padding:2rem 0 2.1rem;}
+    .block-title{margin-bottom:.5rem;}
+    .block-lead{margin-bottom:1.1rem;font-size:.97rem;}
+    .kicker{font-size:1.1rem;}
+
+    /* Footer: contact over de volle breedte, 'volg' en nieuwsbrief naast elkaar */
+    .site-footer{padding:2rem 1.1rem 1rem;}
+    .sf-inner{grid-template-columns:1fr 1fr;gap:1.5rem 1.2rem;}
+    .sf-inner > .sf-col:first-child{grid-column:1 / -1;}
+    .sf-title{font-size:1.3rem;margin-bottom:.5rem;}
+    .sf-list{gap:.45rem;font-size:.88rem;}
+    .sf-text{font-size:.85rem;}
+    .sf-bottom{margin-top:1.4rem;}
+  }
+  @media (max-width:540px){
+    /* Hoofdstuk-/deelnummers: alle zeven op één rij */
+    .hr-numbers,.kv-numbers{gap:.4rem;flex-wrap:nowrap;margin-bottom:1.3rem;}
+    .hr-num,.kv-num{width:38px;height:38px;font-size:1rem;}
+  }
+  @media (max-width:360px){
+    .hr-numbers,.kv-numbers{gap:.3rem;}
+    .hr-num,.kv-num{width:34px;height:34px;font-size:.92rem;}
+  }
+  /* Telefoonnummers nooit middenin afbreken */
+  a[href^="tel:"],a[href^="https://wa.me"]{white-space:nowrap;}
+  @media (max-width:540px){
+    /* Gekleurde band bovenaan een onderdeel: geen lege strook meer onder de intro */
+    .page-band{padding:1.35rem 0 1.4rem;margin-bottom:1.3rem;}
+    .band-title::after{margin:.4rem 0 .45rem;}
+    .band-intro{margin-bottom:0;}
+    .module > .back{margin-top:1rem;margin-bottom:1rem;}
+    /* Gecko langs de rand: iets kleiner */
+    #site-gecko{font-size:1.9rem;}
   }
