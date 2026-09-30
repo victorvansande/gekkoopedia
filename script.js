@@ -370,15 +370,19 @@
     sun.addEventListener('animationend', () => sun.classList.remove('spin'));
   })();
 
-  function showView(id, push){
+  // Scrollpositie op de startpagina onthouden, zodat 'Terug naar overzicht' je terugzet bij de kaarten
+  let hubScrollY = 0;
+  function showView(id, push, opts){
     const prev = document.querySelector('.view.active');
+    if(prev && prev.id === 'hub' && id !== 'hub') hubScrollY = window.scrollY;
     if(prev && prev.id === 'module-spel' && id !== 'module-spel' && typeof onLeaveSpel === 'function'){
       onLeaveSpel();
     }
     views.forEach(v => v.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     document.body.classList.toggle('in-module', id !== 'hub');
-    window.scrollTo({top:0, behavior:'smooth'});
+    if(id === 'hub' && opts && opts.restore) window.scrollTo({top:hubScrollY, behavior:'instant'});
+    else window.scrollTo({top:0, behavior:'smooth'});
     if(push !== false) history.pushState({view: id}, '');
     if(id === 'module-regio' && typeof window.__applyRegioState === 'function'){
       window.__applyRegioState();
@@ -388,10 +392,12 @@
     }
   }
 
+  // De site regelt het scrollen zelf; anders zet de browser bij 'terug' de positie op 0
+  if('scrollRestoration' in history) history.scrollRestoration = 'manual';
   history.replaceState({view: 'hub'}, '');
   window.addEventListener('popstate', function(e){
     const id = (e.state && e.state.view) || 'hub';
-    if(document.getElementById(id)) showView(id, false);
+    if(document.getElementById(id)) showView(id, false, {restore:true});
   });
 
   /* Badge-kaartje in 'Ontdek de rest van de gids': teller, 10 vakjes en een zinnetje */
