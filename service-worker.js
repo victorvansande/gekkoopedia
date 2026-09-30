@@ -1,4 +1,4 @@
-const CACHE = 'gekkoo-v66';
+const CACHE = 'gekkoo-v67';
 const ASSETS = [
   './',
   './index.html',
@@ -37,8 +37,15 @@ self.addEventListener('fetch', e => {
 
   const url = new URL(e.request.url);
   const sameOrigin = url.origin === self.location.origin;
+
+  // Documenten (pdf, word, ...) nooit via de service worker: de browser opent ze zelf.
+  // Anders kan een mislukte/gedeeltelijke (range-)aanvraag terugvallen op de startpagina.
+  if(/\.(pdf|docx?|xlsx?|pptx?|zip)$/i.test(url.pathname)) return;
+
+  // Echte pagina's = navigatie naar '/' of een .html-bestand (geen bestanden met een andere extensie)
+  const isPage = e.request.mode === 'navigate' && (!/\.[a-z0-9]+$/i.test(url.pathname) || /\.html$/i.test(url.pathname));
   // Code (HTML/CSS/JS) altijd vers ophalen indien online, anders uit cache.
-  const isCode = e.request.mode === 'navigate' || /\.(html|css|js)$/.test(url.pathname);
+  const isCode = isPage || /\.(html|css|js)$/.test(url.pathname);
 
   if(sameOrigin && isCode){
     e.respondWith(
@@ -50,14 +57,14 @@ self.addEventListener('fetch', e => {
         return resp;
       }).catch(() =>
         caches.match(e.request).then(cached =>
-          cached || (e.request.mode === 'navigate' ? caches.match('./index.html') : null) || new Response('Offline', {status: 503})
+          cached || (isPage ? caches.match('./index.html') : null) || new Response('Offline', {status: 503})
         )
       )
     );
     return;
   }
 
-  // Statische assets (afbeeldingen, fonts, pdf's): cache-first met stille achtergrond-update.
+  // Statische assets (afbeeldingen, fonts): cache-first met stille achtergrond-update.
   e.respondWith(
     caches.match(e.request).then(cached => {
       const net = fetch(e.request).then(resp => {
