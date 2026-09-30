@@ -1267,8 +1267,7 @@
         x = -GW * .58;
         gecko.style.left = x + 'px'; gecko.style.top = y + 'px';
         gecko.style.transform = 'rotate(' + (vy > 0 ? 90 : -90) + 'deg)';
-        bubble.style.left = (GW * .9) + 'px'; bubble.style.top = (y - 6) + 'px';
-        bubble.style.transform = 'none';
+        placeBubble(GW * .4, y - 6);
         requestAnimationFrame(frame);
         return;
       }
@@ -1292,9 +1291,20 @@
       const ang=Math.atan2(vy,vx)*180/Math.PI;
       gecko.style.left=x+'px'; gecko.style.top=y+'px';
       gecko.style.transform='rotate('+ang+'deg)';
-      bubble.style.left=(x+GW/2)+'px'; bubble.style.top=(y-34)+'px';
-      bubble.style.transform='translateX(-50%)';
+      placeBubble(x + GW/2, y - 34);
       requestAnimationFrame(frame);
+    }
+    // Tekstballon altijd volledig binnen het scherm (ook als de gecko in een hoek zit)
+    function placeBubble(cx, top){
+      if(!bubble.classList.contains('show')) return;
+      const vw = window.innerWidth, vh = window.innerHeight, m = 8;
+      const bw = bubble.offsetWidth || 160, bh = bubble.offsetHeight || 30;
+      const left = Math.max(m, Math.min(vw - m - bw, cx - bw/2));
+      let tp = top;
+      if(tp < m) tp = y + GH + 8;                    // geen plaats boven de gecko: eronder
+      tp = Math.max(m, Math.min(vh - m - bh, tp));
+      bubble.style.left = left + 'px'; bubble.style.top = tp + 'px';
+      bubble.style.transform = 'none';
     }
     x=window.innerWidth*.35; y=window.innerHeight*.4;
     requestAnimationFrame(ts=>{lastTs=ts;frame(ts);});

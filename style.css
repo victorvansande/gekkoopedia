@@ -2633,3 +2633,6 @@
     /* Gecko langs de rand: iets kleiner */
     #site-gecko{font-size:1.9rem;}
   }
+  /* Gecko-ballon: nooit breder dan het scherm, desnoods over twee regels */
+  #gecko-bubble{max-width:calc(100vw - 16px);}
+  @media (max-width:420px){ #gecko-bubble{white-space:normal;text-align:center;border-radius:16px;max-width:min(240px, calc(100vw - 16px));} }

@@ -36,6 +36,9 @@
 
     let bird, pipes, score, best, speed, running, state; // state: idle | play | dead
     let particles, groundX, scorePop, passedCount;
+    // Geheime power-up: tik rechtstreeks op een bonus-ster → even onsterfelijk, beukt buizen kapot
+    const POWER_FRAMES = 360; // ~6 seconden
+    let power, shake;
 
     function reset(){
       bird = {x:80, y:H/2, vy:0, r:15};
@@ -46,6 +49,34 @@
       groundX = 0;
       scorePop = 0;
       passedCount = 0;
+      power = 0; shake = 0;
+    }
+
+    function tryStarTap(x, y){
+      for(const p of pipes){
+        if(!p.star || p.star.got || p.broken) continue;
+        const sx = p.x + PW/2, sy = p.top + GAP/2, dx = x - sx, dy = y - sy;
+        if(dx*dx + dy*dy < 30*30){
+          p.star.got = true; score += 2; scorePop = 1;
+          power = POWER_FRAMES;
+          spawnSpark(sx, sy); spawnSpark(bird.x, bird.y);
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function smashPipe(p){
+      p.broken = true; shake = 10; score++; scorePop = 1;
+      if(reduceMotion) return;
+      const cols = ['#003399','#1a4fc0','#FFCC33','#FFB81F','#ffffff'];
+      const hitY = Math.max(p.top - 40, Math.min(p.top + GAP + 40, bird.y));
+      for(let i=0;i<22;i++){
+        const a = -Math.PI/2 + (Math.random()-0.5)*Math.PI*1.6, sp = 2 + Math.random()*4.5;
+        particles.push({x:p.x + PW/2, y:hitY + (Math.random()-0.5)*60, vx:Math.cos(a)*sp + 1.5, vy:Math.sin(a)*sp,
+          life:48, max:48, kind:'burst', col:cols[i%cols.length], size:5+Math.random()*6,
+          rot:Math.random()*6, vr:(Math.random()-0.5)*0.5});
+      }
     }
 
     function spawnPipe(x){
@@ -136,6 +167,14 @@
     onLeaveSpel = resetToIdle; // gekoppeld aan showView: pauzeer bij verlaten
 
     function update(){
+      if(power > 0){
+        power--;
+        if(power % 3 === 0 && !reduceMotion){
+          particles.push({x:bird.x - 10, y:bird.y + (Math.random()-0.5)*14, vx:-1.5 - Math.random(), vy:(Math.random()-0.5)*0.8,
+            life:22, max:22, kind:'spark', col:'hsl(' + ((Date.now()/4) % 360) + ',100%,62%)', size:2.5 + Math.random()*2});
+        }
+      }
+      shake *= 0.85;
       bird.vy += 0.45;
       bird.y += bird.vy;
       for(const p of pipes) p.x -= speed;
@@ -155,12 +194,19 @@
             p.star.got = true; score += 2; scorePop = 1; spawnSpark(sx,sy);
           }
         }
-        if(bird.x + bird.r > p.x && bird.x - bird.r < p.x + PW){
-          if(bird.y - bird.r < p.top || bird.y + bird.r > p.top + GAP){ die(); return; }
+        if(!p.broken && bird.x + bird.r > p.x && bird.x - bird.r < p.x + PW){
+          if(bird.y - bird.r < p.top || bird.y + bird.r > p.top + GAP){
+            if(power > 0) smashPipe(p);
+            else { die(); return; }
+          }
         }
       }
       scorePop *= 0.86;
-      if(bird.y + bird.r > H - GROUND){ bird.y = H - GROUND - bird.r; die(); return; }
+      if(bird.y + bird.r > H - GROUND){
+        bird.y = H - GROUND - bird.r;
+        if(power > 0){ bird.vy = -7.5; shake = 5; }
+        else { die(); return; }
+      }
       if(bird.y - bird.r < 0){ bird.y = bird.r; bird.vy = 0; }
     }
 
@@ -255,6 +301,15 @@
       // schaduw-gloed zodat de gekko op elke achtergrond leesbaar blijft
       ctx.fillStyle = 'rgba(255,255,255,0.5)';
       ctx.beginPath(); ctx.arc(0,0,bird.r+6,0,Math.PI*2); ctx.fill();
+      // power-up: regenboog-aura (knippert als hij bijna op is)
+      if(power > 0 && (power > 90 || Math.floor(power/6) % 2 === 0)){
+        const hue = (Date.now()/4) % 360;
+        const aura = ctx.createRadialGradient(0,0,bird.r*0.6,0,0,bird.r+16);
+        aura.addColorStop(0,'hsla('+hue+',100%,65%,0.75)');
+        aura.addColorStop(1,'hsla('+((hue+80)%360)+',100%,60%,0)');
+        ctx.fillStyle = aura;
+        ctx.beginPath(); ctx.arc(0,0,bird.r+16,0,Math.PI*2); ctx.fill();
+      }
       ctx.rotate(rot);
       ctx.font = '30px serif';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -263,9 +318,17 @@
     }
 
     function draw(){
+      ctx.save();
+      if(shake > 0.4 && !reduceMotion) ctx.translate((Math.random()-0.5)*shake, (Math.random()-0.5)*shake);
+      drawScene();
+      ctx.restore();
+    }
+
+    function drawScene(){
       drawBackground();
 
       for(const p of pipes){
+        if(p.broken) continue;
         const topH = p.top, gapY = p.top + GAP, botH = H - GROUND - gapY;
         pipeBody(p.x, -12, PW, topH+12);
         pipeCap(p.x, topH-18, PW);
@@ -303,6 +366,21 @@
         ctx.fillStyle = '#fff';
         ctx.fillText(score, 0, 0);
         ctx.restore();
+
+        // power-up balkje dat aftelt
+        if(power > 0){
+          const bw = 120, bx = W/2 - bw/2, by = 74, pct = power / POWER_FRAMES;
+          ctx.fillStyle = 'rgba(0,42,128,0.55)';
+          rr(bx - 4, by - 4, bw + 8, 16, 8); ctx.fill();
+          const hue = (Date.now()/4) % 360;
+          const g = ctx.createLinearGradient(bx, 0, bx + bw, 0);
+          g.addColorStop(0, 'hsl('+hue+',100%,60%)'); g.addColorStop(1, 'hsl('+((hue+120)%360)+',100%,60%)');
+          ctx.fillStyle = g;
+          rr(bx, by, Math.max(8, bw*pct), 8, 4); ctx.fill();
+          ctx.font = 'bold 12px Fredoka, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.lineWidth = 3; ctx.strokeStyle = '#002a80'; ctx.strokeText('SUPERGEKKO!', W/2, by + 22);
+          ctx.fillStyle = '#FFCC33'; ctx.fillText('SUPERGEKKO!', W/2, by + 22);
+        }
       }
     }
 
@@ -373,8 +451,16 @@
       }).join('');
     }
 
-    canvas.addEventListener('mousedown', e => { e.preventDefault(); flap(); });
-    canvas.addEventListener('touchstart', e => { e.preventDefault(); flap(); }, {passive:false});
+    // Tik/klik: altijd hoppen; wie precies op een ster tikt, ontdekt de geheime power-up
+    function pointerTap(clientX, clientY){
+      if(state === 'play'){
+        const rect = canvas.getBoundingClientRect();
+        tryStarTap((clientX - rect.left) * (W / rect.width), (clientY - rect.top) * (H / rect.height));
+      }
+      flap();
+    }
+    canvas.addEventListener('mousedown', e => { e.preventDefault(); pointerTap(e.clientX, e.clientY); });
+    canvas.addEventListener('touchstart', e => { e.preventDefault(); const t = e.touches[0]; pointerTap(t.clientX, t.clientY); }, {passive:false});
     document.addEventListener('keydown', e => {
       const hopPanel = document.getElementById('gpanel-hop');
       if(e.code === 'Space' && document.getElementById('module-spel').classList.contains('active') && hopPanel && !hopPanel.hidden){
