@@ -1597,3 +1597,79 @@
     navigator.serviceWorker.register('./service-worker.js').catch(() => {});
   }
 
+
+  /* ---- Vrijwilliger aan het woord: carrousel met bolletjes en tijdsbalk ---- */
+  (function(){
+    const car = document.getElementById('spot-carousel');
+    const track = document.getElementById('spot-track');
+    const dotsBox = document.getElementById('spot-dots');
+    if(!car || !track || !dotsBox) return;
+    const slides = [...track.querySelectorAll('.spotlight')];
+    if(slides.length < 2){ dotsBox.hidden = true; return; }
+
+    const INTERVAL = 10000; // ms per vrijwilliger
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let idx = 0, auto = !reduce;
+    car.style.setProperty('--spot-dur', INTERVAL + 'ms');
+
+    const dots = slides.map((s, i) => {
+      const name = (s.querySelector('.spot-who strong') || {}).textContent || ('Vrijwilliger ' + (i+1));
+      s.setAttribute('aria-label', (i+1) + ' van ' + slides.length + ': ' + name);
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'spot-dot';
+      b.setAttribute('aria-label', 'Toon ' + name);
+      b.innerHTML = '<span class="spot-dot-fill"></span>';
+      b.addEventListener('click', () => { stopAuto(); go(i); });
+      b.addEventListener('keydown', e => {
+        if(e.key === 'ArrowDown' || e.key === 'ArrowRight'){ e.preventDefault(); stopAuto(); go(i+1); dots[idx].focus(); }
+        if(e.key === 'ArrowUp' || e.key === 'ArrowLeft'){ e.preventDefault(); stopAuto(); go(i-1); dots[idx].focus(); }
+      });
+      dotsBox.appendChild(b);
+      return b;
+    });
+
+    function go(n){
+      idx = (n + slides.length) % slides.length;
+      slides.forEach((s, i) => {
+        const on = i === idx;
+        s.classList.toggle('is-active', on);
+        s.toggleAttribute('inert', !on);
+        s.setAttribute('aria-hidden', on ? 'false' : 'true');
+      });
+      dots.forEach((d, i) => {
+        d.toggleAttribute('aria-current', i === idx);
+        const fill = d.firstChild;
+        // tijdsbalk herstarten op het actieve bolletje
+        fill.classList.remove('run'); void fill.offsetWidth;
+        if(i === idx && auto) fill.classList.add('run');
+      });
+    }
+    function stopAuto(){ auto = false; car.classList.add('is-manual'); dots.forEach(d => d.firstChild.classList.remove('run')); }
+
+    // Volgende vrijwilliger zodra de tijdsbalk vol is
+    dotsBox.addEventListener('animationend', e => { if(auto && e.target.classList.contains('run')) go(idx + 1); });
+
+    // Pauzeren: muis erop, focus erin, aanraken, of niet in beeld
+    const setPause = (key, on) => { car.classList.toggle('pause-' + key, on); };
+    car.addEventListener('mouseenter', () => setPause('hover', true));
+    car.addEventListener('mouseleave', () => setPause('hover', false));
+    car.addEventListener('focusin', () => setPause('focus', true));
+    car.addEventListener('focusout', () => setPause('focus', false));
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(en => setPause('view', !en[0].isIntersecting), {threshold: 0.35}).observe(car);
+    }
+
+    // Vegen op gsm
+    let sx = null, sy = null;
+    track.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; setPause('touch', true); }, {passive:true});
+    track.addEventListener('touchend', e => {
+      setPause('touch', false);
+      if(sx === null) return;
+      const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+      if(Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)){ stopAuto(); go(idx + (dx < 0 ? 1 : -1)); }
+      sx = sy = null;
+    }, {passive:true});
+
+    if(reduce) car.classList.add('is-manual');
+    go(0);
+  })();

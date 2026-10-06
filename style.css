@@ -2645,3 +2645,60 @@
   body[data-theme="dark"] .spot-call{color:#A9B8DA;}
   body[data-theme="dark"] .spot-call a{color:#FF9FCF;}
   @media (max-width:560px){ .spotlight .spot-quote p{font-size:.98rem;} }
+
+  /* ---- Carrousel 'Vrijwilliger aan het woord' ---- */
+  .spot-carousel{display:flex;align-items:center;gap:.9rem;}
+  .spot-track{flex:1;min-width:0;display:grid;}
+  /* alle kaarten in dezelfde cel: de hoogte volgt de langste quote, niets verspringt */
+  .spot-track > .spotlight{
+    grid-area:1 / 1;
+    opacity:0;visibility:hidden;transform:translateY(12px);
+    transition:opacity .55s ease, transform .55s ease, visibility 0s linear .55s;
+  }
+  .spot-track > .spotlight.is-active{
+    opacity:1;visibility:visible;transform:none;
+    transition:opacity .55s ease, transform .55s ease, visibility 0s;
+  }
+  .spot-dots{display:flex;flex-direction:column;align-items:center;gap:.15rem;flex:0 0 auto;}
+  .spot-dot{
+    position:relative;width:26px;height:24px;padding:0;border:none;background:none;cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  /* zichtbaar bolletje (de knop zelf is groter, makkelijker om op te tikken) */
+  .spot-dot::before{
+    content:'';position:absolute;left:50%;top:50%;width:11px;height:11px;
+    transform:translate(-50%,-50%);border-radius:99px;
+    background:rgba(0,51,153,.22);
+    transition:height .35s ease, background .2s ease;
+  }
+  .spot-dot:hover::before{background:rgba(0,51,153,.4);}
+  .spot-dot[aria-current]{height:44px;}
+  .spot-dot[aria-current]::before{height:38px;background:rgba(0,51,153,.16);}
+  .spot-dot-fill{
+    position:absolute;left:50%;top:50%;width:11px;height:38px;transform:translate(-50%,-50%);
+    border-radius:99px;overflow:hidden;pointer-events:none;opacity:0;
+  }
+  .spot-dot[aria-current] .spot-dot-fill{opacity:1;}
+  .spot-dot-fill::after{
+    content:'';position:absolute;left:0;top:0;width:100%;height:0;border-radius:99px;
+    background:var(--navy);
+  }
+  .spot-dot-fill.run::after{animation:spot-fill var(--spot-dur,10000ms) linear forwards;}
+  .is-manual .spot-dot[aria-current] .spot-dot-fill::after{height:100%;}
+  .spot-carousel[class*="pause-"] .spot-dot-fill.run::after{animation-play-state:paused;}
+  @keyframes spot-fill{from{height:0;}to{height:100%;}}
+  .spot-dot:focus-visible{outline:3px solid var(--navy);outline-offset:1px;border-radius:99px;}
+  @media (prefers-reduced-motion: reduce){
+    .spot-track > .spotlight,.spot-track > .spotlight.is-active{transition:none;transform:none;}
+  }
+  @media (max-width:560px){
+    .spot-carousel{gap:.35rem;}
+    .spot-dot{width:20px;}
+  }
+  body[data-theme="dark"] .spot-dot::before{background:rgba(255,255,255,.2);}
+  body[data-theme="dark"] .spot-dot[aria-current]::before{background:rgba(255,255,255,.12);}
+  body[data-theme="dark"] .spot-dot-fill::after{background:#FF9FCF;}
+  /* quote + naam samen verticaal centreren als de kaart hoger is dan nodig */
+  .spot-track > .spotlight{grid-template-rows:auto auto;align-content:center;}
+  .spot-track > .spotlight .spot-photo{align-self:center;}
+  @media (max-width:560px){ .spot-track > .spotlight{grid-template-rows:auto auto auto;align-content:start;} }
