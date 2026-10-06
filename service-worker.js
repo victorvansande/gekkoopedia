@@ -1,4 +1,4 @@
-const CACHE = 'gekkoo-v67';
+const CACHE = 'gekkoo-v68';
 const ASSETS = [
   './',
   './index.html',
@@ -15,6 +15,7 @@ const ASSETS = [
   './manifest.json',
   './annelies.jpg',
   './loes.jpg',
+  './burak.jpg',
   './og-image.jpg',
 ];
 
