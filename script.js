@@ -1604,6 +1604,15 @@
     const track = document.getElementById('spot-track');
     const dotsBox = document.getElementById('spot-dots');
     if(!car || !track || !dotsBox) return;
+
+    // Volgorde per bezoek: de anderen willekeurig, wie data-pin="last" heeft altijd achteraan
+    (function(){
+      const all = [...track.querySelectorAll('.spotlight')];
+      const last = all.filter(s => s.dataset.pin === 'last');
+      const rest = all.filter(s => s.dataset.pin !== 'last');
+      for(let i = rest.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [rest[i], rest[j]] = [rest[j], rest[i]]; }
+      rest.concat(last).forEach(s => track.appendChild(s));
+    })();
     const slides = [...track.querySelectorAll('.spotlight')];
     if(slides.length < 2){ dotsBox.hidden = true; return; }
 
