@@ -2710,3 +2710,7 @@
     text-shadow:0 2px 6px rgba(150,30,90,.25);
   }
   @media (max-width:560px){ .spotlight .spot-photo.spot-initial{font-size:2.9rem;} }
+  .spotlight .spot-photo.spot-initial--gold{
+    background:linear-gradient(145deg,#ffe48a 0%,var(--gold) 50%,#e8a400 100%);
+    color:var(--navy);text-shadow:0 2px 6px rgba(255,255,255,.35);
+  }
