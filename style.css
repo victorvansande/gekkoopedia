@@ -446,6 +446,77 @@
     .spot-quote::before{left:50%;transform:translateX(-50%);top:-1.6rem;opacity:.5;}
   }
 
+  /* Teaser: de Gekkoo-bus rijdt door het beeld */
+  .bus-scene{
+    position:relative;height:150px;margin:0 0 1.4rem;overflow:hidden;
+    border-radius:20px;background:linear-gradient(#cfe6ff 0%,#eef6ff 70%);
+    box-shadow:var(--shadow);
+  }
+  .bus-cloud{position:absolute;width:64px;height:20px;border-radius:20px;background:#fff;opacity:.9;animation:bus-cloud 38s linear infinite;}
+  .bus-cloud::before{content:'';position:absolute;width:30px;height:30px;border-radius:50%;background:inherit;left:12px;top:-14px;}
+  .bus-cloud--a{top:22px;left:12%;}
+  .bus-cloud--b{top:44px;left:62%;transform:scale(.7);animation-duration:52s;animation-delay:-20s;}
+  @keyframes bus-cloud{from{translate:0 0;}to{translate:-60vw 0;}}
+  .bus-road{
+    position:absolute;left:0;right:0;bottom:0;height:22px;background:#5b6578;
+    box-shadow:inset 0 3px 0 #48505f;
+  }
+  .bus-road::after{
+    content:'';position:absolute;left:0;right:0;top:10px;height:3px;
+    background:repeating-linear-gradient(90deg,#fff 0 22px,transparent 22px 44px);opacity:.75;
+  }
+  .bus-drive{
+    position:absolute;z-index:1;bottom:19px;left:-260px;
+    animation:bus-drive 11s linear infinite;
+  }
+  @keyframes bus-drive{from{left:-260px;}to{left:100%;}}
+  .bus-svg{display:block;width:240px;height:auto;animation:bus-bob .45s ease-in-out infinite alternate;overflow:visible;}
+  @keyframes bus-bob{from{transform:translateY(0);}to{transform:translateY(-1.5px);}}
+  .bus-body{fill:#fff;stroke:#1E3354;stroke-width:2;}
+  .bus-window{fill:#9fc3e8;stroke:#1E3354;stroke-width:1.5;}
+  .bus-trim{fill:#2b2f38;}
+  .bus-handle{fill:#2b2f38;}
+  .bus-logo{fill:#1D2E9C;}
+  .bus-tyre{fill:#22252c;}
+  .bus-hub{fill:#b9c0cc;}
+  .bus-spoke{stroke:#5b6578;stroke-width:2;}
+  .bus-spin{transform-box:fill-box;transform-origin:center;animation:bus-spin .6s linear infinite;}
+  @keyframes bus-spin{to{transform:rotate(360deg);}}
+  .bus-puff{
+    position:absolute;left:-4px;bottom:16px;width:12px;height:12px;border-radius:50%;
+    background:rgba(120,130,150,.45);animation:bus-puff 1.2s ease-out infinite;opacity:0;
+  }
+  .bus-puff:nth-child(2){animation-delay:.4s;}
+  .bus-puff:nth-child(3){animation-delay:.8s;}
+  @keyframes bus-puff{0%{opacity:.8;transform:translate(0,0) scale(.5);}100%{opacity:0;transform:translate(-34px,-10px) scale(1.6);}}
+  .bus-facts{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:0 0 1rem;}
+  .bus-fact{
+    margin:0;padding:.9rem 1.1rem;border-radius:16px;
+    background:rgba(255,255,255,.75);color:#3d4f6e;font-size:.95rem;
+  }
+  .bus-fact strong{display:block;font-family:'Fredoka',sans-serif;font-size:1.35rem;color:var(--navy);line-height:1.2;}
+  .bus-call{margin:0;color:#3d4f6e;}
+  .bus-call a{color:var(--navy);font-weight:700;white-space:nowrap;}
+  @media (max-width:540px){
+    .bus-scene{height:120px;}
+    .bus-svg{width:180px;}
+    .bus-drive{animation-duration:8s;}
+    .bus-facts{grid-template-columns:1fr;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .bus-drive{animation:none;left:50%;transform:translateX(-50%);}
+    .bus-svg,.bus-spin,.bus-cloud{animation:none;}
+    .bus-puff{display:none;}
+  }
+  body[data-theme="dark"] .bus-scene{background:linear-gradient(#0b1530 0%,#1a2650 75%);}
+  body[data-theme="dark"] .bus-cloud{background:#2c3a66;}
+  body[data-theme="dark"] .bus-road{background:#2a3044;box-shadow:inset 0 3px 0 #1f2433;}
+  body[data-theme="dark"] .bus-fact{background:rgba(255,255,255,.06);color:#c8d3ec;}
+  body[data-theme="dark"] .bus-fact strong{color:var(--d-gold);}
+  body[data-theme="dark"] .bus-call{color:#c8d3ec;}
+  body[data-theme="dark"] .bus-call a{color:var(--d-gold);}
+  body[data-theme="dark"] #hub-bus .kicker{color:var(--d-gold);}
+
   .hub-block.faq-section,.hub-block.hub-extra{margin:0;text-align:left;}
   /* Kop van 'Ontdek de gids': tekst links, badge-kaartje rechts */
   /* Tekst links, compact badge-kaartje rechts: blijft altijd naast elkaar (geen lege ruimte eronder) */
