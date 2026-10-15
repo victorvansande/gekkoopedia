@@ -497,6 +497,8 @@
   .bus-fact strong{display:block;font-family:'Fredoka',sans-serif;font-size:1.35rem;color:var(--navy);line-height:1.2;}
   .bus-call{margin:0;color:#3d4f6e;}
   .bus-call a{color:var(--navy);font-weight:700;white-space:nowrap;}
+  .bus-call strong{color:var(--navy);}
+  body[data-theme="dark"] .bus-call strong{color:var(--d-text);}
   @media (max-width:540px){
     .bus-scene{height:120px;}
     .bus-svg{width:180px;}
