@@ -489,6 +489,27 @@
   .bus-puff:nth-child(2){animation-delay:.4s;}
   .bus-puff:nth-child(3){animation-delay:.8s;}
   @keyframes bus-puff{0%{opacity:.8;transform:translate(0,0) scale(.5);}100%{opacity:0;transform:translate(-34px,-10px) scale(1.6);}}
+  /* Zelf rijden: pijltjestoetsen of links/rechts ingedrukt houden */
+  .bus-scene{touch-action:pan-y;-webkit-user-select:none;user-select:none;}
+  .bus-scene.is-manual .bus-drive{animation:none;}
+  .bus-scene.is-manual .bus-spin{animation:none;}
+  .bus-scene:not(.is-moving) .bus-puff{animation-play-state:paused;opacity:0;}
+  .bus-scene.is-manual:not(.is-moving) .bus-svg{animation-play-state:paused;}
+  .bus-logo-flip{transform-box:fill-box;transform-origin:center;}
+  .bus-drive.is-left .bus-logo-flip{transform:scaleX(-1);}
+  .bus-hint{
+    position:absolute;top:8px;right:10px;z-index:2;
+    font-family:'Fredoka',sans-serif;font-weight:600;font-size:.78rem;
+    color:#1E3354;background:rgba(255,255,255,.75);padding:.2rem .6rem;border-radius:999px;
+    transition:opacity .4s;
+  }
+  .bus-scene.is-manual .bus-hint{opacity:0;}
+  .bus-hint-touch{display:none;}
+  @media (hover:none),(pointer:coarse){
+    .bus-hint-keys{display:none;}
+    .bus-hint-touch{display:inline;}
+  }
+  body[data-theme="dark"] .bus-hint{background:rgba(255,255,255,.1);color:#c8d3ec;}
   .bus-facts{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:0 0 1rem;}
   .bus-fact{
     margin:0;padding:.9rem 1.1rem;border-radius:16px;

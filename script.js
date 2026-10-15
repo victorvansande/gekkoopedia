@@ -1682,3 +1682,108 @@
     if(reduce) car.classList.add('is-manual');
     go(0);
   })();
+
+  /* ---- Gekkoo-bus: zelf rijden met de pijltjestoetsen (of links/rechts ingedrukt houden) ---- */
+  (function(){
+    const scene = document.querySelector('.bus-scene');
+    const drive = scene && scene.querySelector('.bus-drive');
+    const svg = drive && drive.querySelector('.bus-svg');
+    if(!svg) return;
+    const wheels = drive.querySelectorAll('.bus-spin');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const MAX = 280, ACC = 520, BRAKE = 900, FRICTION = 360, JUMP = 300, GRAV = 1300;
+    let visible = false, manual = false, x = 0, v = 0, y = 0, vy = 0, dir = 1, angle = 0;
+    let keyL = false, keyR = false, ptrL = false, ptrR = false, last = 0, raf = 0, idleSince = 0;
+
+    scene.classList.add('is-moving');
+    new IntersectionObserver(es => { visible = es[0].intersectionRatio >= .5; }, {threshold:[0,.5,1]}).observe(scene);
+
+    function blocked(){
+      const a = document.activeElement;
+      if(a && (/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || a.isContentEditable)) return true;
+      const so = document.getElementById('search-overlay'), mo = document.getElementById('menu-overlay');
+      if((so && !so.hidden) || (mo && !mo.hidden)) return true;
+      return !scene.offsetParent;
+    }
+    function takeOver(){
+      if(manual) return;
+      // Begin op de plek waar de automatische rit de bus nu toont
+      const sr = scene.getBoundingClientRect(), dr = drive.getBoundingClientRect();
+      x = dr.left - sr.left; v = reduce ? 0 : MAX * .55; dir = 1;
+      manual = true;
+      scene.classList.add('is-manual');
+      drive.style.left = '0px';
+      last = performance.now(); idleSince = last;
+      if(!raf) raf = requestAnimationFrame(step);
+    }
+    function release(){
+      // Na een tijdje stilstaan rijdt de bus weer vanzelf verder, vanaf dezelfde plek
+      manual = false; v = 0; y = 0;
+      scene.classList.remove('is-manual');
+      drive.classList.remove('is-left');
+      drive.style.transform = '';
+      wheels.forEach(w => w.style.transform = '');
+      if(reduce){ drive.style.left = ''; return; }
+      const W = scene.clientWidth, bw = svg.getBoundingClientRect().width;
+      const dur = parseFloat(getComputedStyle(drive).animationDuration) || 11;
+      const p = Math.min(1, Math.max(0, (x + bw) / (W + bw)));
+      drive.style.left = '';
+      drive.style.animationDelay = (-p * dur) + 's';
+    }
+    function step(now){
+      raf = 0;
+      if(!manual) return;
+      const dt = Math.min(.05, (now - last) / 1000); last = now;
+      const want = (keyR || ptrR ? 1 : 0) - (keyL || ptrL ? 1 : 0);
+      if(want){
+        v += want * (Math.sign(v) === -want ? BRAKE : ACC) * dt;
+      } else {
+        const f = FRICTION * dt;
+        v = Math.abs(v) <= f ? 0 : v - Math.sign(v) * f;
+      }
+      v = Math.max(-MAX, Math.min(MAX, v));
+      if(v > 1) dir = 1; else if(v < -1) dir = -1;
+      x += v * dt;
+      const W = scene.clientWidth, bw = svg.getBoundingClientRect().width;
+      if(x > W) x = -bw; else if(x < -bw) x = W;
+      if(y > 0 || vy > 0){ vy -= GRAV * dt; y = Math.max(0, y + vy * dt); if(y === 0) vy = 0; }
+      const r = 13 * bw / 240;
+      angle += (v * dt / r) * 180 / Math.PI;
+      wheels.forEach(w => w.style.transform = 'rotate(' + angle + 'deg)');
+      drive.style.transform = 'translate(' + x + 'px,' + (-y) + 'px)' + (dir < 0 ? ' scaleX(-1)' : '');
+      drive.classList.toggle('is-left', dir < 0);
+      const moving = Math.abs(v) > 1 || y > 0;
+      scene.classList.toggle('is-moving', moving);
+      if(moving || want) idleSince = now;
+      if(now - idleSince > 4000 && !want){ release(); scene.classList.add('is-moving'); return; }
+      raf = requestAnimationFrame(step);
+    }
+
+    document.addEventListener('keydown', e => {
+      if(e.ctrlKey || e.altKey || e.metaKey) return;
+      const k = e.key;
+      if(k !== 'ArrowLeft' && k !== 'ArrowRight' && k !== 'ArrowUp') return;
+      if(k === 'ArrowUp' && !manual) return; // pijltje omhoog blijft gewoon scrollen tot je zelf rijdt
+      if(!visible || blocked()) return;
+      e.preventDefault();
+      takeOver();
+      if(k === 'ArrowLeft') keyL = true;
+      else if(k === 'ArrowRight') keyR = true;
+      else if(y === 0){ vy = JUMP; y = .01; }
+    });
+    document.addEventListener('keyup', e => {
+      if(e.key === 'ArrowLeft') keyL = false;
+      if(e.key === 'ArrowRight') keyR = false;
+    });
+    window.addEventListener('blur', () => { keyL = keyR = ptrL = ptrR = false; });
+
+    // Op gsm: links of rechts in het straatje ingedrukt houden
+    scene.addEventListener('pointerdown', e => {
+      const r = scene.getBoundingClientRect();
+      const left = e.clientX - r.left < r.width / 2;
+      takeOver();
+      ptrL = left; ptrR = !left;
+    });
+    ['pointerup','pointercancel','pointerleave'].forEach(t => scene.addEventListener(t, () => { ptrL = ptrR = false; }));
+    scene.addEventListener('contextmenu', e => e.preventDefault());
+  })();
